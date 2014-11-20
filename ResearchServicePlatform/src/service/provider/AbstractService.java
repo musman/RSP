@@ -2,6 +2,8 @@ package service.provider;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
@@ -20,6 +22,7 @@ import javax.jms.TextMessage;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import service.atomic.AtomicServiceBehavior;
 import service.auxiliary.AbstractMessage;
 import service.auxiliary.Operation;
 import service.auxiliary.Param;
@@ -37,9 +40,11 @@ public abstract class AbstractService implements MessageListener {
     InitialContext initContext;
     QueueConnectionFactory queueConnectingFactory;
     QueueConnection queueConnection;
-    int messageCount = 0;
-    Map<Integer, Object> results = new HashMap<Integer, Object>();
+    AtomicInteger messageCount = new AtomicInteger(0);
+    Map<Integer, Object> results = new ConcurrentHashMap<Integer, Object>();
     ServiceDescription serviceDescription;
+    private Object NullObject = new Object();
+    private AtomicServiceBehavior serviceBehavior;
 
     public static final boolean DEBUG = false;
 
@@ -62,7 +67,7 @@ public abstract class AbstractService implements MessageListener {
 	    QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 	    MessageProducer sender = session.createProducer(destination);
 	    sender.send(session.createTextMessage(msgText));
-	    messageCount++;
+	    //messageCount.incrementAndGet();
 	    connection.close();
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -74,11 +79,11 @@ public abstract class AbstractService implements MessageListener {
 	    // System.out.println(destination);
 	    // System.out.println(address);
 	    // System.out.println("Sending request message: ");
-
-	    Request request = new Request(messageCount, "dynamicQueues/" + this.serviceEndpoint, service, opName, params);
+	    int messageID = messageCount.incrementAndGet();
+	    Request request = new Request(messageID, "dynamicQueues/" + this.serviceEndpoint, service, opName, params);
 	    XMLBuilder build = new XMLBuilder();
 	    String requestMessage = build.toXML(request);
-	    int messageID = messageCount;
+	    
 	    Queue queue = (Queue) initContext.lookup("dynamicQueues/" + destination);
 	    this.sendMessage(requestMessage, queue);
 
@@ -92,7 +97,9 @@ public abstract class AbstractService implements MessageListener {
 			// Thread.sleep(1000);
 		    }
 		}
-		return results.get(messageID);
+		Object result = results.get(messageID);
+		results.remove(messageID);
+		return result != NullObject? result : null;
 	    }
 	    return null;
 	} catch (Exception e) {
@@ -102,7 +109,7 @@ public abstract class AbstractService implements MessageListener {
     }
 
     private void sendResponse(int requestID, Object result, Destination destination) {
-	Response response = new Response(messageCount, requestID, this.serviceEndpoint, result);
+	Response response = new Response(messageCount.incrementAndGet(), requestID, this.serviceEndpoint, result);
 	XMLBuilder build = new XMLBuilder();
 	String responseMessage = build.toXML(response);
 
@@ -138,18 +145,18 @@ public abstract class AbstractService implements MessageListener {
 
     public void sendResponseToClient(Message message, Object result) {
 	try {
-	    Response response = new Response(messageCount, -1, this.serviceEndpoint, result);
+	    Response response = new Response(messageCount.get(), -1, this.serviceEndpoint, result);
 	    XMLBuilder build = new XMLBuilder();
 	    String responseMessage = build.toXML(response);
 
 	    Connection connection = queueConnectingFactory.createConnection();
 	    Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	    MessageProducer sender = session.createProducer(message.getJMSReplyTo());
-	    sender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+	    sender.setDeliveryMode(DeliveryMode.PERSISTENT);
 
 	    sender.send(session.createTextMessage(responseMessage));
 
-	    messageCount++;
+	    messageCount.incrementAndGet();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -173,25 +180,31 @@ public abstract class AbstractService implements MessageListener {
 		    System.out.println("Receiving the request: \n" + msgText);
 		final Request request = (Request) msg;
 		// if (request.serviceName.equals(serviceName)) {
-		new Thread(new Runnable() {
+				new Thread(new Runnable() {
 
-		    @Override
-		    public void run() {
-			try {
-			    Object result = callOperation(request.getOpName(), request.getParams());
-			    if (destination != null) {
-				Queue queue = (Queue) initContext.lookup(destination);
-				sendResponse(requestID, result, queue);
-			    } else {
-				sendResponse(requestID, result, message.getJMSReplyTo());
-				// this.sendResponseToClient(message, result);
+					@Override
+					public void run() {
+						try {
 
-			    }
-			} catch (Exception e) {
-			    e.printStackTrace();
-			}
-		    }
-		}).start();
+							Object result = callOperation(request.getOpName(),
+									request.getParams());
+							if (destination != null) {
+								Queue queue = (Queue) initContext
+										.lookup(destination);
+								sendResponse(requestID, result, queue);
+							} else {
+								sendResponse(requestID, result,
+										message.getJMSReplyTo());
+								// this.sendResponseToClient(message,
+								// result);
+
+							}
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
 		// }
 		break;
 	    }
@@ -206,7 +219,7 @@ public abstract class AbstractService implements MessageListener {
 		    Class<?> type = (Class<?>) response.getReturnType();
 		    results.put(response.getRequestID(), type.cast(response.getReturnValue()));
 		} else {
-		    results.put(response.getRequestID(), null);
+		    results.put(response.getRequestID(), NullObject);
 		}
 		synchronized (this) {
 		    this.notifyAll();
@@ -234,7 +247,17 @@ public abstract class AbstractService implements MessageListener {
 			    for (int i = 0; i < size; i++) {
 				args[i] = params[i].getValue();
 			    }
-			    return operation.invoke(this, args);
+			    
+			    boolean flag = serviceBehavior != null? serviceBehavior.preInvokeOperation(opName, args): true;
+			    Object result;
+			    if (flag){
+			    	result = operation.invoke(this, args);
+			    	Object mResult = serviceBehavior != null? serviceBehavior.postInvokeOperation(opName, result, args):result;
+			    	return mResult;
+			    }
+			    else{
+			    	return null;
+			    }
 			}
 		    }
 		} catch (Exception e) {
@@ -277,5 +300,13 @@ public abstract class AbstractService implements MessageListener {
     public void setServiceDescription(ServiceDescription serviceDescription) {
 	this.serviceDescription = serviceDescription;
     }
+    
+    public AtomicServiceBehavior getServiceBehavior() {
+		return serviceBehavior;
+	}
+    
+    public void setServiceBehavior(AtomicServiceBehavior serviceBehavior) {
+		this.serviceBehavior = serviceBehavior;
+	}
 
 }
