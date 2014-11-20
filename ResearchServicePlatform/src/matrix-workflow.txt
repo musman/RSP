@@ -1,3 +1,0 @@
-START a, b
-result = Matrix.mult(a, b)
-RETURN result
