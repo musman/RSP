@@ -431,7 +431,17 @@ public abstract class TaskGraph {
     public static class Store extends MemoryOperation {
 
 	private EAssignOp assignOp;
+	private TaskGraph rightExpression;
+	
 
+	public TaskGraph getRightExpression() {
+	    return rightExpression;
+	}
+	public void setRightExpression(TaskGraph rightExpression) {
+	    this.rightExpression = rightExpression;
+	}
+	
+	
 	public Store() {
 	    this.taskType = ETaskType.STORE;
 	}
@@ -842,8 +852,6 @@ public abstract class TaskGraph {
 
     public static class QUALIFIED_ACCESS extends Load {
 
-	private String memberId;
-
 	public QUALIFIED_ACCESS() {
 	    this.taskType = ETaskType.QUALIFIED_ACCESS;
 	}
@@ -852,22 +860,13 @@ public abstract class TaskGraph {
 	public TaskGraph clone() {
 	    QUALIFIED_ACCESS task = new QUALIFIED_ACCESS();
 	    task.value = value;
-	    task.memberId = memberId;
 	    createClone(task);
 	    return task;
 	}
 
-	public String getMemberId() {
-	    return memberId;
-	}
-
-	public void setMemberId(String memberId) {
-	    this.memberId = memberId;
-	}
-
 	@Override
 	public String toString() {
-	    return "QualifiedAccess [VarName=" + getMemberId() + "]";
+	    return "QualifiedAccess [VarName=" + getVarName() + "]";
 	}
 
     }
