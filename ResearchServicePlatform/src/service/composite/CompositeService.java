@@ -14,9 +14,10 @@ public class CompositeService extends AbstractService{
 
     String workflow;
     Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
+    CompositeServiceBehavior behavior;
     
     public CompositeService(String serviceName, String serviceEndpoint, String workflow) {
-	super(serviceName, serviceEndpoint);
+    	super(serviceName, serviceEndpoint);
 		this.workflow=workflow;
     }
 
@@ -42,5 +43,15 @@ public class CompositeService extends AbstractService{
 	WorkflowEngine engine = new WorkflowEngine(this);
 	return engine.executeWorkflow(workflow, qosRequirement, params);
     }
+
+
+	public CompositeServiceBehavior getBehavior() {
+		return behavior;
+	}
+
+
+	public void setBehavior(CompositeServiceBehavior behavior) {
+		this.behavior = behavior;
+	}
     
 }

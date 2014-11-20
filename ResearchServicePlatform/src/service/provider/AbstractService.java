@@ -3,6 +3,7 @@ package service.provider;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jms.Connection;
@@ -31,6 +32,7 @@ import service.auxiliary.Response;
 import service.auxiliary.ServiceDescription;
 import service.auxiliary.ServiceOperation;
 import service.auxiliary.ServiceRegistryInterface;
+import service.auxiliary.TimeOutError;
 import service.auxiliary.XMLBuilder;
 
 public abstract class AbstractService implements MessageListener {
@@ -59,6 +61,18 @@ public abstract class AbstractService implements MessageListener {
 	    e.printStackTrace();
 	}
     }
+    
+    public AbstractService(String serviceName, String serviceEndpoint,int responseTime) {
+	try {
+	    initContext = new InitialContext();
+	    queueConnectingFactory = (QueueConnectionFactory) initContext.lookup("ConnectionFactory");
+	    this.serviceName = serviceName;
+	    this.serviceEndpoint = serviceEndpoint;
+	    serviceDescription =new ServiceDescription(serviceName, serviceEndpoint,responseTime);
+	} catch (NamingException e) {
+	    e.printStackTrace();
+	}
+    }
 
     private void sendMessage(String msgText, Destination destination) {
 	try {
@@ -74,7 +88,7 @@ public abstract class AbstractService implements MessageListener {
 	}
     }
 
-    public Object sendRequest(String service, String destination, boolean reply, String opName, Object... params) {
+    public Object sendRequest(String service, String destination, boolean reply, String opName,Object... params) {
 	try {
 	    // System.out.println(destination);
 	    // System.out.println(address);
@@ -108,6 +122,51 @@ public abstract class AbstractService implements MessageListener {
 	}
     }
 
+    public Object sendRequest(String service, String destination, boolean reply, long responseTime, String opName,Object... params) {
+	try {
+	    // System.out.println(destination);
+	    // System.out.println(address);
+	    // System.out.println("Sending request message: ");
+	    int messageID = messageCount.incrementAndGet();
+	    Request request = new Request(messageID, "dynamicQueues/" + this.serviceEndpoint, service, opName, params);
+	    XMLBuilder build = new XMLBuilder();
+	    String requestMessage = build.toXML(request);
+	    
+	    Queue queue = (Queue) initContext.lookup("dynamicQueues/" + destination);
+	    this.sendMessage(requestMessage, queue);
+
+	    if (DEBUG)
+		System.out.println("The request message is: \n" + requestMessage);
+
+	    if (reply) {
+		synchronized (this) {
+			long startTime=System.currentTimeMillis();
+			//System.out.println(responseTime);
+			//double time=System.currentTimeMillis()+responseTime*1000.0;
+			//System.out.println(time);
+			//System.out.println(startTime);
+			//System.out.println(System.currentTimeMillis());
+		    while (!results.containsKey(messageID)) {
+		    	this.wait(responseTime * 1000);
+		    	//System.out.println(time);
+		    	long endTime=System.currentTimeMillis();
+		    	if((endTime-startTime)/1000.0 >= responseTime){
+		    		//System.out.println("time out");
+		    		results.put(messageID, new TimeOutError());
+		    	}
+		    }
+		}
+		Object result = results.get(messageID);
+		results.remove(messageID);
+		return result != NullObject? result : null;
+	    }
+	    return null;
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return null;
+	}
+    }
+    
     private void sendResponse(int requestID, Object result, Destination destination) {
 	Response response = new Response(messageCount.incrementAndGet(), requestID, this.serviceEndpoint, result);
 	XMLBuilder build = new XMLBuilder();
@@ -290,7 +349,7 @@ public abstract class AbstractService implements MessageListener {
     }
 
     public void unRegister() {
-	this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "unRegister", this.serviceDescription.getRegisterID());
+    	this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "unRegister", this.serviceDescription.getRegisterID());
     }
 
     public ServiceDescription getServiceDescription() {

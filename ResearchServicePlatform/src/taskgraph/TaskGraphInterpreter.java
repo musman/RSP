@@ -13,11 +13,11 @@ import java.util.concurrent.FutureTask;
 
 import service.auxiliary.LocalOperation;
 import service.auxiliary.ServiceDescription;
+import service.auxiliary.TimeOutError;
 import service.client.AbstractServiceClient;
 import service.composite.CompositeService;
 import service.registry.ServiceRegistry;
 import service.workflow.AbstractQoSRequirement;
-
 import taskgraph.TaskGraph.ARRAY_ACCESS;
 import taskgraph.TaskGraph.BinaryOp;
 import taskgraph.TaskGraph.CALL;
@@ -629,6 +629,10 @@ public class TaskGraphInterpreter {
 					+ "not found!");
 		}
 
+		// remove failed services
+		if (compositeService.getBehavior() != null)
+			compositeService.getBehavior().onServicesSelected(services);
+		
 		// Apply strategy
 		ServiceDescription service = applyQoSRequirement(qosRequirement,
 				services);
@@ -641,11 +645,18 @@ public class TaskGraphInterpreter {
 		// serviceClient = new
 		// AbstractServiceClient(service.getServiceEndpoint());
 
-		// System.out.println(operationName);
+		//System.out.println(operationName);
 		// Object resultVal = serviceClient.sendRequest(operationName, params);
-		Object resultVal = compositeService.sendRequest(
-				service.getServiceName(), service.getServiceEndpoint(), true,
+		
+		Object resultVal;
+		do{
+			resultVal = compositeService.sendRequest(
+				service.getServiceName(), service.getServiceEndpoint(), true, service.getResponseTime(),
 				operationName, params);
+			if (resultVal instanceof TimeOutError)
+				service=compositeService.getBehavior().onTimeout(service);
+		}while(resultVal instanceof TimeOutError);
+		
 		return resultVal;
 
 	}

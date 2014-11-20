@@ -15,7 +15,7 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     int serviceCount = -1;
 
     public ServiceRegistry() {
-	super(NAME, ADDRESS);
+    	super(NAME, ADDRESS);
     }
 
     @ServiceOperation
