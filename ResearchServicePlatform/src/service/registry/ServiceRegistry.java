@@ -22,6 +22,7 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     public int register(ServiceDescription serviceDescription) {
 	
 	serviceCount++;
+	serviceDescription.setRegisterID(serviceCount);
 	serviceList.put(serviceCount, serviceDescription);
 	String name = serviceDescription.getServiceName();
 	if (services.containsKey(name)) {
