@@ -1,10 +1,12 @@
 package service.composite;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import service.auxiliary.Param;
 import service.auxiliary.ServiceOperation;
 import service.provider.AbstractService;
 import service.workflow.AbstractQoSRequirement;
@@ -53,5 +55,34 @@ public class CompositeService extends AbstractService{
 	public void setBehavior(CompositeServiceBehavior behavior) {
 		this.behavior = behavior;
 	}
+
+
+
+	@Override
+    public Object invokeOperation(String opName, Param[] params){
+    	//System.out.println(opName);
+    	for (Method operation : this.getClass().getMethods()) {
+    	    if (operation.getAnnotation(ServiceOperation.class) != null) {
+    		try {
+    		    if (operation.getName().equals(opName)) {
+    			Class<?>[] paramTypes = operation.getParameterTypes();
+    			int size = paramTypes.length;
+    			if (size == params.length) {
+    			    Object[] args = new Object[size];
+    			    for (int i = 0; i < size; i++) {
+    				args[i] = params[i].getValue();
+    			    }
+    			        			    
+    			    return operation.invoke(this, args); 
+    		    }
+    		    }
+    		} catch (Exception e) {
+    		    e.printStackTrace();
+    		    System.out.println("The operation name or params are not valid. Please check and send again!");
+    		}
+    	    }
+    	}
+    	return null;
+    }
     
 }

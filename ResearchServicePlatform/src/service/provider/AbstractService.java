@@ -1,5 +1,6 @@
 package service.provider;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,7 +47,8 @@ public abstract class AbstractService implements MessageListener {
     Map<Integer, Object> results = new ConcurrentHashMap<Integer, Object>();
     ServiceDescription serviceDescription;
     private Object NullObject = new Object();
-    private AtomicServiceBehavior serviceBehavior;
+    
+    //private AtomicServiceBehavior serviceBehavior;
 
     public static final boolean DEBUG = false;
 
@@ -245,8 +247,14 @@ public abstract class AbstractService implements MessageListener {
 					public void run() {
 						try {
 
-							Object result = callOperation(request.getOpName(),
-									request.getParams());
+							//System.out.println(request.getOpName());
+							Object result =invokeOperation(request.getOpName(),request.getParams());
+
+							//Object result =callOperation(request.getOpName(),request.getParams());
+
+							//System.out.println(Object[].class);
+							//System.out.println(this.getClass().getMethod("invokeAtomicService",Object[].class));
+							
 							if (destination != null) {
 								Queue queue = (Queue) initContext
 										.lookup(destination);
@@ -263,6 +271,7 @@ public abstract class AbstractService implements MessageListener {
 							e.printStackTrace();
 						}
 					}
+					
 				}).start();
 		// }
 		break;
@@ -293,12 +302,16 @@ public abstract class AbstractService implements MessageListener {
 	}
     }
 
+   /*
     private Object callOperation(String opName, Param... params) {
 	// System.out.println(this.getClass().getMethods().length);
+    	
 	for (Method operation : this.getClass().getMethods()) {
 	    if (operation.getAnnotation(ServiceOperation.class) != null) {
 		try {
+			
 		    if (operation.getName().equals(opName)) {
+		    	
 			Class<?>[] paramTypes = operation.getParameterTypes();
 			int size = paramTypes.length;
 			if (size == params.length) {
@@ -306,28 +319,21 @@ public abstract class AbstractService implements MessageListener {
 			    for (int i = 0; i < size; i++) {
 				args[i] = params[i].getValue();
 			    }
-			    
-			    boolean flag = serviceBehavior != null? serviceBehavior.preInvokeOperation(opName, args): true;
-			    Object result;
-			    if (flag){
-			    	result = operation.invoke(this, args);
-			    	Object mResult = serviceBehavior != null? serviceBehavior.postInvokeOperation(opName, result, args):result;
-			    	return mResult;
-			    }
-			    else{
-			    	return null;
-			    }
+			    return operation.invoke(this, args);
+			}    
 			}
-		    }
 		} catch (Exception e) {
 		    e.printStackTrace();
 		    System.out.println("The operation name or params are not valid. Please check and send again!");
-		}
+		}		
 	    }
 	}
+    	
 	return null;
-    }
+    }*/
 
+    abstract public Object invokeOperation(String opName, Param[] args);
+    
     public void register() {
 	List<Operation> opList = new ArrayList<Operation>();
 	for (Method operation : this.getClass().getMethods()) {
@@ -359,13 +365,4 @@ public abstract class AbstractService implements MessageListener {
     public void setServiceDescription(ServiceDescription serviceDescription) {
 	this.serviceDescription = serviceDescription;
     }
-    
-    public AtomicServiceBehavior getServiceBehavior() {
-		return serviceBehavior;
-	}
-    
-    public void setServiceBehavior(AtomicServiceBehavior serviceBehavior) {
-		this.serviceBehavior = serviceBehavior;
-	}
-
 }
