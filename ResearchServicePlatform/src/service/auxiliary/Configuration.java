@@ -40,13 +40,13 @@ public class Configuration {
 	}
 
 	public Thread thread;
-    public int maxNoOfThreads;
-    public QueueStrategy queueStrategy;
-    public int maxQueueSize;
-    public int maxResponseTime;
-    public boolean SDCacheMode;
-    public boolean SDCacheShared;
-    public int SDCacheTimeout;
-    public int SDCacheSize;
+	public int maxNoOfThreads;
+	public QueueStrategy queueStrategy;
+	public int maxQueueSize;
+	public int maxResponseTime;
+	public boolean SDCacheMode;
+	public boolean SDCacheShared;
+	public int SDCacheTimeout;
+	public int SDCacheSize;
     
 }

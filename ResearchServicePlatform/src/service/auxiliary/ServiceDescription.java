@@ -2,9 +2,10 @@ package service.auxiliary;
 
 import java.util.*;
 
-import org.antlr.stringtemplate.language.NewlineRef;
-
 public class ServiceDescription {
+    
+    public static final String RESPONSE_TIME = "Responsetime";
+    
 	private int registerID=-1;
 	private String serviceEndpoint;
 	private String serviceName;
@@ -78,10 +79,13 @@ public class ServiceDescription {
 	}
 
 	public int getResponseTime() {
-		return (int)customProperties.get("ResponseTime");
+	    if (customProperties.containsKey(RESPONSE_TIME))
+		return (int)customProperties.get(RESPONSE_TIME);
+	    
+	    return 0;
 	}
 
 	public void setResponseTime(int responseTime) {
-		customProperties.put("ResponseTime", responseTime);
+		customProperties.put(RESPONSE_TIME, responseTime);
 	}
 }
