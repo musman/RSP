@@ -23,8 +23,17 @@ public class CompositeService extends AbstractService{
     CompositeServiceBehavior behavior;
     Probe probe=null;
     Configuration configuration;
+    SDCache cache;
     
-    public boolean configure(){
+	public SDCache getCache() {
+		return cache;
+	}
+
+	public void setCache(SDCache cache) {
+		this.cache = cache;
+	}
+
+	public boolean configure(){
 		try {
 			Annotation annotation = this.getClass().getAnnotation(CompositeServiceConfiguration.class);
 

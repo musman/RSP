@@ -83,6 +83,7 @@ public abstract class AbstractService implements MessageListener {
 	    QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 	    MessageProducer sender = session.createProducer(destination);
 	    sender.send(session.createTextMessage(msgText));
+	    
 	    //messageCount.incrementAndGet();
 	    connection.close();
 	} catch (Exception e) {
