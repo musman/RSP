@@ -1,11 +1,15 @@
 package service.composite;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import service.adaptation.Probe;
+import service.auxiliary.CompositeServiceConfiguration;
+import service.auxiliary.Configuration;
 import service.auxiliary.Param;
 import service.auxiliary.ServiceOperation;
 import service.provider.AbstractService;
@@ -17,8 +21,46 @@ public class CompositeService extends AbstractService{
     String workflow;
     Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
     CompositeServiceBehavior behavior;
+    Probe probe=null;
+    Configuration configuration;
     
-    public CompositeService(String serviceName, String serviceEndpoint, String workflow) {
+    public boolean configure(){
+		try {
+			Annotation annotation = this.getClass().getAnnotation(CompositeServiceConfiguration.class);
+
+			if(annotation instanceof CompositeServiceConfiguration){
+				CompositeServiceConfiguration CSConfiguration = (CompositeServiceConfiguration) annotation;
+			    this.configuration=new Configuration(CSConfiguration.Thread(), CSConfiguration.MaxNoOfThreads(), 
+			    		CSConfiguration.QueueStrategy(), CSConfiguration.MaxQueueSize(), CSConfiguration.MaxResponseTime(),
+			    		CSConfiguration.SDCacheMode(), CSConfiguration.SDCacheShared(), CSConfiguration.SDCacheTimeout(),
+			    		CSConfiguration.SDCacheSize());
+				//System.out.println("MaxNoOfThreads: " + configuration.maxNoOfThreads);
+			    return true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+    	return false;
+    }
+	 
+    /**
+	 * @return the probe
+	 */
+	public Probe getProbe() {
+		return probe;
+	}
+
+
+	/**
+	 * @param probe the probe to set
+	 */
+	public void setProbe(Probe probe) {
+		this.probe = probe;
+	}
+
+
+	public CompositeService(String serviceName, String serviceEndpoint, String workflow) {
     	super(serviceName, serviceEndpoint);
 		this.workflow=workflow;
     }
@@ -43,7 +85,17 @@ public class CompositeService extends AbstractService{
     public Object invokeCompositeService(String qosRequirementName, Object params[]){
 	AbstractQoSRequirement qosRequirement = qosRequirements.get(qosRequirementName);
 	WorkflowEngine engine = new WorkflowEngine(this);
-	return engine.executeWorkflow(workflow, qosRequirement, params);
+	
+	if(probe!=null)
+		probe.compositeServiceStarted();
+	
+	Object result= engine.executeWorkflow(workflow, qosRequirement, params);
+	
+	if(probe!=null)
+		probe.compositeServuceEnded();
+	
+	return result;
+	
     }
 
 

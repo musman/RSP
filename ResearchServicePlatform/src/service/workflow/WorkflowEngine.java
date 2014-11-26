@@ -26,7 +26,7 @@ public class WorkflowEngine {
     public Object executeWorkflow(String workFlow, AbstractQoSRequirement qosRequirement, Object... parameters) {
     	rspLexer lexer;
     	try {
-    	    lexer = new rspLexer(new ANTLRFileStream(workFlow));
+    		lexer = new rspLexer(new ANTLRFileStream(workFlow));
     	    CommonTokenStream tokens = new CommonTokenStream(lexer);
     		rspParser parser = new rspParser(tokens);
 

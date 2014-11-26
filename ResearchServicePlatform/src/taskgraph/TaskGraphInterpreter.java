@@ -653,10 +653,15 @@ public class TaskGraphInterpreter {
 			resultVal = compositeService.sendRequest(
 				service.getServiceName(), service.getServiceEndpoint(), true, service.getResponseTime(),
 				operationName, params);
-			if (resultVal instanceof TimeOutError)
+			if (resultVal instanceof TimeOutError){
+				if(compositeService.getProbe()!=null)
+					compositeService.getProbe().timeout(service);
 				service=compositeService.getBehavior().onTimeout(service);
+			}
 		}while(resultVal instanceof TimeOutError);
 		
+		if(compositeService.getProbe()!=null)
+			compositeService.getProbe().serviceExecuted(service, resultVal, operationName, params);
 		return resultVal;
 
 	}
