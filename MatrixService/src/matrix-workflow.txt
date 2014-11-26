@@ -1,18 +1,5 @@
-START a, b
+START [a, b]
 
-for(i=0;i<1;i++){
 result=Matrix.mult(a,b)
-}
-
-
-while(i<5){
-result=this.plus(a,b)
-i++
-}
-
-parallel{
-result=Matrix.mult(a,b)
-
-}
 
 RETURN result
