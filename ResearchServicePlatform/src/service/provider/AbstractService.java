@@ -35,7 +35,7 @@ import service.auxiliary.Response;
 import service.auxiliary.ServiceDescription;
 import service.auxiliary.ServiceOperation;
 import service.auxiliary.ServiceRegistryInterface;
-import service.auxiliary.TimeOutError;
+import service.auxiliary.TimeoutError;
 import service.auxiliary.XMLBuilder;
 
 public abstract class AbstractService implements MessageListener {
@@ -152,7 +152,7 @@ public abstract class AbstractService implements MessageListener {
 		    	long endTime=System.currentTimeMillis();
 		    	if((endTime-startTime)/1000.0 >= responseTime){
 		    		//System.out.println("time out");
-		    		results.put(messageID, new TimeOutError());
+		    		results.put(messageID, new TimeoutError());
 		    	}
 		    }
 		}
