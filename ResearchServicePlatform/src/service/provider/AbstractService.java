@@ -1,5 +1,6 @@
 package service.provider;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -24,8 +25,9 @@ import javax.jms.TextMessage;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import service.atomic.AtomicServiceBehavior;
 import service.auxiliary.AbstractMessage;
+import service.auxiliary.CompositeServiceConfiguration;
+import service.auxiliary.Configuration;
 import service.auxiliary.Operation;
 import service.auxiliary.Param;
 import service.auxiliary.Request;
@@ -59,21 +61,16 @@ public abstract class AbstractService implements MessageListener {
 	    this.serviceName = serviceName;
 	    this.serviceEndpoint = serviceEndpoint;
 	    serviceDescription =new ServiceDescription(serviceName, serviceEndpoint);
+	    readConfiguration();
+	    
 	} catch (NamingException e) {
 	    e.printStackTrace();
 	}
     }
     
     public AbstractService(String serviceName, String serviceEndpoint,int responseTime) {
-	try {
-	    initContext = new InitialContext();
-	    queueConnectingFactory = (QueueConnectionFactory) initContext.lookup("ConnectionFactory");
-	    this.serviceName = serviceName;
-	    this.serviceEndpoint = serviceEndpoint;
-	    serviceDescription =new ServiceDescription(serviceName, serviceEndpoint,responseTime);
-	} catch (NamingException e) {
-	    e.printStackTrace();
-	}
+	this(serviceName, serviceEndpoint);
+	serviceDescription =new ServiceDescription(serviceName, serviceEndpoint,responseTime);
     }
 
     private void sendMessage(String msgText, Destination destination) {
@@ -366,4 +363,13 @@ public abstract class AbstractService implements MessageListener {
     public void setServiceDescription(ServiceDescription serviceDescription) {
 	this.serviceDescription = serviceDescription;
     }
+    
+    protected Configuration configuration;
+    
+    public Configuration getConfiguration() {
+	return configuration;
+    }
+    
+    abstract protected boolean readConfiguration();
+    
 }

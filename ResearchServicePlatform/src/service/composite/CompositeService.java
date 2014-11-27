@@ -29,13 +29,14 @@ public class CompositeService extends AbstractService {
 	return cache;
     }
 
-    private boolean readConfiguration() {
+    @Override
+    protected boolean readConfiguration() {
 	try {
 	    Annotation annotation = this.getClass().getAnnotation(CompositeServiceConfiguration.class);
 
 	    if (annotation instanceof CompositeServiceConfiguration) {
 		CompositeServiceConfiguration CSConfiguration = (CompositeServiceConfiguration) annotation;
-		this.configuration = new Configuration(CSConfiguration.Thread(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.QueueStrategy(), CSConfiguration.MaxQueueSize(),
+		this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize(),
 			CSConfiguration.MaxResponseTime(), CSConfiguration.SDCacheMode(), CSConfiguration.SDCacheShared(), CSConfiguration.SDCacheTimeout(),
 			CSConfiguration.SDCacheSize());
 		// System.out.println("MaxNoOfThreads: " + configuration.maxNoOfThreads);
@@ -46,10 +47,6 @@ public class CompositeService extends AbstractService {
 	    e.printStackTrace();
 	}
 	return false;
-    }
-
-    public Configuration getConfiguration() {
-	return configuration;
     }
 
     /**
@@ -70,7 +67,10 @@ public class CompositeService extends AbstractService {
     public CompositeService(String serviceName, String serviceEndpoint, String workflow) {
 	super(serviceName, serviceEndpoint);
 	this.workflow = workflow;
-	readConfiguration();
+	
+	if (this.configuration.SDCacheMode){
+	    cache = new SDCache();
+	}
     }
 
     public void addQosRequirement(String requirementName, AbstractQoSRequirement qosRequirement) {
@@ -91,7 +91,8 @@ public class CompositeService extends AbstractService {
     @ServiceOperation
     public Object invokeCompositeService(String qosRequirementName, Object params[]) {
 	AbstractQoSRequirement qosRequirement = qosRequirements.get(qosRequirementName);
-	WorkflowEngine engine = new WorkflowEngine(this);
+	SDCache sdCache = cache == null? new SDCache(): cache;
+	WorkflowEngine engine = new WorkflowEngine(this, sdCache);
 
 	if (probe != null)
 	    probe.compositeServiceStarted(qosRequirementName, params);

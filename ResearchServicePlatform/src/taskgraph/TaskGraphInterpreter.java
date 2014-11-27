@@ -16,6 +16,7 @@ import service.auxiliary.ServiceDescription;
 import service.auxiliary.TimeOutError;
 import service.client.AbstractServiceClient;
 import service.composite.CompositeService;
+import service.composite.SDCache;
 import service.registry.ServiceRegistry;
 import service.workflow.AbstractQoSRequirement;
 import taskgraph.TaskGraph.ARRAY_ACCESS;
@@ -42,7 +43,7 @@ public class TaskGraphInterpreter {
     // AbstractServiceClient(ServiceRegistry.ADDRESS);
     AbstractQoSRequirement qosRequirement;
     CompositeService compositeService;
-
+    SDCache sdCache;
     /**
      * Return the whole heap
      * 
@@ -70,7 +71,7 @@ public class TaskGraphInterpreter {
     /*
      * Each template object have its own ID, which can be used to set/get data variables For global section 0 will be used
      */
-    public Object interpret(TaskGraph first, final AbstractQoSRequirement qosRequirement, final CompositeService compositeService, final Object... args) {
+    public Object interpret(TaskGraph first, final SDCache cache,final AbstractQoSRequirement qosRequirement, final CompositeService compositeService, final Object... args) {
 
 	if (first == null) {
 	    System.err.println("Interpreter received null taskgraph");
@@ -86,7 +87,7 @@ public class TaskGraphInterpreter {
 
 	this.qosRequirement = qosRequirement;
 	this.compositeService = compositeService;
-
+	this.sdCache = cache;
 	// Start from global declaration which has id = 0 in taskGraphs
 
 	TaskGraph CT = first;
@@ -398,7 +399,7 @@ public class TaskGraphInterpreter {
 			    TaskGraphInterpreter interpreter = new TaskGraphInterpreter();
 			    interpreter.heap = heap;
 			    interpreter.compositeService = compositeService;
-			    interpreter.interpret(task, qosRequirement, compositeService, args);
+			    interpreter.interpret(task, cache,qosRequirement, compositeService, args);
 			}
 		    });
 		}
@@ -545,10 +546,13 @@ public class TaskGraphInterpreter {
      */
     public List<ServiceDescription> lookupService(String serviceName, String opName) {
 
-	// for sendRequest function, if you want reply,set true, not set false
-	// return (List<ServiceDescription>)
-	// registryServiceClient.sendRequest("lookup", serviceName, opName);
-	return (List<ServiceDescription>) compositeService.sendRequest(ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true, "lookup", serviceName, opName);
+	List<ServiceDescription> serviceDescriptions = sdCache.get(serviceName, opName);
+	if (serviceDescriptions == null){
+	    serviceDescriptions = (List<ServiceDescription>) compositeService.sendRequest(ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true, "lookup", serviceName, opName);
+	    sdCache.add(serviceName, opName, serviceDescriptions);
+	}
+	
+	return serviceDescriptions;
     }
 
     protected ServiceDescription applyQoSRequirement(AbstractQoSRequirement qosRequirement, List<ServiceDescription> serviceDescriptions) {

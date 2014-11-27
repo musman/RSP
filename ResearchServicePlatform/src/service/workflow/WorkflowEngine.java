@@ -5,8 +5,10 @@ import java.io.IOException;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.apache.activemq.memory.Cache;
 
 import service.composite.CompositeService;
+import service.composite.SDCache;
 import service.workflow.ast.ASTNode.Start;
 import service.workflow.ast.rspLexer;
 import service.workflow.ast.rspParser;
@@ -18,9 +20,10 @@ import tools.TaskGraphVisualizer;
 public class WorkflowEngine {
 
 	CompositeService service;
-	
-	public WorkflowEngine(CompositeService service){
+	SDCache sdCache;
+	public WorkflowEngine(CompositeService service, SDCache cache){
 		this.service=service;
+		this.sdCache = cache;
 	}
 	
     public Object executeWorkflow(String workFlow, AbstractQoSRequirement qosRequirement, Object... parameters) {
@@ -42,7 +45,7 @@ public class WorkflowEngine {
     		    tgVisualizer.exportGML(workFlow + "_TaskGraph", startGraph);
     		    
     		    TaskGraphInterpreter interpreter = new TaskGraphInterpreter();
-    		    Object value = interpreter.interpret(startGraph,qosRequirement,service,parameters);
+    		    Object value = interpreter.interpret(startGraph, sdCache, qosRequirement,service,parameters);
     		    System.out.println("Result:" + value);
     		    return value;
     	} catch (IOException | RecognitionException e) {

@@ -1,7 +1,10 @@
 package service.atomic;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import service.auxiliary.AtomicServiceConfiguration;
+import service.auxiliary.Configuration;
 import service.auxiliary.Param;
 import service.auxiliary.ServiceOperation;
 import service.provider.AbstractService;
@@ -61,4 +64,22 @@ public abstract class AtomicService extends AbstractService {
     	}
     	return null;
     }
+    
+    @Override
+    protected boolean readConfiguration(){
+  	try {
+  	    Annotation annotation = this.getClass().getAnnotation(AtomicServiceConfiguration.class);
+
+  	    if (annotation instanceof AtomicServiceConfiguration) {
+  		AtomicServiceConfiguration CSConfiguration = (AtomicServiceConfiguration) annotation;
+  		this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize());
+  		return true;
+  	    }
+
+  	} catch (Exception e) {
+  	    e.printStackTrace();
+  	}
+  	return false;
+      }
+
 }
