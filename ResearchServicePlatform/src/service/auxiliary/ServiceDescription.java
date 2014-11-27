@@ -4,7 +4,7 @@ import java.util.*;
 
 public class ServiceDescription {
     
-    public static final String RESPONSE_TIME = "Responsetime";
+    public static final String RESPONSE_TIME = "ResponseTime";
     
 	private int registerID=-1;
 	private String serviceEndpoint;

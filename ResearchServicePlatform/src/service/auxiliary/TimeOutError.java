@@ -1,4 +1,4 @@
 package service.auxiliary;
 
-public class TimeoutError {
+public class TimeOutError {
 }

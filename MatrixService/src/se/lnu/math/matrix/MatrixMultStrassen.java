@@ -2,6 +2,7 @@ package se.lnu.math.matrix;
 
 import service.atomic.AtomicService;
 import service.auxiliary.ServiceOperation;
+import service.utility.LogAtomicService;
 
 /**
  * Matrix.java
@@ -155,7 +156,8 @@ public class MatrixMultStrassen  extends AtomicService{
 	MatrixMultStrassen matrix = new MatrixMultStrassen("Matrix", "se.lnu.math.matrix.square.mult.strassen");
 	matrix.getServiceDescription().getCustomProperties().put("Cost", 3);
 	matrix.getServiceDescription().getCustomProperties().put("Complexity", 2.80);
-	matrix.getServiceDescription().getCustomProperties().put("ResponseTime", 2);
+	matrix.getServiceDescription().setResponseTime(2);
+	matrix.setServiceBehavior(new LogAtomicService());
 	matrix.startService();
 	matrix.register();
     }

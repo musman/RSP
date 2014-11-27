@@ -13,7 +13,7 @@ import java.util.concurrent.FutureTask;
 
 import service.auxiliary.LocalOperation;
 import service.auxiliary.ServiceDescription;
-import service.auxiliary.TimeoutError;
+import service.auxiliary.TimeOutError;
 import service.client.AbstractServiceClient;
 import service.composite.CompositeService;
 import service.composite.SDCache;
@@ -379,7 +379,7 @@ public class TaskGraphInterpreter {
 		} else {
 			
 		    resultInvoke = invokeServiceOperation(call.getServiceName(), call.getOperationName(), params);
-		    if(resultInvoke instanceof TimeoutError)
+		    if(resultInvoke instanceof TimeOutError)
 		    	return resultInvoke;
 		}
 
@@ -588,12 +588,18 @@ public class TaskGraphInterpreter {
 	// Calculate response time
 	int maxResponseTime = compositeService.getConfiguration().maxResponseTime;
 	int serviceResponseTime = service.getResponseTime();
-	int actualResponseTime = serviceResponseTime < maxResponseTime ? serviceResponseTime : maxResponseTime;
+	
+	int actualResponseTime;
+	if (maxResponseTime == 0)
+	    actualResponseTime = serviceResponseTime;
+	else 
+	    actualResponseTime = serviceResponseTime < maxResponseTime ? serviceResponseTime : maxResponseTime;
+	
 	Object resultVal;
 	
 	if (actualResponseTime > 0) {    
 		resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, actualResponseTime, operationName, params);
-		if (resultVal instanceof TimeoutError) {
+		if (resultVal instanceof TimeOutError) {
 		    if (compositeService.getProbe() != null)
 		    	compositeService.getProbe().serviceOperationTimeout(service, operationName, params);
 		}

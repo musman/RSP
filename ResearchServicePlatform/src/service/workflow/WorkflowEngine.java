@@ -36,13 +36,13 @@ public class WorkflowEngine {
     		// Get AST root
     		Start start = (Start) parser.start().getTree();
     		
-    		ASTSymTabVisualizer astVisualizer = new ASTSymTabVisualizer();
-    		    astVisualizer.exportGML(workFlow + "_AST", start);
+    		//ASTSymTabVisualizer astVisualizer = new ASTSymTabVisualizer();
+    		  //  astVisualizer.exportGML(workFlow + "_AST", start);
     		
     		    
     		START startGraph = (START) start.getFirst();
-    		 TaskGraphVisualizer tgVisualizer = new TaskGraphVisualizer();
-    		    tgVisualizer.exportGML(workFlow + "_TaskGraph", startGraph);
+    		// TaskGraphVisualizer tgVisualizer = new TaskGraphVisualizer();
+    		  //  tgVisualizer.exportGML(workFlow + "_TaskGraph", startGraph);
     		    
     		    TaskGraphInterpreter interpreter = new TaskGraphInterpreter();
     		    Object value = interpreter.interpret(startGraph, sdCache, qosRequirement,service,parameters);

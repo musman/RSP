@@ -7,6 +7,7 @@ import se.lnu.math.matrix.composite.qosrequirements.MinCostAndResponseTime;
 import se.lnu.math.matrix.composite.qosrequirements.MinResponseTimeQoS;
 import service.auxiliary.LocalOperation;
 import service.composite.CompositeService;
+import service.utility.LogFailure;
 
 public class MatrixCompositeService extends CompositeService{
 
@@ -36,10 +37,11 @@ public class MatrixCompositeService extends CompositeService{
 
 	public static void main(String[] args) {
 		
-		MatrixCompositeService compositeService = new MatrixCompositeService("Matrix", "se.lnu.Matrix", "/Users/ryf/Dropbox/Architectures for Service-based Systems/code/MatrixService/src/matrix-workflow.txt");
+		MatrixCompositeService compositeService = new MatrixCompositeService("Matrix", "se.lnu.Matrix", "src/matrix-workflow.txt");
     	compositeService.addQosRequirement("MinCost", new MinCostQoS());
     	compositeService.addQosRequirement("MinResponseTime", new MinResponseTimeQoS());
     	compositeService.addQosRequirement("MinCostAndResponseTime", new MinCostAndResponseTime());
+    	compositeService.setProbe(new LogFailure());
     	compositeService.startService();
 	compositeService.register();
 	

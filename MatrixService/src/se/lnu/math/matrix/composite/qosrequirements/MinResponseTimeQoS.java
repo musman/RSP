@@ -22,7 +22,7 @@ public class MinResponseTimeQoS implements AbstractQoSRequirement {
 		}
 	    }
 	    else {
-		throw new RuntimeException("response_time custom property not found in service description.");
+		throw new RuntimeException("ResponseTime custom property not found in service description.");
 	    }
 	}
 	

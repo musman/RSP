@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import service.atomic.AtomicService;
 import service.auxiliary.ServiceOperation;
+import service.utility.LogAtomicService;
 
 /**
  * Matrix.java
@@ -60,6 +61,7 @@ public class MatrixMultNaive extends AtomicService{
 	customProperties.put("Cost", 2);
 	customProperties.put("Complexity", 3);
 	customProperties.put("ResponseTime", 5);
+	//matrix.setServiceBehavior(new LogAtomicService());
 	matrix.startService();
 	matrix.register();
     }
