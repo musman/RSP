@@ -367,9 +367,9 @@ public abstract class AbstractService implements MessageListener {
     protected Configuration configuration;
     
     public Configuration getConfiguration() {
-	return configuration;
+    	return this.configuration;
     }
     
-    abstract protected boolean readConfiguration();
+    abstract protected void readConfiguration();
     
 }

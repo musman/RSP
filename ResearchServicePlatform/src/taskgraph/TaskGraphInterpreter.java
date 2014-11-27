@@ -377,7 +377,9 @@ public class TaskGraphInterpreter {
 		if (call.getServiceName().equalsIgnoreCase("this")) {
 		    resultInvoke = invokeLocalOperation(call.getOperationName(), params);
 		} else {
+			
 		    resultInvoke = invokeServiceOperation(call.getServiceName(), call.getOperationName(), params);
+		    
 		}
 
 		call.setValue(resultInvoke);
@@ -575,13 +577,17 @@ public class TaskGraphInterpreter {
 
 	// remove failed services
 	if (compositeService.getBehavior() != null)
-	    compositeService.getBehavior().onServicesSelected(services);
+	   	compositeService.getBehavior().onServicesSelected(services);
 
 	// Apply strategy
 	ServiceDescription service = applyQoSRequirement(qosRequirement, services);
 
 	System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:" + service.getCustomProperties());
 
+	
+	if (compositeService.getProbe() != null)
+	    compositeService.getProbe().serviceStarted(service, operationName, params);
+	
 	// Calculate response time
 	int maxResponseTime = compositeService.getConfiguration().maxResponseTime;
 	int serviceResponseTime = service.getResponseTime();
@@ -590,11 +596,10 @@ public class TaskGraphInterpreter {
 	
 	if (actualResponseTime > 0) {    
 	    do {
-
 		resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, actualResponseTime, operationName, params);
 		if (resultVal instanceof TimeOutError) {
 		    if (compositeService.getProbe() != null)
-			compositeService.getProbe().timeout(service);
+		    	compositeService.getProbe().timeout(service, operationName, params);
 		    service = compositeService.getBehavior().onTimeout(service);
 		}
 	    } while (resultVal instanceof TimeOutError);
@@ -605,6 +610,7 @@ public class TaskGraphInterpreter {
 	
 	if (compositeService.getProbe() != null)
 	    compositeService.getProbe().serviceExecuted(service, resultVal, operationName, params);
+	
 	return resultVal;
 
     }

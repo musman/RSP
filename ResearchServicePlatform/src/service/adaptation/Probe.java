@@ -11,10 +11,9 @@ import service.auxiliary.ServiceDescription;
  *
  */
 public interface Probe {
-	public void timeout(ServiceDescription serviceSelected);
-	public void serviceExecuted(ServiceDescription serviceSelected, Object result, String opName, Object params[]);
-	//public void workflowExecuteStarted();
-	//public void workflowExecuteEnded();
-	public void compositeServiceStarted(String qosRequirementName, Object params[]);
-	public void compositeServiceEnded(Object result);
+	public void timeout(ServiceDescription service, String opName, Object[] params);
+	public void serviceStarted(ServiceDescription service, String opName, Object[] params);
+	public void serviceExecuted(ServiceDescription service, Object result, String opName, Object[] params);
+	public void workflowStarted(String qosRequirement, Object[] params);
+	public void workflowEnded(Object result,String qosRequirement,Object[] params);
 }

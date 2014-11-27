@@ -66,20 +66,18 @@ public abstract class AtomicService extends AbstractService {
     }
     
     @Override
-    protected boolean readConfiguration(){
+    protected void readConfiguration(){
   	try {
   	    Annotation annotation = this.getClass().getAnnotation(AtomicServiceConfiguration.class);
-
-  	    if (annotation instanceof AtomicServiceConfiguration) {
-  		AtomicServiceConfiguration CSConfiguration = (AtomicServiceConfiguration) annotation;
-  		this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize());
-  		return true;
+  	    if (annotation!=null && annotation instanceof AtomicServiceConfiguration) {
+  	    	AtomicServiceConfiguration CSConfiguration = (AtomicServiceConfiguration) annotation;
+  	    	this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize());
   	    }
-
+  	    else
+  	    	this.configuration = new Configuration(false,1,0);
   	} catch (Exception e) {
   	    e.printStackTrace();
   	}
-  	return false;
       }
 
 }

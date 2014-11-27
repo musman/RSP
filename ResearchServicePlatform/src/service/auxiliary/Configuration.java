@@ -38,6 +38,18 @@ public class Configuration {
 	this.maxNoOfThreads = maxNoOfThreads;
 	this.maxQueueSize = maxQueueSize;
     }
+    
+    /*
+    public Configuration(){
+    	this.MultipleThreads = false;
+    	this.maxNoOfThreads = 1;
+    	this.maxQueueSize = 0;
+    	this.maxResponseTime = 0;
+    	SDCacheMode = false;
+    	SDCacheShared = false;
+    	SDCacheTimeout = 0;
+    	SDCacheSize = 0;
+    }*/
 
     public boolean MultipleThreads;
     public int maxNoOfThreads;

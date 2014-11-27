@@ -22,7 +22,6 @@ public class CompositeService extends AbstractService {
     Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
     CompositeServiceBehavior behavior;
     Probe probe = null;
-    public Configuration configuration;
     SDCache cache;
 
     protected SDCache getCache() {
@@ -30,24 +29,24 @@ public class CompositeService extends AbstractService {
     }
 
     @Override
-    protected boolean readConfiguration() {
+    protected void readConfiguration() {
 	try {
 	    Annotation annotation = this.getClass().getAnnotation(CompositeServiceConfiguration.class);
-
-	    if (annotation instanceof CompositeServiceConfiguration) {
-		CompositeServiceConfiguration CSConfiguration = (CompositeServiceConfiguration) annotation;
-		this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize(),
+	    if(annotation!=null && annotation instanceof CompositeServiceConfiguration){
+	 		CompositeServiceConfiguration CSConfiguration = (CompositeServiceConfiguration) annotation;
+	 		this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize(),
 			CSConfiguration.MaxResponseTime(), CSConfiguration.SDCacheMode(), CSConfiguration.SDCacheShared(), CSConfiguration.SDCacheTimeout(),
 			CSConfiguration.SDCacheSize());
-		// System.out.println("MaxNoOfThreads: " + configuration.maxNoOfThreads);
-		return true;
 	    }
-
+	    else{
+	    	this.configuration=new Configuration(false,1,0,0,false,false,0,0);
+	    	//System.out.println(this.configuration.maxResponseTime);
+	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	return false;
     }
+
 
     /**
      * @return the probe
@@ -95,12 +94,12 @@ public class CompositeService extends AbstractService {
 	WorkflowEngine engine = new WorkflowEngine(this, sdCache);
 
 	if (probe != null)
-	    probe.compositeServiceStarted(qosRequirementName, params);
+	    probe.workflowStarted(qosRequirementName, params);
 
 	Object result = engine.executeWorkflow(workflow, qosRequirement, params);
 
 	if (probe != null)
-	    probe.compositeServiceEnded(result);
+	    probe.workflowEnded(result, qosRequirementName, params);
 
 	return result;
 
