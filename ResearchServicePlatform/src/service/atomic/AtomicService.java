@@ -11,7 +11,7 @@ import service.provider.AbstractService;
 
 public abstract class AtomicService extends AbstractService {
 		
-	private AtomicServiceBehavior serviceBehavior=null;
+	private ExtraBehavior extraBehavior=null;
 	
     public AtomicService(String serviceName, String serviceEndpoint, int responseTime) {
     	super(serviceName, serviceEndpoint,responseTime);
@@ -21,12 +21,12 @@ public abstract class AtomicService extends AbstractService {
     	super(serviceName, serviceEndpoint);
     }
     
-    public AtomicServiceBehavior getServiceBehavior() {
-		return serviceBehavior;
+    public ExtraBehavior getServiceBehavior() {
+		return extraBehavior;
 	}
     
-    public void setServiceBehavior(AtomicServiceBehavior serviceBehavior) {
-		this.serviceBehavior = serviceBehavior;
+    public void setServiceBehavior(ExtraBehavior serviceBehavior) {
+		this.extraBehavior = serviceBehavior;
 	}
     
     @Override
@@ -44,11 +44,11 @@ public abstract class AtomicService extends AbstractService {
     				args[i] = params[i].getValue();
     			    }
     			        			    
-    			    boolean flag = serviceBehavior != null? serviceBehavior.preInvokeOperation(opName, args): true;
+    			    boolean flag = extraBehavior != null? extraBehavior.preInvokeOperation(opName, args): true;
     			    Object result;
     			    if (flag){
     			    	result = operation.invoke(this, args);
-    			    	Object mResult = serviceBehavior != null? serviceBehavior.postInvokeOperation(opName, result, args):result;
+    			    	Object mResult = extraBehavior != null? extraBehavior.postInvokeOperation(opName, result, args):result;
     			    	return mResult;
     			    }
     			    else{

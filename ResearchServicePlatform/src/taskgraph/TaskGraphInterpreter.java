@@ -379,7 +379,8 @@ public class TaskGraphInterpreter {
 		} else {
 			
 		    resultInvoke = invokeServiceOperation(call.getServiceName(), call.getOperationName(), params);
-		    
+		    if(resultInvoke instanceof TimeOutError)
+		    	return resultInvoke;
 		}
 
 		call.setValue(resultInvoke);
@@ -575,10 +576,6 @@ public class TaskGraphInterpreter {
 	    throw new RuntimeException(serviceName + "." + operationName + "not found!");
 	}
 
-	// remove failed services
-	if (compositeService.getBehavior() != null)
-	   	compositeService.getBehavior().onServicesSelected(services);
-
 	// Apply strategy
 	ServiceDescription service = applyQoSRequirement(qosRequirement, services);
 
@@ -586,7 +583,7 @@ public class TaskGraphInterpreter {
 
 	
 	if (compositeService.getProbe() != null)
-	    compositeService.getProbe().serviceStarted(service, operationName, params);
+	    compositeService.getProbe().serviceOperationInvoked(service, operationName, params);
 	
 	// Calculate response time
 	int maxResponseTime = compositeService.getConfiguration().maxResponseTime;
@@ -595,24 +592,20 @@ public class TaskGraphInterpreter {
 	Object resultVal;
 	
 	if (actualResponseTime > 0) {    
-	    do {
 		resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, actualResponseTime, operationName, params);
 		if (resultVal instanceof TimeOutError) {
 		    if (compositeService.getProbe() != null)
 		    	compositeService.getProbe().timeout(service, operationName, params);
-		    service = compositeService.getBehavior().onTimeout(service);
 		}
-	    } while (resultVal instanceof TimeOutError);
 	}
 	else{
 	    resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, operationName, params);
 	}
 	
 	if (compositeService.getProbe() != null)
-	    compositeService.getProbe().serviceExecuted(service, resultVal, operationName, params);
+	    compositeService.getProbe().serviceOperationReturned(service, resultVal, operationName, params);
 	
 	return resultVal;
-
     }
 
     public Object invokeLocalOperation(String operationName, Object[] params) {

@@ -20,7 +20,6 @@ public class CompositeService extends AbstractService {
 
     String workflow;
     Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
-    CompositeServiceBehavior behavior;
     Probe probe = null;
     SDCache cache;
 
@@ -40,7 +39,6 @@ public class CompositeService extends AbstractService {
 	    }
 	    else{
 	    	this.configuration=new Configuration(false,1,0,0,false,false,0,0);
-	    	//System.out.println(this.configuration.maxResponseTime);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -103,14 +101,6 @@ public class CompositeService extends AbstractService {
 
 	return result;
 
-    }
-
-    public CompositeServiceBehavior getBehavior() {
-	return behavior;
-    }
-
-    public void setBehavior(CompositeServiceBehavior behavior) {
-	this.behavior = behavior;
     }
 
     @Override
