@@ -29,6 +29,7 @@ import service.auxiliary.AbstractMessage;
 import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.Configuration;
 import service.auxiliary.Operation;
+import service.auxiliary.OperationAborted;
 import service.auxiliary.Param;
 import service.auxiliary.Request;
 import service.auxiliary.Response;
@@ -248,6 +249,8 @@ public abstract class AbstractService implements MessageListener {
 							//System.out.println(request.getOpName());
 							Object result =invokeOperation(request.getOpName(),request.getParams());
 
+							if(result instanceof OperationAborted)
+								return;
 							//Object result =callOperation(request.getOpName(),request.getParams());
 
 							//System.out.println(Object[].class);

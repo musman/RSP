@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import service.auxiliary.AtomicServiceConfiguration;
 import service.auxiliary.Configuration;
+import service.auxiliary.OperationAborted;
 import service.auxiliary.Param;
 import service.auxiliary.ServiceOperation;
 import service.provider.AbstractService;
@@ -52,7 +53,8 @@ public abstract class AtomicService extends AbstractService {
     			    	return mResult;
     			    }
     			    else{
-    			    	return null;
+    			    	//return null;
+    			    	return new OperationAborted(null);
     			    }
     			}
     		    }
