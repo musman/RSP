@@ -5,10 +5,16 @@ import java.io.File;
 import se.lnu.math.matrix.composite.qosrequirements.MinCostQoS;
 import se.lnu.math.matrix.composite.qosrequirements.MinCostAndResponseTime;
 import se.lnu.math.matrix.composite.qosrequirements.MinResponseTimeQoS;
+import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.LocalOperation;
 import service.composite.CompositeService;
 import service.utility.LogFailure;
 
+@CompositeServiceConfiguration(
+	MultipeThreads = true,
+	MaxNoOfThreads = 4,
+	MaxQueueSize = 100
+)
 public class MatrixCompositeService extends CompositeService{
 
     public MatrixCompositeService(String serviceName, String serviceEndpoint,

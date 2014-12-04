@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface CompositeServiceConfiguration{
     
     public boolean MultipeThreads() default false;
-    public int MaxNoOfThreads() default 1;
+    public int MaxNoOfThreads() default -1;
     public int MaxQueueSize() default 0;
     
     public int MaxResponseTime() default 0;

@@ -23,9 +23,7 @@ public class Configuration {
      */
     public Configuration(boolean multipleThreads, int maxNoOfThreads, int maxQueueSize, int maxResponseTime, boolean sDCacheMode, boolean sDCacheShared, int sDCacheTimeout,
 	    int sDCacheSize) {
-	this.MultipleThreads = multipleThreads;
-	this.maxNoOfThreads = maxNoOfThreads;
-	this.maxQueueSize = maxQueueSize;
+	this(multipleThreads, maxNoOfThreads, maxQueueSize);
 	this.maxResponseTime = maxResponseTime;
 	SDCacheMode = sDCacheMode;
 	SDCacheShared = sDCacheShared;
@@ -37,6 +35,9 @@ public class Configuration {
 	this.MultipleThreads = multipleThreads;
 	this.maxNoOfThreads = maxNoOfThreads;
 	this.maxQueueSize = maxQueueSize;
+	if (maxNoOfThreads == -1 && MultipleThreads == true){
+	    maxNoOfThreads = Runtime.getRuntime().availableProcessors();
+	}
     }
     
     /*

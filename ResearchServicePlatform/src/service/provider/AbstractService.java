@@ -1,11 +1,12 @@
 package service.provider;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jms.Connection;
@@ -26,7 +27,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import service.auxiliary.AbstractMessage;
-import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.Configuration;
 import service.auxiliary.Operation;
 import service.auxiliary.OperationAborted;
@@ -50,8 +50,8 @@ public abstract class AbstractService implements MessageListener {
     Map<Integer, Object> results = new ConcurrentHashMap<Integer, Object>();
     ServiceDescription serviceDescription;
     private Object NullObject = new Object();
-    
-    //private AtomicServiceBehavior serviceBehavior;
+    ExecutorService executors;
+    // private AtomicServiceBehavior serviceBehavior;
 
     public static final boolean DEBUG = false;
 
@@ -61,17 +61,17 @@ public abstract class AbstractService implements MessageListener {
 	    queueConnectingFactory = (QueueConnectionFactory) initContext.lookup("ConnectionFactory");
 	    this.serviceName = serviceName;
 	    this.serviceEndpoint = serviceEndpoint;
-	    serviceDescription =new ServiceDescription(serviceName, serviceEndpoint);
+	    serviceDescription = new ServiceDescription(serviceName, serviceEndpoint);
 	    readConfiguration();
-	    
+	    applyConfiguration();
 	} catch (NamingException e) {
 	    e.printStackTrace();
 	}
     }
-    
-    public AbstractService(String serviceName, String serviceEndpoint,int responseTime) {
+
+    public AbstractService(String serviceName, String serviceEndpoint, int responseTime) {
 	this(serviceName, serviceEndpoint);
-	serviceDescription =new ServiceDescription(serviceName, serviceEndpoint,responseTime);
+	serviceDescription = new ServiceDescription(serviceName, serviceEndpoint, responseTime);
     }
 
     private void sendMessage(String msgText, Destination destination) {
@@ -81,15 +81,15 @@ public abstract class AbstractService implements MessageListener {
 	    QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 	    MessageProducer sender = session.createProducer(destination);
 	    sender.send(session.createTextMessage(msgText));
-	    
-	    //messageCount.incrementAndGet();
+
+	    // messageCount.incrementAndGet();
 	    connection.close();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
     }
 
-    public Object sendRequest(String service, String destination, boolean reply, String opName,Object... params) {
+    public Object sendRequest(String service, String destination, boolean reply, String opName, Object... params) {
 	try {
 	    // System.out.println(destination);
 	    // System.out.println(address);
@@ -98,7 +98,7 @@ public abstract class AbstractService implements MessageListener {
 	    Request request = new Request(messageID, "dynamicQueues/" + this.serviceEndpoint, service, opName, params);
 	    XMLBuilder build = new XMLBuilder();
 	    String requestMessage = build.toXML(request);
-	    
+
 	    Queue queue = (Queue) initContext.lookup("dynamicQueues/" + destination);
 	    this.sendMessage(requestMessage, queue);
 
@@ -114,7 +114,7 @@ public abstract class AbstractService implements MessageListener {
 		}
 		Object result = results.get(messageID);
 		results.remove(messageID);
-		return result != NullObject? result : null;
+		return result != NullObject ? result : null;
 	    }
 	    return null;
 	} catch (Exception e) {
@@ -123,7 +123,7 @@ public abstract class AbstractService implements MessageListener {
 	}
     }
 
-    public Object sendRequest(String service, String destination, boolean reply, long responseTime, String opName,Object... params) {
+    public Object sendRequest(String service, String destination, boolean reply, long responseTime, String opName, Object... params) {
 	try {
 	    // System.out.println(destination);
 	    // System.out.println(address);
@@ -132,7 +132,7 @@ public abstract class AbstractService implements MessageListener {
 	    Request request = new Request(messageID, "dynamicQueues/" + this.serviceEndpoint, service, opName, params);
 	    XMLBuilder build = new XMLBuilder();
 	    String requestMessage = build.toXML(request);
-	    
+
 	    Queue queue = (Queue) initContext.lookup("dynamicQueues/" + destination);
 	    this.sendMessage(requestMessage, queue);
 
@@ -141,25 +141,25 @@ public abstract class AbstractService implements MessageListener {
 
 	    if (reply) {
 		synchronized (this) {
-			long startTime=System.currentTimeMillis();
-			//System.out.println(responseTime);
-			//double time=System.currentTimeMillis()+responseTime*1000.0;
-			//System.out.println(time);
-			//System.out.println(startTime);
-			//System.out.println(System.currentTimeMillis());
+		    long startTime = System.currentTimeMillis();
+		    // System.out.println(responseTime);
+		    // double time=System.currentTimeMillis()+responseTime*1000.0;
+		    // System.out.println(time);
+		    // System.out.println(startTime);
+		    // System.out.println(System.currentTimeMillis());
 		    while (!results.containsKey(messageID)) {
-		    	this.wait(responseTime * 1000);
-		    	//System.out.println(time);
-		    	long endTime=System.currentTimeMillis();
-		    	if((endTime-startTime)/1000.0 >= responseTime){
-		    		//System.out.println("time out");
-		    		results.put(messageID, new TimeOutError());
-		    	}
+			this.wait(responseTime * 1000);
+			// System.out.println(time);
+			long endTime = System.currentTimeMillis();
+			if ((endTime - startTime) / 1000.0 >= responseTime) {
+			    // System.out.println("time out");
+			    results.put(messageID, new TimeOutError());
+			}
 		    }
 		}
 		Object result = results.get(messageID);
 		results.remove(messageID);
-		return result != NullObject? result : null;
+		return result != NullObject ? result : null;
 	    }
 	    return null;
 	} catch (Exception e) {
@@ -167,7 +167,7 @@ public abstract class AbstractService implements MessageListener {
 	    return null;
 	}
     }
-    
+
     private void sendResponse(int requestID, Object result, Destination destination) {
 	Response response = new Response(messageCount.incrementAndGet(), requestID, this.serviceEndpoint, result);
 	XMLBuilder build = new XMLBuilder();
@@ -240,41 +240,39 @@ public abstract class AbstractService implements MessageListener {
 		    System.out.println("Receiving the request: \n" + msgText);
 		final Request request = (Request) msg;
 		// if (request.serviceName.equals(serviceName)) {
-				new Thread(new Runnable() {
+		executors.submit(new Callable<Object>() {
 
-					@Override
-					public void run() {
-						try {
+		    @Override
+		    public Object call() throws Exception {
+			try {
 
-							//System.out.println(request.getOpName());
-							Object result =invokeOperation(request.getOpName(),request.getParams());
+			    // System.out.println(request.getOpName());
+			    Object result = invokeOperation(request.getOpName(), request.getParams());
 
-							if(result instanceof OperationAborted)
-								return;
-							//Object result =callOperation(request.getOpName(),request.getParams());
+			    if (result instanceof OperationAborted)
+				return null;
+			    // Object result =callOperation(request.getOpName(),request.getParams());
 
-							//System.out.println(Object[].class);
-							//System.out.println(this.getClass().getMethod("invokeAtomicService",Object[].class));
-							
-							if (destination != null) {
-								Queue queue = (Queue) initContext
-										.lookup(destination);
-								sendResponse(requestID, result, queue);
-							} else {
-								sendResponse(requestID, result,
-										message.getJMSReplyTo());
-								// this.sendResponseToClient(message,
-								// result);
+			    // System.out.println(Object[].class);
+			    // System.out.println(this.getClass().getMethod("invokeAtomicService",Object[].class));
 
-							}
+			    if (destination != null) {
+				Queue queue = (Queue) initContext.lookup(destination);
+				sendResponse(requestID, result, queue);
+			    } else {
+				sendResponse(requestID, result, message.getJMSReplyTo());
+				// this.sendResponseToClient(message,
+				// result);
 
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					
-				}).start();
-		// }
+			    }
+
+			} catch (Exception e) {
+			    e.printStackTrace();
+			}
+
+			return null;
+		    }
+		});
 		break;
 	    }
 	    case "response": {
@@ -303,38 +301,22 @@ public abstract class AbstractService implements MessageListener {
 	}
     }
 
-   /*
-    private Object callOperation(String opName, Param... params) {
-	// System.out.println(this.getClass().getMethods().length);
-    	
-	for (Method operation : this.getClass().getMethods()) {
-	    if (operation.getAnnotation(ServiceOperation.class) != null) {
-		try {
-			
-		    if (operation.getName().equals(opName)) {
-		    	
-			Class<?>[] paramTypes = operation.getParameterTypes();
-			int size = paramTypes.length;
-			if (size == params.length) {
-			    Object[] args = new Object[size];
-			    for (int i = 0; i < size; i++) {
-				args[i] = params[i].getValue();
-			    }
-			    return operation.invoke(this, args);
-			}    
-			}
-		} catch (Exception e) {
-		    e.printStackTrace();
-		    System.out.println("The operation name or params are not valid. Please check and send again!");
-		}		
-	    }
-	}
-    	
-	return null;
-    }*/
+    /*
+     * private Object callOperation(String opName, Param... params) { // System.out.println(this.getClass().getMethods().length);
+     * 
+     * for (Method operation : this.getClass().getMethods()) { if (operation.getAnnotation(ServiceOperation.class) != null) { try {
+     * 
+     * if (operation.getName().equals(opName)) {
+     * 
+     * Class<?>[] paramTypes = operation.getParameterTypes(); int size = paramTypes.length; if (size == params.length) { Object[] args = new Object[size]; for (int i = 0; i < size;
+     * i++) { args[i] = params[i].getValue(); } return operation.invoke(this, args); } } } catch (Exception e) { e.printStackTrace();
+     * System.out.println("The operation name or params are not valid. Please check and send again!"); } } }
+     * 
+     * return null; }
+     */
 
     abstract public Object invokeOperation(String opName, Param[] args);
-    
+
     public void register() {
 	List<Operation> opList = new ArrayList<Operation>();
 	for (Method operation : this.getClass().getMethods()) {
@@ -356,7 +338,7 @@ public abstract class AbstractService implements MessageListener {
     }
 
     public void unRegister() {
-    	this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "unRegister", this.serviceDescription.getRegisterID());
+	this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "unRegister", this.serviceDescription.getRegisterID());
     }
 
     public ServiceDescription getServiceDescription() {
@@ -366,13 +348,20 @@ public abstract class AbstractService implements MessageListener {
     public void setServiceDescription(ServiceDescription serviceDescription) {
 	this.serviceDescription = serviceDescription;
     }
-    
+
     protected Configuration configuration;
-    
+
     public Configuration getConfiguration() {
-    	return this.configuration;
+	return this.configuration;
     }
-    
+
     abstract protected void readConfiguration();
-    
+
+    protected void applyConfiguration() {
+	if (configuration.MultipleThreads == false) {
+	    executors = Executors.newSingleThreadExecutor();
+	} else {
+	    executors = Executors.newFixedThreadPool(configuration.maxNoOfThreads);
+	}
+    }
 }
