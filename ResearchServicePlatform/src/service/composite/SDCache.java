@@ -91,6 +91,9 @@ public class SDCache{
     	return false;
     }
     
+    public boolean remove(ServiceDescription service, String opName){
+    	return this.remove(service.getServiceName(), opName,service);
+    }
     
     public int size(){
     	return caches.size();
@@ -104,6 +107,18 @@ public class SDCache{
         caches.clear();
     }
 
+    public boolean update(ServiceDescription oldService, ServiceDescription newService, String opName){
+    	Description description=new Description(oldService.getServiceName(),opName);
+    	if(caches.containsKey(description)){
+    		List<ServiceDescription> services=caches.get(description);
+    		if(services.contains(oldService)){
+    			services.remove(oldService);
+    			services.add(newService);
+    			return true;
+    		}
+    	}
+    	return false;
+    }
     
     class Description{
 		String serviceName;

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import service.adaptation.Effector;
 import service.adaptation.Probe;
 import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.Configuration;
@@ -21,9 +22,24 @@ public class CompositeService extends AbstractService {
     String workflow;
     Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
     Probe probe = null;
-    SDCache cache;
+    Effector efffector=null;
+    /**
+	 * @return the efffector
+	 */
+	public Effector getEfffector() {
+		return efffector;
+	}
 
-    protected SDCache getCache() {
+	/**
+	 * @param efffector the efffector to set
+	 */
+	public void setEfffector(Effector efffector) {
+		this.efffector = efffector;
+	}
+
+	SDCache cache;
+
+    public SDCache getCache() {
 	return cache;
     }
 
