@@ -599,7 +599,7 @@ public class TaskGraphInterpreter {
 	else 
 	    actualResponseTime = serviceResponseTime < maxResponseTime ? serviceResponseTime : maxResponseTime;*/
 	
-	int maxResponseTime=compositeService.getConfiguration().maxResponseTime;
+	int maxResponseTime=compositeService.getConfiguration().timeout;
 	Object resultVal;
 	
 	do{

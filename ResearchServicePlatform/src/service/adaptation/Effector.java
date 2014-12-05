@@ -55,6 +55,6 @@ public class Effector {
 	}
 	
 	public void changeMaxResponseTime(int maxResponseTime){
-		compositeService.getConfiguration().maxResponseTime=maxResponseTime;
+		compositeService.getConfiguration().timeout=maxResponseTime;
 	}
 }

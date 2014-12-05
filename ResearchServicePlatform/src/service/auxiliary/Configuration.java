@@ -24,7 +24,7 @@ public class Configuration {
     public Configuration(boolean multipleThreads, int maxNoOfThreads, int maxQueueSize, int maxResponseTime, boolean sDCacheMode, boolean sDCacheShared, int sDCacheTimeout,
 	    int sDCacheSize) {
 	this(multipleThreads, maxNoOfThreads, maxQueueSize);
-	this.maxResponseTime = maxResponseTime;
+	this.timeout = maxResponseTime;
 	SDCacheMode = sDCacheMode;
 	SDCacheShared = sDCacheShared;
 	SDCacheTimeout = sDCacheTimeout;
@@ -55,7 +55,7 @@ public class Configuration {
     public boolean MultipleThreads;
     public int maxNoOfThreads;
     public int maxQueueSize;
-    public int maxResponseTime;
+    public int timeout;
     public boolean SDCacheMode;
     public boolean SDCacheShared;
     public int SDCacheTimeout;

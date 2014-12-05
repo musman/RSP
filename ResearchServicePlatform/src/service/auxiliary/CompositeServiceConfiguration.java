@@ -13,7 +13,7 @@ public @interface CompositeServiceConfiguration{
     public int MaxNoOfThreads() default -1;
     public int MaxQueueSize() default 0;
     
-    public int MaxResponseTime() default 0;
+    public int Timeout() default 0;
     public boolean SDCacheMode() default false;
     public boolean SDCacheShared() default false;
     public int SDCacheTimeout() default 0;
