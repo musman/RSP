@@ -3,8 +3,7 @@
  */
 package service.adaptation;
 
-import java.util.List;
-
+import service.auxiliary.Operation;
 import service.auxiliary.ServiceDescription;
 import service.composite.CompositeService;
 
@@ -34,6 +33,11 @@ public class Effector {
 		this.compositeService = compositeService;
 	}
 	
+	public void removeService(ServiceDescription service){
+		for(Operation operation: service.getOperationList())
+			compositeService.getCache().remove(service,operation.getOpName());
+	}
+	
 	public void removeService(ServiceDescription service,String opName){
 		compositeService.getCache().remove(service,opName);
 	}
@@ -44,5 +48,13 @@ public class Effector {
 	
 	public void updateServiceDescription(ServiceDescription oldService,ServiceDescription newService,String opName){
 		compositeService.getCache().update(oldService, newService, opName);
+	}
+	
+	public void updateWrokflow(String workflow){
+		compositeService.setWorkflow(workflow);
+	}
+	
+	public void changeMaxResponseTime(int maxResponseTime){
+		compositeService.getConfiguration().maxResponseTime=maxResponseTime;
 	}
 }

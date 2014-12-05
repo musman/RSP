@@ -55,7 +55,7 @@ public class ServiceDescription {
 
 	public boolean containsOperation(String opName){
 		for(int i=0;i<opList.size();i++){
-			if(opList.get(i).opName.equals(opName))
+			if(opList.get(i).getOpName().equals(opName))
 				return true;
 		}
 		return false;
@@ -63,7 +63,7 @@ public class ServiceDescription {
 	
 	public Operation getOperation(String opName){
 	    for(int i=0;i<opList.size();i++){
-		if(opList.get(i).opName.equals(opName)){
+		if(opList.get(i).getOpName().equals(opName)){
 		    return opList.get(i);
 		}
 	    }

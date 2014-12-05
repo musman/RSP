@@ -20,7 +20,15 @@ import service.workflow.WorkflowEngine;
 public class CompositeService extends AbstractService {
 
     String workflow;
-    Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
+
+	/**
+	 * @param workflow the workflow to set
+	 */
+	public void setWorkflow(String workflow) {
+		this.workflow = workflow;
+	}
+
+	Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
     Probe probe = null;
     Effector efffector=null;
     /**

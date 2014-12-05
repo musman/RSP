@@ -321,11 +321,11 @@ public abstract class AbstractService implements MessageListener {
 	List<Operation> opList = new ArrayList<Operation>();
 	for (Method operation : this.getClass().getMethods()) {
 	    if (operation.getAnnotation(ServiceOperation.class) != null) {
-		Operation op = new Operation();
-		op.opName = operation.getName();
+		Operation op = new Operation(operation.getName(),operation.getParameterTypes(),operation.getReturnType().getName());
+		//op.opName = operation.getName();
 		// System.out.println(op.opName);
-		op.paramTypes = operation.getParameterTypes();
-		op.returnType = operation.getReturnType().getName();
+		//op.paramTypes = operation.getParameterTypes();
+		//op.returnType = operation.getReturnType().getName();
 		opList.add(op);
 	    }
 	}
