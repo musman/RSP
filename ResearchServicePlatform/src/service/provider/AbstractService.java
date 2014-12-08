@@ -203,6 +203,7 @@ public abstract class AbstractService implements MessageListener {
 	}
     }
 
+    /*
     public void sendResponseToClient(Message message, Object result) {
 	try {
 	    Response response = new Response(messageCount.get(), -1, this.serviceEndpoint, result);
@@ -221,7 +222,7 @@ public abstract class AbstractService implements MessageListener {
 	    e.printStackTrace();
 	}
 
-    }
+    }*/
 
     @Override
     public void onMessage(final Message message) {

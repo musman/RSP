@@ -7,8 +7,19 @@ public class CompositeServiceClient {
 
     AbstractServiceClient client;
     
-    public CompositeServiceClient(String serviceAddress){
-	client = new AbstractServiceClient(serviceAddress);
+    /**
+     * Automatically take care the client endpoint
+     * @param serviceEndpoint
+     */
+    public CompositeServiceClient(String serviceEndpoint){
+	client = new AbstractServiceClient(serviceEndpoint);
+    }
+    
+    /*
+     * Note: client endpoint should be unique
+     */
+    public CompositeServiceClient(String serviceEndpoint, String clientEndpoint){
+    	client = new AbstractServiceClient(serviceEndpoint, clientEndpoint);
     }
     
     public Object invokeCompositeService(String qosRequirement, Object...params){

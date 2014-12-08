@@ -8,25 +8,70 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import service.auxiliary.Response;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+
 import service.auxiliary.Request;
+import service.auxiliary.ServiceDescription;
 import service.auxiliary.XMLBuilder;
 
 public class AbstractServiceClient implements MessageListener {
     private String serviceAddress; 
-    private boolean transacted = false;
-    private static int ackMode = Session.AUTO_ACKNOWLEDGE;
+    //private boolean transacted = false;
+    //private static int ackMode = Session.AUTO_ACKNOWLEDGE;
     private MessageProducer producer;
     private Session session;
     private int messageCount = 0;
     Object result=null;
     
+    static int clientId=0;
+    String clientEndpoint;
+    InitialContext initContext;
+    QueueConnectionFactory queueConnectingFactory;
+    QueueConnection queueConnection;
     
-    public AbstractServiceClient(String serviceAddress){
+    public AbstractServiceClient(String serviceEndpoint){
+    	String clientEndpoint= serviceEndpoint + ".client" + (clientId == 0? "" : clientId);
+    	clientId++;
+    	initialize(serviceEndpoint, clientEndpoint);
+    }
+    
+    public AbstractServiceClient(String serviceEndpoint, String clientEndpoint){
+    	initialize(serviceEndpoint, clientEndpoint);
+    }
+    
+    private void initialize(String serviceEndpoint, String clientEndpoint){
+    	this.serviceAddress = serviceEndpoint;
+    	this.clientEndpoint = clientEndpoint;
+    	
+    	try {
+    	    initContext = new InitialContext();
+    	    queueConnectingFactory = (QueueConnectionFactory) initContext.lookup("ConnectionFactory");
+    	    
+    	    Queue queue = (Queue) initContext.lookup("dynamicQueues/" + clientEndpoint);
+    	    
+    	    queueConnection = queueConnectingFactory.createQueueConnection();
+    	    QueueSession session = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+
+    	    MessageConsumer receiver = session.createConsumer(queue);
+    	    receiver.setMessageListener(this);
+    	    queueConnection.start();
+
+    	} catch (Exception e) {
+    	    e.printStackTrace();
+    	}
+    	
+    	/*
 	this.setServiceAddress(serviceAddress);
 	
 	ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
@@ -42,11 +87,41 @@ public class AbstractServiceClient implements MessageListener {
             this.producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         } catch (JMSException e) {
             e.printStackTrace();
-        }
+        }*/
     }
+
     
     public synchronized Object sendRequest(String methodName, Object...params){
 	
+    	try {
+    	    Request request = new Request(0, "dynamicQueues/", clientEndpoint, methodName, params);
+    	    XMLBuilder build = new XMLBuilder();
+    	    String requestMessage = build.toXML(request);
+
+    	    Queue queue = (Queue) initContext.lookup("dynamicQueues/" + this.serviceAddress);
+
+    	    QueueConnection connection = queueConnectingFactory.createQueueConnection();
+    	    QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    	    MessageProducer sender = session.createProducer(queue);
+    	    sender.send(session.createTextMessage(requestMessage));
+
+    	    // messageCount.incrementAndGet();
+    	    connection.close();
+    	    
+    		synchronized (this) {
+    		    //while (result==null) {
+    			this.wait();
+    			// Thread.sleep(1000);
+    		   // }
+    		}
+    		return result;
+    	   
+    	} catch (Exception e) {
+    	    e.printStackTrace();
+    	    return null;
+    	}
+    	
+    	/*
 	try {
             Destination tempDest = session.createTemporaryQueue();
             MessageConsumer responseConsumer = session.createConsumer(tempDest);
@@ -94,7 +169,7 @@ public class AbstractServiceClient implements MessageListener {
 	}catch (Exception e) {
 	    e.printStackTrace();
 	    return null;
-	}
+	}*/
         
     }
 

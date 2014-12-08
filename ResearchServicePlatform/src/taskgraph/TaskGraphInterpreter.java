@@ -558,7 +558,7 @@ public class TaskGraphInterpreter {
 	return serviceDescriptions;
     }
 
-    protected ServiceDescription applyQoSRequirement(AbstractQoSRequirement qosRequirement, List<ServiceDescription> serviceDescriptions) {
+    protected ServiceDescription applyQoSRequirement(AbstractQoSRequirement qosRequirement, List<ServiceDescription> serviceDescriptions, String opName, Object...params) {
 	if (serviceDescriptions.size() == 1)
 	    return serviceDescriptions.get(0);
 	if (qosRequirement == null) {
@@ -566,7 +566,7 @@ public class TaskGraphInterpreter {
 	    System.err.println("Selecting a service randomly...");
 	    return serviceDescriptions.get(new Random().nextInt(serviceDescriptions.size()));
 	}
-	return qosRequirement.applyQoSRequirement(serviceDescriptions);
+	return qosRequirement.applyQoSRequirement(serviceDescriptions, opName, params);
     }
 
     public Object invokeServiceOperation(String serviceName, String operationName, Object[] params) {
@@ -609,7 +609,7 @@ public class TaskGraphInterpreter {
 		}
 		
 		// Apply strategy
-		ServiceDescription service = applyQoSRequirement(qosRequirement, services);
+		ServiceDescription service = applyQoSRequirement(qosRequirement, services, operationName, params);
 
 		System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:" + service.getCustomProperties());
 
