@@ -8,7 +8,7 @@ import service.workflow.AbstractQoSRequirement;
 public class MinResponseTimeQoS implements AbstractQoSRequirement {
 
     @Override
-    public ServiceDescription applyQoSRequirement(List<ServiceDescription> serviceDescriptions) {
+    public ServiceDescription applyQoSRequirement(List<ServiceDescription> serviceDescriptions, String opName, Object[] params) {
 	int minResponseTime = Integer.MAX_VALUE;
 	int index = 0;
 	int responseTime;

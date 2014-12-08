@@ -94,7 +94,7 @@ public class AbstractServiceClient implements MessageListener {
     public synchronized Object sendRequest(String methodName, Object...params){
 	
     	try {
-    	    Request request = new Request(0, "dynamicQueues/", clientEndpoint, methodName, params);
+    	    Request request = new Request(0, "dynamicQueues/"+clientEndpoint, clientEndpoint, methodName, params);
     	    XMLBuilder build = new XMLBuilder();
     	    String requestMessage = build.toXML(request);
 
