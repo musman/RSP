@@ -622,6 +622,8 @@ public class TaskGraphInterpreter {
 		if (resultVal instanceof TimeOutError) {
 		    if (compositeService.getProbe() != null)
 		    	compositeService.getProbe().serviceOperationTimeout(service, operationName, params);
+		    else
+		    	break;
 		}
 		
 		if (!(resultVal instanceof TimeOutError) && compositeService.getProbe() != null)
