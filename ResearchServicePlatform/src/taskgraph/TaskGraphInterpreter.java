@@ -599,7 +599,7 @@ public class TaskGraphInterpreter {
 	else 
 	    actualResponseTime = serviceResponseTime < maxResponseTime ? serviceResponseTime : maxResponseTime;*/
 	
-	int maxResponseTime=compositeService.getConfiguration().timeout;
+    int timeout=compositeService.getConfiguration().timeout;
 	Object resultVal;
 	
 	do{
@@ -616,6 +616,7 @@ public class TaskGraphInterpreter {
 		if (compositeService.getProbe() != null)
 		    compositeService.getProbe().serviceOperationInvoked(service, operationName, params);
 		
+		int maxResponseTime=timeout!=0?timeout:service.getResponseTime();
 		resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, maxResponseTime, operationName, params);
 		
 		if (resultVal instanceof TimeOutError) {
