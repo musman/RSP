@@ -50,11 +50,11 @@ public class Effector {
 		compositeService.getCache().update(oldService, newService, opName);
 	}
 	
-	public void updateWrokflow(String workflow){
+	public void updateWorkflow(String workflow){
 		compositeService.setWorkflow(workflow);
 	}
 	
-	public void changeMaxResponseTime(int maxResponseTime){
-		compositeService.getConfiguration().timeout=maxResponseTime;
+	public void changeTimeout(int timeout){
+		compositeService.getConfiguration().timeout=timeout;
 	}
 }
