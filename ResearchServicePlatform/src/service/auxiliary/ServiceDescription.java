@@ -1,8 +1,14 @@
 package service.auxiliary;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 
-public class ServiceDescription {
+
+public class ServiceDescription implements Serializable{
     
     public static final String RESPONSE_TIME = "ResponseTime";
     
@@ -12,6 +18,84 @@ public class ServiceDescription {
 	
 	private HashMap<String, Object> customProperties = new HashMap<String, Object>();
 	private List<Operation> opList=new ArrayList<Operation>();
+	
+	/*
+	@Override
+	public Object clone(){
+		ServiceDescription service=new ServiceDescription(this.serviceName,this.serviceEndpoint);
+		service.registerID=this.registerID;
+				
+		for(int i=0;i<opList.size();i++){
+			Operation op=opList.get(i);
+			Operation operation=new Operation(op.getOpName(),op.getParamTypes(),op.getReturnType());
+			service.getOperationList().add(operation);
+		}
+		
+		for (Map.Entry<String, Object> entry : customProperties.entrySet()) {
+		    String key = entry.getKey();
+		    Object value = entry.getValue();
+		    service.customProperties.put(key, value);
+		}
+		
+		return service;		
+	}*/
+	
+	  public Object clone() {   
+		    ObjectInputStream is = null; 
+		    ObjectOutputStream os = null; 
+		    try{ 
+		      ByteArrayOutputStream bos = new 
+		      ByteArrayOutputStream(); 
+		      os = new ObjectOutputStream(bos);   
+		      os.writeObject(this);    
+		      ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray()); 
+		      is = new ObjectInputStream(bin);   
+		      Object clone = is.readObject();    
+		      return clone; 
+		    }catch (Exception ex){ex.printStackTrace();} 
+		    finally { 
+		      try { 
+		        if(os != null) os.close(); 
+		        if(is != null) is.close(); 
+		      }catch(Exception ex){} 
+		    } 
+		    return null; 
+		  } 
+
+	   
+    
+	@Override
+	public int hashCode(){
+		return serviceEndpoint.hashCode()+serviceName.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		if(obj instanceof ServiceDescription){
+			ServiceDescription service=(ServiceDescription)obj;
+			if(registerID==service.getRegisterID() && serviceEndpoint.equals(service.getServiceEndpoint())
+					&& serviceName.equals(service.getServiceName())){
+				
+				for(int i=0;i<opList.size();i++){
+					if(!opList.get(i).equals(service.getOperationList().get(i)))
+						return false;
+				}
+
+				for (Map.Entry<String, Object> entry : customProperties.entrySet()) {
+				    String key = entry.getKey();
+				    Object value = entry.getValue();
+				    if(!service.getCustomProperties().containsKey(key))
+				    	return false; 
+				    else if(!service.getCustomProperties().get(key).equals(value))
+				    	return false;
+				}
+
+				return true;
+			}
+		}
+		return false;
+	}	
+	
 	
 	public int getRegisterID() {
 	    return registerID;

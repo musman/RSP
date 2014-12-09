@@ -46,8 +46,11 @@ public class Effector {
 		compositeService.getCache().refresh();
 	}
 	
-	public void updateServiceDescription(ServiceDescription oldService,ServiceDescription newService,String opName){
-		compositeService.getCache().update(oldService, newService, opName);
+	public void updateServiceDescription(ServiceDescription oldService,ServiceDescription newService){
+		if(oldService.getRegisterID()==newService.getRegisterID()){
+			for(Operation operation: oldService.getOperationList())
+				compositeService.getCache().update(oldService, newService, operation.getOpName());
+		}
 	}
 	
 	public void updateWorkflow(String workflow){

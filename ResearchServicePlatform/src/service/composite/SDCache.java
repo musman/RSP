@@ -3,11 +3,18 @@
  */
 package service.composite;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.thoughtworks.xstream.XStream;
 
 import service.auxiliary.ServiceDescription;
 
@@ -62,14 +69,24 @@ public class SDCache{
 	public boolean add(String serviceName,String opName,List<ServiceDescription> serviceDescriptions){
 		if(maxCacheSize<=caches.size() && maxCacheSize>0)
 			return false;
-		caches.put(new Description(serviceName,opName),serviceDescriptions);
+		List<ServiceDescription> services=new ArrayList<>();
+		for(ServiceDescription serviceDescription : serviceDescriptions)
+			services.add((ServiceDescription)serviceDescription.clone());
+		
+		caches.put(new Description(serviceName,opName),services);
     	return true;
     }
     
     public List<ServiceDescription> get(String serviceName,String opName){
     	Description description=new Description(serviceName,opName);
-    	if(caches.containsKey(description))
-    		return caches.get(description);
+    	if(caches.containsKey(description)){
+    		List<ServiceDescription> services=new ArrayList<>();
+    		for(ServiceDescription serviceDescription : caches.get(description)){
+    			//System.out.println(serviceDescription);
+				services.add((ServiceDescription)serviceDescription.clone());
+    		}
+    		return services;
+    	} 	
     	return null;
     }
     
@@ -85,7 +102,12 @@ public class SDCache{
     public boolean remove(String serviceName,String opName,ServiceDescription service){
     	Description description=new Description(serviceName,opName);
     	if(caches.containsKey(description)){
-    		return caches.get(description).remove(service);
+    		List<ServiceDescription> services=caches.get(description);
+    		for(ServiceDescription s:services){
+    			if(s.equals(service)){
+    				return services.remove(s);
+    			}
+    		}
     	}
     	return false;
     }
@@ -111,8 +133,8 @@ public class SDCache{
     	if(caches.containsKey(description)){
     		List<ServiceDescription> services=caches.get(description);
     		if(services.contains(oldService)){
-    			services.remove(oldService);
-    			services.add(newService);
+    			//System.out.println(services.indexOf(oldService));
+    			services.set(services.indexOf(oldService),newService);
     			return true;
     		}
     	}
