@@ -58,11 +58,11 @@ public class CompositeService extends AbstractService {
 	    if(annotation!=null && annotation instanceof CompositeServiceConfiguration){
 	 		CompositeServiceConfiguration CSConfiguration = (CompositeServiceConfiguration) annotation;
 	 		this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize(),
-			CSConfiguration.Timeout(), CSConfiguration.SDCacheMode(), CSConfiguration.SDCacheShared(), CSConfiguration.SDCacheTimeout(),
+			CSConfiguration.Timeout(), CSConfiguration.MaxRetryAttempts(),CSConfiguration.SDCacheMode(), CSConfiguration.SDCacheShared(), CSConfiguration.SDCacheTimeout(),
 			CSConfiguration.SDCacheSize());
 	    }
 	    else{
-	    	this.configuration=new Configuration(false,1,0,0,false,false,0,0);
+	    	this.configuration=new Configuration(false,1,0,10,1,false,false,0,0);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();

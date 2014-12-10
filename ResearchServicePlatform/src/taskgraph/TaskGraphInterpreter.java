@@ -559,8 +559,6 @@ public class TaskGraphInterpreter {
     }
 
     protected ServiceDescription applyQoSRequirement(AbstractQoSRequirement qosRequirement, List<ServiceDescription> serviceDescriptions, String opName, Object...params) {
-	if (serviceDescriptions.size() == 1)
-	    return serviceDescriptions.get(0);
 	if (qosRequirement == null) {
 	    System.err.println("QoS requirement is null. To select among multiple services, a QoS requirement must have been provided.");
 	    System.err.println("Selecting a service randomly...");
@@ -601,7 +599,7 @@ public class TaskGraphInterpreter {
 	
     int timeout=compositeService.getConfiguration().timeout;
 	Object resultVal;
-	
+	int retryAttempts = 0;
 	do{
 		List<ServiceDescription> services = lookupService(serviceName, operationName);
 		if (services == null || services.size() == 0) {
@@ -622,14 +620,14 @@ public class TaskGraphInterpreter {
 		if (resultVal instanceof TimeOutError) {
 		    if (compositeService.getProbe() != null)
 		    	compositeService.getProbe().serviceOperationTimeout(service, operationName, params);
-		    else
-		    	break;
 		}
 		
 		if (!(resultVal instanceof TimeOutError) && compositeService.getProbe() != null)
 		    compositeService.getProbe().serviceOperationReturned(service, resultVal, operationName, params);
+		
+		retryAttempts++;
 	}
-	while(resultVal instanceof TimeOutError);
+	while(resultVal instanceof TimeOutError && retryAttempts < compositeService.getConfiguration().maxRetryAttempts);
 	
 	/*
 	if (actualResponseTime > 0) {    

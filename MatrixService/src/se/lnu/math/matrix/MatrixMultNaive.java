@@ -5,6 +5,7 @@ import java.util.HashMap;
 import service.atomic.AtomicService;
 import service.auxiliary.ServiceOperation;
 import service.utility.LogAtomicService;
+import service.workflow.ast.rspParser.returnStatement_return;
 
 /**
  * Matrix.java
@@ -54,7 +55,6 @@ public class MatrixMultNaive extends AtomicService{
 	return result;
     }
 
-   
     public static void main(String[] args) {
 	MatrixMultNaive matrix = new MatrixMultNaive("Matrix", "se.lnu.math.matrix.square.mult.naive");
 	HashMap customProperties = matrix.getServiceDescription().getCustomProperties();
