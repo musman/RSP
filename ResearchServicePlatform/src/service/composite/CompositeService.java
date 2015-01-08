@@ -30,19 +30,19 @@ public class CompositeService extends AbstractService {
 
 	Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
     Probe probe = null;
-    Effector efffector=null;
+    Effector effector=null;
     /**
-	 * @return the efffector
+	 * @return the effector
 	 */
-	public Effector getEfffector() {
-		return efffector;
+	public Effector getEffector() {
+		return effector;
 	}
 
 	/**
-	 * @param efffector the efffector to set
+	 * @param effector the effector to set
 	 */
-	public void setEfffector(Effector efffector) {
-		this.efffector = efffector;
+	public void setEffector(Effector effector) {
+		this.effector = effector;
 	}
 
 	SDCache cache;

@@ -3,6 +3,8 @@
  */
 package service.adaptation;
 
+import java.util.List;
+
 import service.auxiliary.Operation;
 import service.auxiliary.ServiceDescription;
 import service.composite.CompositeService;
@@ -46,6 +48,10 @@ public class Effector {
 		compositeService.getCache().refresh();
 	}
 	
+	public List<ServiceDescription> refreshCache(String serviceName){
+		return null;
+	}
+	
 	public void updateServiceDescription(ServiceDescription oldService,ServiceDescription newService){
 		if(oldService.getRegisterID()==newService.getRegisterID()){
 			for(Operation operation: oldService.getOperationList())
@@ -60,4 +66,8 @@ public class Effector {
 	public void changeTimeout(int timeout){
 		compositeService.getConfiguration().timeout=timeout;
 	}
+	
+	 public ServiceDescription serviceOperationTimeout(ServiceDescription service, String opName, Object[] params){
+	     return null;
+	 }
 }
