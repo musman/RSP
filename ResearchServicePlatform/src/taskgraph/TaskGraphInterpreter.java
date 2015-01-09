@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import service.adaptation.Effector;
 import service.auxiliary.LocalOperation;
 import service.auxiliary.ServiceDescription;
 import service.auxiliary.TimeOutError;
@@ -44,6 +45,7 @@ public class TaskGraphInterpreter {
     AbstractQoSRequirement qosRequirement;
     CompositeService compositeService;
     SDCache sdCache;
+
     /**
      * Return the whole heap
      * 
@@ -71,7 +73,7 @@ public class TaskGraphInterpreter {
     /*
      * Each template object have its own ID, which can be used to set/get data variables For global section 0 will be used
      */
-    public Object interpret(TaskGraph first, final SDCache cache,final AbstractQoSRequirement qosRequirement, final CompositeService compositeService, final Object... args) {
+    public Object interpret(TaskGraph first, final SDCache cache, final AbstractQoSRequirement qosRequirement, final CompositeService compositeService, final Object... args) {
 
 	if (first == null) {
 	    System.err.println("Interpreter received null taskgraph");
@@ -230,7 +232,14 @@ public class TaskGraphInterpreter {
 		    bExpResult = getIntValue(binaryOp.getLeft()) & getIntValue(binaryOp.getRight());
 		    break;
 		case EQUAL:
-		    bExpResult = getIntValue(binaryOp.getLeft()) == (getIntValue(binaryOp.getRight()));
+			Object leftValue = ((Expression)binaryOp.getLeft()).getValue();
+			Object rightValue = ((Expression)binaryOp.getRight()).getValue();
+			if (leftValue instanceof TimeOutError && rightValue instanceof TimeOutError)
+				bExpResult = true;
+			else if (leftValue instanceof TimeOutError || rightValue instanceof TimeOutError)
+				bExpResult = false;
+			else
+				bExpResult = getIntValue(binaryOp.getLeft()) == (getIntValue(binaryOp.getRight()));
 		    break;
 		case NOT_EQUAL:
 		    bExpResult = getIntValue(binaryOp.getLeft()) != (getIntValue(binaryOp.getRight()));
@@ -320,9 +329,15 @@ public class TaskGraphInterpreter {
 		Load load = (Load) CT;
 		Object valueLoaded = null;
 		if (!heap.containsKey(load.getVarName())) {
-		    throw new RuntimeException("Variable " + load.getVarName() + " not declared.");
+			if (load.getVarName().equalsIgnoreCase("TimeOutError")){
+				valueLoaded = new TimeOutError();
+			}
+			else
+				throw new RuntimeException("Variable " + load.getVarName() + " not declared.");
 		}
-		valueLoaded = heap.get(load.getVarName());
+		else {
+			valueLoaded = heap.get(load.getVarName());
+		}
 		((Expression) CT).setValue(valueLoaded);
 		CT = CT.getNext();
 		break;
@@ -377,9 +392,9 @@ public class TaskGraphInterpreter {
 		if (call.getServiceName().equalsIgnoreCase("this")) {
 		    resultInvoke = invokeLocalOperation(call.getOperationName(), params);
 		} else {
-			
+
 		    resultInvoke = invokeServiceOperation(call.getServiceName(), call.getOperationName(), params);
-		    if(resultInvoke instanceof TimeOutError)
+		    if (resultInvoke instanceof TimeOutError)
 		    	return resultInvoke;
 		}
 
@@ -402,7 +417,7 @@ public class TaskGraphInterpreter {
 			    TaskGraphInterpreter interpreter = new TaskGraphInterpreter();
 			    interpreter.heap = heap;
 			    interpreter.compositeService = compositeService;
-			    interpreter.interpret(task, cache,qosRequirement, compositeService, args);
+			    interpreter.interpret(task, cache, qosRequirement, compositeService, args);
 			}
 		    });
 		}
@@ -549,16 +564,10 @@ public class TaskGraphInterpreter {
      */
     public List<ServiceDescription> lookupService(String serviceName, String opName) {
 
-	List<ServiceDescription> serviceDescriptions = sdCache.get(serviceName, opName);
-	if (serviceDescriptions == null){
-	    serviceDescriptions = (List<ServiceDescription>) compositeService.sendRequest(ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true, "lookup", serviceName, opName);
-	    sdCache.add(serviceName, opName, serviceDescriptions);
-	}
-	
-	return serviceDescriptions;
+	return compositeService.lookupService(serviceName, opName);
     }
 
-    protected ServiceDescription applyQoSRequirement(AbstractQoSRequirement qosRequirement, List<ServiceDescription> serviceDescriptions, String opName, Object...params) {
+    protected ServiceDescription applyQoSRequirement(AbstractQoSRequirement qosRequirement, List<ServiceDescription> serviceDescriptions, String opName, Object... params) {
 	if (qosRequirement == null) {
 	    System.err.println("QoS requirement is null. To select among multiple services, a QoS requirement must have been provided.");
 	    System.err.println("Selecting a service randomly...");
@@ -569,81 +578,82 @@ public class TaskGraphInterpreter {
 
     public Object invokeServiceOperation(String serviceName, String operationName, Object[] params) {
 
-    	/*
-	List<ServiceDescription> services = lookupService(serviceName, operationName);
-	if (services == null || services.size() == 0) {
-	    throw new RuntimeException(serviceName + "." + operationName + "not found!");
-	}*/
+	/*
+	 * List<ServiceDescription> services = lookupService(serviceName, operationName); if (services == null || services.size() == 0) { throw new RuntimeException(serviceName +
+	 * "." + operationName + "not found!"); }
+	 */
 
 	/*
-	// Apply strategy
-	ServiceDescription service = applyQoSRequirement(qosRequirement, services);
+	 * // Apply strategy ServiceDescription service = applyQoSRequirement(qosRequirement, services);
+	 * 
+	 * System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:" +
+	 * service.getCustomProperties());
+	 * 
+	 * 
+	 * if (compositeService.getProbe() != null) compositeService.getProbe().serviceOperationInvoked(service, operationName, params);
+	 */
 
-	System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:" + service.getCustomProperties());
-
-	
-	if (compositeService.getProbe() != null)
-	    compositeService.getProbe().serviceOperationInvoked(service, operationName, params);*/
-	
 	// Calculate response time
-	
+
 	/*
-	int maxResponseTime = compositeService.getConfiguration().maxResponseTime;
-	int serviceResponseTime = service.getResponseTime();
-	
-	int actualResponseTime;
-	if (maxResponseTime == 0)
-	    actualResponseTime = serviceResponseTime;
-	else 
-	    actualResponseTime = serviceResponseTime < maxResponseTime ? serviceResponseTime : maxResponseTime;*/
-	
-    int timeout=compositeService.getConfiguration().timeout;
+	 * int maxResponseTime = compositeService.getConfiguration().maxResponseTime; int serviceResponseTime = service.getResponseTime();
+	 * 
+	 * int actualResponseTime; if (maxResponseTime == 0) actualResponseTime = serviceResponseTime; else actualResponseTime = serviceResponseTime < maxResponseTime ?
+	 * serviceResponseTime : maxResponseTime;
+	 */
+
+	int timeout = compositeService.getConfiguration().timeout;
 	Object resultVal;
 	int retryAttempts = 0;
-	do{
-		List<ServiceDescription> services = lookupService(serviceName, operationName);
-		if (services == null || services.size() == 0) {
-		    throw new RuntimeException(serviceName + "." + operationName + "not found!");
-		}
-		
-		// Apply strategy
-		ServiceDescription service = applyQoSRequirement(qosRequirement, services, operationName, params);
+	do {
+	    List<ServiceDescription> services = lookupService(serviceName, operationName);
+	    if (services == null || services.size() == 0) {
+		throw new RuntimeException(serviceName + "." + operationName + "not found!");
+	    }
 
-		System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:" + service.getCustomProperties());
+	    // Apply strategy
+	    ServiceDescription service = applyQoSRequirement(qosRequirement, services, operationName, params);
+
+	    System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:"
+		    + service.getCustomProperties());
+
+	    ServiceDescription alternateService;
+	    
+	    do {
+		alternateService = null;
 
 		if (compositeService.getProbe() != null)
 		    compositeService.getProbe().serviceOperationInvoked(service, operationName, params);
-		
-		int maxResponseTime=timeout!=0?timeout:service.getResponseTime();
+
+		int maxResponseTime = timeout != 0 ? timeout : service.getResponseTime();
 		resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, maxResponseTime, operationName, params);
-		
+
 		if (resultVal instanceof TimeOutError) {
 		    if (compositeService.getProbe() != null)
-		    	compositeService.getProbe().serviceOperationTimeout(service, operationName, params);
+			compositeService.getProbe().serviceOperationTimeout(service, operationName, params);
+		    
+		    // Check effector if there is any alternative service to pick
+		    alternateService = compositeService.getEffector().serviceOperationTimeout(service, operationName, params);
+		    if (alternateService != null) {
+			service = alternateService;
+		    }
 		}
-		
-		if (!(resultVal instanceof TimeOutError) && compositeService.getProbe() != null)
-		    compositeService.getProbe().serviceOperationReturned(service, resultVal, operationName, params);
-		
-		retryAttempts++;
-	}
-	while(resultVal instanceof TimeOutError && retryAttempts < compositeService.getConfiguration().maxRetryAttempts);
-	
+	    } while (alternateService != null);
+
+	    if (!(resultVal instanceof TimeOutError) && compositeService.getProbe() != null)
+		compositeService.getProbe().serviceOperationReturned(service, resultVal, operationName, params);
+
+	    retryAttempts++;
+	} while (resultVal instanceof TimeOutError && retryAttempts < compositeService.getConfiguration().maxRetryAttempts);
+
 	/*
-	if (actualResponseTime > 0) {    
-		resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, actualResponseTime, operationName, params);
-		if (resultVal instanceof TimeOutError) {
-		    if (compositeService.getProbe() != null)
-		    	compositeService.getProbe().serviceOperationTimeout(service, operationName, params);
-		}
-	}
-	else{
-	    resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, operationName, params);
-	}
-	
-	if (compositeService.getProbe() != null)
-	    compositeService.getProbe().serviceOperationReturned(service, resultVal, operationName, params);*/
-	
+	 * if (actualResponseTime > 0) { resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, actualResponseTime, operationName,
+	 * params); if (resultVal instanceof TimeOutError) { if (compositeService.getProbe() != null) compositeService.getProbe().serviceOperationTimeout(service, operationName,
+	 * params); } } else{ resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, operationName, params); }
+	 * 
+	 * if (compositeService.getProbe() != null) compositeService.getProbe().serviceOperationReturned(service, resultVal, operationName, params);
+	 */
+
 	return resultVal;
     }
 
