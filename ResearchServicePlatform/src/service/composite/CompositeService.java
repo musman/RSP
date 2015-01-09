@@ -12,8 +12,10 @@ import service.adaptation.Probe;
 import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.Configuration;
 import service.auxiliary.Param;
+import service.auxiliary.ServiceDescription;
 import service.auxiliary.ServiceOperation;
 import service.provider.AbstractService;
+import service.registry.ServiceRegistry;
 import service.workflow.AbstractQoSRequirement;
 import service.workflow.WorkflowEngine;
 
@@ -154,4 +156,17 @@ public class CompositeService extends AbstractService {
 	return null;
     }
 
+    /*
+     * Search through service registry to get the list of service descriptions
+     */
+    public List<ServiceDescription> lookupService(String serviceName, String opName) {
+
+	List<ServiceDescription> serviceDescriptions = cache.get(serviceName, opName);
+	if (serviceDescriptions == null){
+	    serviceDescriptions = (List<ServiceDescription>) this.sendRequest(ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true, "lookup", serviceName, opName);
+	    cache.add(serviceName, opName, serviceDescriptions);
+	}
+	
+	return serviceDescriptions;
+    }
 }

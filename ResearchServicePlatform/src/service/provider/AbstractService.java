@@ -338,6 +338,13 @@ public abstract class AbstractService implements MessageListener {
     public void unRegister() {
 	this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "unRegister", this.serviceDescription.getRegisterID());
     }
+    
+    public void updateServiceDescription() {
+    	if (serviceDescription.getRegisterID() > 0)
+    		this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "update", this.serviceDescription);
+    	else
+    		System.err.println("Service is not registered in the registy yet. It can't be updated.");
+    }
 
     public ServiceDescription getServiceDescription() {
 	return serviceDescription;
