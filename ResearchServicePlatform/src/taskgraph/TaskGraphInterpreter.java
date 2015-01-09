@@ -11,14 +11,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import service.adaptation.Effector;
 import service.auxiliary.LocalOperation;
 import service.auxiliary.ServiceDescription;
 import service.auxiliary.TimeOutError;
 import service.client.AbstractServiceClient;
 import service.composite.CompositeService;
 import service.composite.SDCache;
-import service.registry.ServiceRegistry;
 import service.workflow.AbstractQoSRequirement;
 import taskgraph.TaskGraph.ARRAY_ACCESS;
 import taskgraph.TaskGraph.BinaryOp;
@@ -332,8 +330,9 @@ public class TaskGraphInterpreter {
 			if (load.getVarName().equalsIgnoreCase("TimeOutError")){
 				valueLoaded = new TimeOutError();
 			}
-			else
-				throw new RuntimeException("Variable " + load.getVarName() + " not declared.");
+			else{
+			    throw new RuntimeException("Variable " + load.getVarName() + " not declared.");
+			}
 		}
 		else {
 			valueLoaded = heap.get(load.getVarName());
@@ -392,16 +391,7 @@ public class TaskGraphInterpreter {
 		if (call.getServiceName().equalsIgnoreCase("this")) {
 		    resultInvoke = invokeLocalOperation(call.getOperationName(), params);
 		} else {
-
-<<<<<<< HEAD
 		    resultInvoke = invokeServiceOperation(call.getServiceName(), call.getOperationName(), params);
-		    if (resultInvoke instanceof TimeOutError)
-		    	return resultInvoke;
-=======
-		    resultInvoke = invokeServiceOperation(call.getServiceName(), call.getOperationName(), params);
-		    if (resultInvoke instanceof TimeOutError)
-			return resultInvoke;
->>>>>>> FETCH_HEAD
 		}
 
 		call.setValue(resultInvoke);
@@ -616,7 +606,6 @@ public class TaskGraphInterpreter {
 	    if (services == null || services.size() == 0) {
 		throw new RuntimeException(serviceName + "." + operationName + "not found!");
 	    }
-<<<<<<< HEAD
 
 	    // Apply strategy
 	    ServiceDescription service = applyQoSRequirement(qosRequirement, services, operationName, params);
@@ -624,15 +613,7 @@ public class TaskGraphInterpreter {
 	    System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:"
 		    + service.getCustomProperties());
 
-=======
 
-	    // Apply strategy
-	    ServiceDescription service = applyQoSRequirement(qosRequirement, services, operationName, params);
-
-	    System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:"
-		    + service.getCustomProperties());
-
->>>>>>> FETCH_HEAD
 	    ServiceDescription alternateService;
 	    
 	    do {

@@ -3,7 +3,6 @@ package service.registry;
 import java.util.*;
 
 import service.atomic.AtomicService;
-import service.auxiliary.Param;
 import service.auxiliary.ServiceDescription;
 import service.auxiliary.ServiceOperation;
 import service.auxiliary.ServiceRegistryInterface;
