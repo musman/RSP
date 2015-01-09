@@ -48,8 +48,9 @@ public class Effector {
 		compositeService.getCache().refresh();
 	}
 	
-	public List<ServiceDescription> refreshCache(String serviceName){
-		return null;
+	public List<ServiceDescription> refreshCache(ServiceDescription service, String opName){
+	    removeService(service, opName);
+	    return compositeService.lookupService(service.getServiceName(), opName);
 	}
 	
 	public void updateServiceDescription(ServiceDescription oldService,ServiceDescription newService){
