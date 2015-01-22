@@ -24,16 +24,16 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
 	serviceCount++;
 	serviceDescription.setRegisterID(serviceCount);
 	serviceList.put(serviceCount, serviceDescription);
-	String name = serviceDescription.getServiceName();
-	if (services.containsKey(name)) {
-	    services.get(name).add(serviceDescription);
+	String type = serviceDescription.getServiceType();
+	if (services.containsKey(type)) {
+	    services.get(type).add(serviceDescription);
 	} else {
 	    Set<ServiceDescription> set = new HashSet<ServiceDescription>();
 	    set.add(serviceDescription);
-	    services.put(name, set);
+	    services.put(type, set);
 	}
 	
-	System.out.println("Service " + serviceDescription.getServiceName() + " is registered.");
+	System.out.println("Service " + serviceDescription.getServiceType() + " is registered.");
 	
 	return serviceCount;
     }
@@ -42,25 +42,25 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     public void unRegister(int registerID) {
 	ServiceDescription service = serviceList.get(registerID);
 	serviceList.remove(registerID);
-	Set<ServiceDescription> set = services.get(service.getServiceName());
+	Set<ServiceDescription> set = services.get(service.getServiceType());
 	set.remove(service);
 	if (set.size() == 0)
-	    services.remove(service.getServiceName());
+	    services.remove(service.getServiceType());
 	
-	System.out.println("Service " + service.getServiceName() + " is registered.");
+	System.out.println("Service " + service.getServiceType() + " is registered.");
     }
 
     @ServiceOperation
-    public List<ServiceDescription> lookup(String serviceName, String opName) {
-	System.out.println("Lookup " + serviceName + "." + opName);
+    public List<ServiceDescription> lookup(String serviceType, String opName) {
+	System.out.println("Lookup " + serviceType + "." + opName);
 	List<ServiceDescription> list = new ArrayList<ServiceDescription>();
-	if (services.containsKey(serviceName)) {
-	    Set<ServiceDescription> set = services.get(serviceName);
+	if (services.containsKey(serviceType)) {
+	    Set<ServiceDescription> set = services.get(serviceType);
 	    Iterator<ServiceDescription> iter = set.iterator();
 	    while (iter.hasNext()) {
-		ServiceDescription server = iter.next();
-		if (server.containsOperation(opName))
-		    list.add(server);
+		ServiceDescription service = iter.next();
+		if (service.containsOperation(opName))
+		    list.add(service);
 	    }
 	}
 	return list;
@@ -73,7 +73,7 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     @ServiceOperation
     public void update(ServiceDescription description){
     	ServiceDescription oldDescription=serviceList.remove(description.getRegisterID());
-    	Set<ServiceDescription> descriptions=services.get(description.getServiceName());
+    	Set<ServiceDescription> descriptions=services.get(description.getServiceType());
     	descriptions.remove(oldDescription);
     	descriptions.add(description);
     	//System.out.println("Update service description");

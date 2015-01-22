@@ -45,7 +45,7 @@ public class CacheEffector extends AbstractEffector {
      */
     public List<ServiceDescription> refreshCache(ServiceDescription service, String opName) {
 	removeService(service, opName);
-	return compositeService.lookupService(service.getServiceName(), opName);
+	return compositeService.lookupService(service.getServiceType(), opName);
     }
 
     /**

@@ -60,19 +60,19 @@ public class SDCache{
 		this.maxCacheSize = maxCacheSize;
 	}
 
-	public boolean add(String serviceName,String opName,List<ServiceDescription> serviceDescriptions){
+	public boolean add(String serviceType,String opName,List<ServiceDescription> serviceDescriptions){
 		if(maxCacheSize<=caches.size() && maxCacheSize>0)
 			return false;
 		List<ServiceDescription> services=new ArrayList<>();
 		for(ServiceDescription serviceDescription : serviceDescriptions)
 			services.add((ServiceDescription)serviceDescription.clone());
 		
-		caches.put(new Description(serviceName,opName),services);
+		caches.put(new Description(serviceType,opName),services);
     	return true;
     }
     
-    public List<ServiceDescription> get(String serviceName,String opName){
-    	Description description=new Description(serviceName,opName);
+    public List<ServiceDescription> get(String serviceType,String opName){
+    	Description description=new Description(serviceType,opName);
     	if(caches.containsKey(description)){
     		List<ServiceDescription> services=new ArrayList<>();
     		for(ServiceDescription serviceDescription : caches.get(description)){
@@ -84,17 +84,17 @@ public class SDCache{
     	return null;
     }
     
-    public boolean remove(String serviceName,String opName){
-    	Description description=new Description(serviceName,opName);
+    public boolean remove(String serviceType,String opName){
+    	Description description=new Description(serviceType,opName);
     	if(caches.containsKey(description)){
-    		caches.remove(new Description(serviceName,opName));
+    		caches.remove(new Description(serviceType,opName));
     		return true;
     	}
     	return false;
     }
     
-    public boolean remove(String serviceName,String opName,ServiceDescription service){
-    	Description description=new Description(serviceName,opName);
+    public boolean remove(String serviceType,String opName,ServiceDescription service){
+    	Description description=new Description(serviceType,opName);
     	if(caches.containsKey(description)){
     		List<ServiceDescription> services=caches.get(description);
     		for(ServiceDescription s:services){
@@ -107,15 +107,15 @@ public class SDCache{
     }
     
     public boolean remove(ServiceDescription service, String opName){
-    	return this.remove(service.getServiceName(), opName,service);
+    	return this.remove(service.getServiceType(), opName,service);
     }
     
     public int size(){
     	return caches.size();
     }
     
-    public boolean containsCache(String serviceName,String opName){
-    	return caches.containsKey(new Description(serviceName,opName));
+    public boolean containsCache(String serviceType,String opName){
+    	return caches.containsKey(new Description(serviceType,opName));
     }
     
     public void refresh(){
@@ -123,7 +123,7 @@ public class SDCache{
     }
 
     public boolean update(ServiceDescription oldService, ServiceDescription newService, String opName){
-    	Description description=new Description(oldService.getServiceName(),opName);
+    	Description description=new Description(oldService.getServiceType(),opName);
     	if(caches.containsKey(description)){
     		List<ServiceDescription> services=caches.get(description);
     		if(services.contains(oldService)){

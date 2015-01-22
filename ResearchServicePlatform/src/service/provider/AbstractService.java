@@ -293,7 +293,7 @@ public abstract class AbstractService implements MessageListener {
 	// this.sendRequest("ServiceRegistry", "register", params, "ServiceRegistry");
 	int registerId = (int) this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "register", serviceDescription);
 	this.serviceDescription.setRegisterID(registerId);
-	System.out.println("The service " + serviceDescription.getServiceName() + " has been registered. The registerID is " + this.serviceDescription.getRegisterID());
+	System.out.println("The service " + serviceDescription.getServiceType() + " has been registered. The registerID is " + this.serviceDescription.getRegisterID());
     }
 
     /**
@@ -339,6 +339,7 @@ public abstract class AbstractService implements MessageListener {
 	    }
 	}
 	serviceDescription.setOperationList(opList);
+	serviceDescription.setServiceType(this.getClass().getSimpleName());
     }
 
     abstract protected void readConfiguration();

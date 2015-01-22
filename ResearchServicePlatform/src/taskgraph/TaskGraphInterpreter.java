@@ -610,7 +610,7 @@ public class TaskGraphInterpreter {
 	    // Apply strategy
 	    ServiceDescription service = applyQoSRequirement(qosRequirement, services, operationName, params);
 
-	    System.out.println("Operation " + service.getServiceName() + "." + operationName + " has been selected with following custom properties:"
+	    System.out.println("Operation " + service.getServiceType() + "." + operationName + " has been selected with following custom properties:"
 		    + service.getCustomProperties());
 
 
@@ -622,7 +622,7 @@ public class TaskGraphInterpreter {
 		    compositeService.getProbeList().serviceOperationInvoked(service, operationName, params);
 
 		int maxResponseTime = timeout != 0 ? timeout : service.getResponseTime();
-		resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, maxResponseTime, operationName, params);
+		resultVal = compositeService.sendRequest(service.getServiceType(), service.getServiceEndpoint(), true, maxResponseTime, operationName, params);
 
 		if (resultVal instanceof TimeOutError) {
 			compositeService.getProbeList().serviceOperationTimeout(service, operationName, params);

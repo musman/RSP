@@ -13,6 +13,7 @@ public class ServiceDescription implements Serializable {
 
     private int registerID = -1;
     private String serviceEndpoint;
+    private String serviceType;
     private String serviceName;
     private double serviceCost;
 
@@ -35,6 +36,14 @@ public class ServiceDescription implements Serializable {
 	this.serviceEndpoint = serviceAddress;
     }
 
+    public String getServiceType() {
+	return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+	this.serviceType = serviceType;
+    }
+    
     public String getServiceName() {
 	return serviceName;
     }
@@ -50,7 +59,7 @@ public class ServiceDescription implements Serializable {
     }
 
     public ServiceDescription(String serviceName, String serviceAddress, int responseTime) {
-	this.serviceName = serviceName;
+    this.serviceName = serviceName;
 	this.serviceEndpoint = serviceAddress;
 	setResponseTime(responseTime);
     }
@@ -130,14 +139,14 @@ public class ServiceDescription implements Serializable {
 
     @Override
     public int hashCode() {
-	return serviceEndpoint.hashCode() + serviceName.hashCode();
+	return serviceEndpoint.hashCode() + serviceType.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
 	if (obj instanceof ServiceDescription) {
 	    ServiceDescription service = (ServiceDescription) obj;
-	    if (registerID == service.getRegisterID() && serviceEndpoint.equals(service.getServiceEndpoint()) && serviceName.equals(service.getServiceName())) {
+	    if (registerID == service.getRegisterID() && serviceEndpoint.equals(service.getServiceEndpoint()) && serviceType.equals(service.getServiceType())) {
 
 		for (int i = 0; i < opList.size(); i++) {
 		    if (!opList.get(i).equals(service.getOperationList().get(i)))

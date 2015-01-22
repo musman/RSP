@@ -26,7 +26,7 @@ public class LogFailure extends AbstractProbe{
 
     @Override
     public void serviceOperationTimeout(ServiceDescription service, String opName, Object[] params) {
-	System.err.println("Service Failed:" + service.getServiceName());
+	System.err.println("Service Failed:" + service.getServiceType());
     }
 
 }
