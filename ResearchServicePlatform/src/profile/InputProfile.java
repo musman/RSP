@@ -2,45 +2,45 @@
  * 
  */
 package profile;
-
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * @author yfruan
  * @email  ry222ad@student.lnu.se
  *
  */
+<<<<<<< Updated upstream:ResearchServicePlatform/src/profile/InputProfile.java
 public class InputProfile {
+=======
+>>>>>>> Stashed changes:ResearchServicePlatform/src/profile/Profile.java
 
-	private static XStream xstream=new XStream(new StaxDriver());
+public class Profile {
 	private String name;
 	private int maxNumofInvocations;
 	private String workflowPath;
 	private Map<String,Object> variables=new HashMap<>();
+<<<<<<< Updated upstream:ResearchServicePlatform/src/profile/InputProfile.java
 	
 	static{
 		xstream.alias("Profile", InputProfile.class);
 	}
 	
 	public InputProfile(){
+=======
+
+	public Profile(){
+>>>>>>> Stashed changes:ResearchServicePlatform/src/profile/Profile.java
 		
 	}
 	
-	/*
 	public Profile(String name, int invocationNum, String workflowPath, Map<String,Object> variables){
 		this.name=name;
-		this.invocationNum=invocationNum;
+		this.maxNumofInvocations=invocationNum;
 		this.workflowPath=workflowPath;
 		this.variables=variables;
+<<<<<<< Updated upstream:ResearchServicePlatform/src/profile/InputProfile.java
 	}*/
 	
 	public InputProfile(String xmlPath){
@@ -73,6 +73,8 @@ public class InputProfile {
 			e.printStackTrace();
 		}
 		
+=======
+>>>>>>> Stashed changes:ResearchServicePlatform/src/profile/Profile.java
 	}
 	
 	/**
@@ -81,8 +83,6 @@ public class InputProfile {
 	public String getName() {
 		return name;
 	}
-	
-	
 
 	/**
 	 * @return the maxNumofInvocations
@@ -102,6 +102,7 @@ public class InputProfile {
 		return this.variables.get(variable);
 	}
 
+<<<<<<< Updated upstream:ResearchServicePlatform/src/profile/InputProfile.java
 	public static void main(String[] args){
 		
 		/*
@@ -120,4 +121,6 @@ public class InputProfile {
 
 		
 	}
+=======
+>>>>>>> Stashed changes:ResearchServicePlatform/src/profile/Profile.java
 }
