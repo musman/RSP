@@ -15,7 +15,7 @@ public class ServiceDescription implements Serializable {
     private String serviceEndpoint;
     private String serviceType;
     private String serviceName;
-    private double serviceCost;
+    //private double serviceCost;
 
     private HashMap<String, Object> customProperties = new HashMap<String, Object>();
     private List<Operation> opList = new ArrayList<Operation>();
@@ -76,17 +76,17 @@ public class ServiceDescription implements Serializable {
 	return false;
     }
 
-    public Operation getOperation(String opName) {
-	for (int i = 0; i < opList.size(); i++) {
-	    if (opList.get(i).getOpName().equals(opName)) {
-		return opList.get(i);
+    public void setOperationList(List<Operation> opList) {
+	this.opList = opList;
+    }
+    
+    public Operation getOperation(String opName){
+	for(Operation op: opList){
+	    if (op.getOpName().equals(opName)){
+		return op;
 	    }
 	}
 	return null;
-    }
-
-    public void setOperationList(List<Operation> opList) {
-	this.opList = opList;
     }
 
     public HashMap<String, Object> getCustomProperties() {
@@ -104,14 +104,14 @@ public class ServiceDescription implements Serializable {
 	customProperties.put(RESPONSE_TIME, responseTime);
     }
 
-    public void setServiceCost(double serviceCost) {
+/*    public void setServiceCost(double serviceCost) {
 	this.serviceCost = serviceCost;
     }
 
     public double getServiceCost() {
 	return serviceCost;
     }
-    
+*/    
     public Object clone() {
 	ObjectInputStream is = null;
 	ObjectOutputStream os = null;
