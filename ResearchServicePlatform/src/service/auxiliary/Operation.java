@@ -26,6 +26,16 @@ public class Operation implements Serializable{
 	public String getReturnType() {
 		return returnType;
 	}
+	
+	private double cost;
+	
+	public double getCost() {
+	    return cost;
+	}
+	
+	public void setCost(double cost) {
+	    this.cost = cost;
+	}
 
 
 	public Operation(String opName,Class<?>[] paramTypes,String returnType){

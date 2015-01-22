@@ -15,6 +15,7 @@ public class ServiceDescription implements Serializable{
 	private int registerID=-1;
 	private String serviceEndpoint;
 	private String serviceName;
+	private double cost;
 	
 	private HashMap<String, Object> customProperties = new HashMap<String, Object>();
 	private List<Operation> opList=new ArrayList<Operation>();
@@ -171,5 +172,13 @@ public class ServiceDescription implements Serializable{
 
 	public void setResponseTime(int responseTime) {
 		customProperties.put(RESPONSE_TIME, responseTime);
+	}
+	
+	public double getCost() {
+	    return cost;
+	}
+	
+	public void setCost(double cost) {
+	    this.cost = cost;
 	}
 }

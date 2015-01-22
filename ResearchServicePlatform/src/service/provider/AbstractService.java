@@ -59,6 +59,7 @@ public abstract class AbstractService implements MessageListener {
 	    this.serviceName = serviceName;
 	    this.serviceEndpoint = serviceEndpoint;
 	    serviceDescription = new ServiceDescription(serviceName, serviceEndpoint);
+	    createServiceDescription();
 	    readConfiguration();
 	    applyConfiguration();
 	} catch (NamingException e) {
@@ -316,18 +317,6 @@ public abstract class AbstractService implements MessageListener {
     abstract public Object invokeOperation(String opName, Param[] args);
 
     public void register() {
-	List<Operation> opList = new ArrayList<Operation>();
-	for (Method operation : this.getClass().getMethods()) {
-	    if (operation.getAnnotation(ServiceOperation.class) != null) {
-		Operation op = new Operation(operation.getName(),operation.getParameterTypes(),operation.getReturnType().getName());
-		//op.opName = operation.getName();
-		// System.out.println(op.opName);
-		//op.paramTypes = operation.getParameterTypes();
-		//op.returnType = operation.getReturnType().getName();
-		opList.add(op);
-	    }
-	}
-	serviceDescription.setOperationList(opList);
 
 	// this.sendRequest("ServiceRegistry", "register", params, "ServiceRegistry");
 	int registerId = (int) this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "register", serviceDescription);
@@ -358,6 +347,19 @@ public abstract class AbstractService implements MessageListener {
 
     public Configuration getConfiguration() {
 	return this.configuration;
+    }
+    
+    protected void createServiceDescription(){
+	List<Operation> opList = new ArrayList<Operation>();
+	for (Method operation : this.getClass().getMethods()) {
+	    if (operation.getAnnotation(ServiceOperation.class) != null) {
+		ServiceOperation serviceOperation = operation.getAnnotation(ServiceOperation.class);
+		Operation op = new Operation(operation.getName(),operation.getParameterTypes(),operation.getReturnType().getName());
+		op.setCost(serviceOperation.Cost());
+		opList.add(op);
+	    }
+	}
+	serviceDescription.setOperationList(opList);
     }
 
     abstract protected void readConfiguration();
