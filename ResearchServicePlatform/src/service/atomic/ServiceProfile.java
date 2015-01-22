@@ -1,6 +1,6 @@
 package service.atomic;
 
-public abstract class ExtraBehavior {
+public abstract class ServiceProfile {
 
 	/*
 	 * This method is called before invoking service operations. Argument operationName have the value of the operation which is going to invoke. 

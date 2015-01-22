@@ -327,7 +327,7 @@ public class TaskGraphInterpreter {
 		Load load = (Load) CT;
 		Object valueLoaded = null;
 		if (!heap.containsKey(load.getVarName())) {
-			if (load.getVarName().equalsIgnoreCase("TimeOutError")){
+			if (load.getVarName().equalsIgnoreCase("TimeoutError")){
 				valueLoaded = new TimeOutError();
 			}
 			else{
@@ -604,7 +604,7 @@ public class TaskGraphInterpreter {
 	do {
 	    List<ServiceDescription> services = lookupService(serviceName, operationName);
 	    if (services == null || services.size() == 0) {
-		throw new RuntimeException(serviceName + "." + operationName + "not found!");
+		throw new RuntimeException(serviceName + "." + operationName + " not found!");
 	    }
 
 	    // Apply strategy
@@ -630,7 +630,7 @@ public class TaskGraphInterpreter {
 			compositeService.getProbe().serviceOperationTimeout(service, operationName, params);
 		    
 		    // Check effector if there is any alternative service to pick
-		    alternateService = compositeService.getEffector().serviceOperationTimeout(service, operationName, params);
+		    alternateService = compositeService.getEffector().selectAlternativeService(service, operationName, params);
 		    if (alternateService != null) {
 			service = alternateService;
 		    }

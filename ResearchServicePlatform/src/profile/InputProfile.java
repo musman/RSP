@@ -19,7 +19,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * @email  ry222ad@student.lnu.se
  *
  */
-public class Profile {
+public class InputProfile {
 
 	private static XStream xstream=new XStream(new StaxDriver());
 	private String name;
@@ -28,10 +28,10 @@ public class Profile {
 	private Map<String,Object> variables=new HashMap<>();
 	
 	static{
-		xstream.alias("Profile", Profile.class);
+		xstream.alias("Profile", InputProfile.class);
 	}
 	
-	public Profile(){
+	public InputProfile(){
 		
 	}
 	
@@ -43,8 +43,8 @@ public class Profile {
 		this.variables=variables;
 	}*/
 	
-	public Profile(String xmlPath){
-		Profile profile=(Profile)this.readFromXml(xmlPath);
+	public InputProfile(String xmlPath){
+		InputProfile profile=(InputProfile)this.readFromXml(xmlPath);
 		if(profile!=null){
 			this.name=profile.name;
 			this.maxNumofInvocations=profile.maxNumofInvocations;
@@ -53,10 +53,10 @@ public class Profile {
 		}
 	}
 	
-	public Profile readFromXml(String xmlPath){
+	public InputProfile readFromXml(String xmlPath){
 		try {
 			InputStream input = new FileInputStream(xmlPath);
-			return (Profile)xstream.fromXML(input);
+			return (InputProfile)xstream.fromXML(input);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -115,7 +115,7 @@ public class Profile {
 		System.out.println(xml);
 		profile.writeToXml("profile.xml");*/
 		
-		Profile profile=new Profile("profile.xml");
+		InputProfile profile=new InputProfile("profile.xml");
 		System.out.println("Variable analysisResult: "+profile.getVariable("analysisResult"));
 
 		

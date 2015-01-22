@@ -5,14 +5,14 @@ package service.utility;
 
 import java.util.Arrays;
 
-import service.atomic.ExtraBehavior;
+import service.atomic.ServiceProfile;
 
 /**
  * @author yfruan
  * @email  ry222ad@student.lnu.se
  *
  */
-public class LogAtomicService extends ExtraBehavior {
+public class LogAtomicService extends ServiceProfile {
 
     public boolean preInvokeOperation(String operationName, Object... args) {
 	System.out.println("Operation: " + operationName);

@@ -12,7 +12,7 @@ import service.provider.AbstractService;
 
 public abstract class AtomicService extends AbstractService {
 		
-	private ExtraBehavior extraBehavior=null;
+	private ServiceProfile extraBehavior=null;
 	
     public AtomicService(String serviceName, String serviceEndpoint, int responseTime) {
     	super(serviceName, serviceEndpoint,responseTime);
@@ -22,11 +22,11 @@ public abstract class AtomicService extends AbstractService {
     	super(serviceName, serviceEndpoint);
     }
     
-    public ExtraBehavior getServiceBehavior() {
+    public ServiceProfile getServiceBehavior() {
 		return extraBehavior;
 	}
     
-    public void setServiceBehavior(ExtraBehavior serviceBehavior) {
+    public void setServiceBehavior(ServiceProfile serviceBehavior) {
 		this.extraBehavior = serviceBehavior;
 	}
     

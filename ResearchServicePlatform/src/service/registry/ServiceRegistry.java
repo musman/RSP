@@ -12,7 +12,7 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     HashMap<Integer, ServiceDescription> serviceList = new HashMap<>();
     Map<String, Set<ServiceDescription>> services = new HashMap<String, Set<ServiceDescription>>(); // serviceName
 
-    int serviceCount = -1;
+    int serviceCount = 0;
 
     public ServiceRegistry() {
     	super(NAME, ADDRESS);

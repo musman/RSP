@@ -20,6 +20,7 @@ public class Effector {
 	
 	public Effector(CompositeService compositeService){
 		this.compositeService=compositeService;
+		compositeService.setEffector(this);
 	}
 	
 	/**
@@ -61,6 +62,7 @@ public class Effector {
 	}
 	
 	public void updateWorkflow(String workflow){
+	    System.out.println("Workflow updated");
 		compositeService.setWorkflow(workflow);
 	}
 	
@@ -68,7 +70,14 @@ public class Effector {
 		compositeService.getConfiguration().timeout=timeout;
 	}
 	
-	 public ServiceDescription serviceOperationTimeout(ServiceDescription service, String opName, Object[] params){
+	/**
+	 * Select another service, in case of failure
+	 * @param service
+	 * @param opName
+	 * @param params
+	 * @return
+	 */
+	 public ServiceDescription selectAlternativeService(ServiceDescription service, String opName, Object[] params){
 	     return null;
 	 }
 }
