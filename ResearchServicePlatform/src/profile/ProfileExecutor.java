@@ -19,16 +19,16 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class ProfileExecutor {
 
 	private static XStream xstream=new XStream(new StaxDriver());
-	public static Profile profile=null;
+	public static InputProfile profile=null;
 	
 	static{
-		xstream.alias("Profile", Profile.class);
+		xstream.alias("InputProfile", InputProfile.class);
 	}
 	
 	public static void readFromXml(String xmlPath){
 		try {
 			InputStream input = new FileInputStream(xmlPath);
-			ProfileExecutor.profile= (Profile)xstream.fromXML(input);
+			ProfileExecutor.profile= (InputProfile)xstream.fromXML(input);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
