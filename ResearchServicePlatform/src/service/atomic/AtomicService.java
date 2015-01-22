@@ -12,7 +12,7 @@ import service.provider.AbstractService;
 
 public abstract class AtomicService extends AbstractService {
 		
-	private ServiceProfile extraBehavior=null;
+	private ServiceProfile serviceProfile=null;
 	
     public AtomicService(String serviceName, String serviceEndpoint, int responseTime) {
     	super(serviceName, serviceEndpoint,responseTime);
@@ -22,12 +22,12 @@ public abstract class AtomicService extends AbstractService {
     	super(serviceName, serviceEndpoint);
     }
     
-    public ServiceProfile getServiceBehavior() {
-		return extraBehavior;
+    public ServiceProfile getServiceProfile() {
+		return serviceProfile;
 	}
     
-    public void setServiceBehavior(ServiceProfile serviceBehavior) {
-		this.extraBehavior = serviceBehavior;
+    public void setServiceProfile(ServiceProfile serviceProfile) {
+		this.serviceProfile = serviceProfile;
 	}
     
     @Override
@@ -45,11 +45,11 @@ public abstract class AtomicService extends AbstractService {
     				args[i] = params[i].getValue();
     			    }
     			        			    
-    			    boolean flag = extraBehavior != null? extraBehavior.preInvokeOperation(opName, args): true;
+    			    boolean flag = serviceProfile != null? serviceProfile.preInvokeOperation(opName, args): true;
     			    Object result;
     			    if (flag){
     			    	result = operation.invoke(this, args);
-    			    	Object mResult = extraBehavior != null? extraBehavior.postInvokeOperation(opName, result, args):result;
+    			    	Object mResult = serviceProfile != null? serviceProfile.postInvokeOperation(opName, result, args):result;
     			    	return mResult;
     			    }
     			    else{
