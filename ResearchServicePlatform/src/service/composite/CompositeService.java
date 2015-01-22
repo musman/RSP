@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import service.adaptation.Effector;
-import service.adaptation.Probe;
+import service.adaptation.effector.Effector;
+import service.adaptation.probes.Probe;
 import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.Configuration;
 import service.auxiliary.Param;
@@ -31,7 +31,7 @@ public class CompositeService extends AbstractService {
 	}
 
 	Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
-    Probe probe = null;
+    ProbeList probe = new ProbeList();
     Effector effector=null;
     /**
 	 * @return the effector
@@ -75,7 +75,7 @@ public class CompositeService extends AbstractService {
     /**
      * @return the probe
      */
-    public Probe getProbe() {
+    public ProbeList getProbeList() {
 	return probe;
     }
 
@@ -83,8 +83,8 @@ public class CompositeService extends AbstractService {
      * @param probe
      *            the probe to set
      */
-    public void setProbe(Probe probe) {
-	this.probe = probe;
+    public void addProbe(Probe probe) {
+	this.getProbeList().add(probe);
     }
 
     public CompositeService(String serviceName, String serviceEndpoint, String workflow) {

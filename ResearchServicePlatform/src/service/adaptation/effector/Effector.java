@@ -1,7 +1,7 @@
 /**
  * 
  */
-package service.adaptation;
+package service.adaptation.effector;
 
 import java.util.List;
 

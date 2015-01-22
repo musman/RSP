@@ -619,15 +619,13 @@ public class TaskGraphInterpreter {
 	    do {
 		alternateService = null;
 
-		if (compositeService.getProbe() != null)
-		    compositeService.getProbe().serviceOperationInvoked(service, operationName, params);
+		    compositeService.getProbeList().serviceOperationInvoked(service, operationName, params);
 
 		int maxResponseTime = timeout != 0 ? timeout : service.getResponseTime();
 		resultVal = compositeService.sendRequest(service.getServiceName(), service.getServiceEndpoint(), true, maxResponseTime, operationName, params);
 
 		if (resultVal instanceof TimeOutError) {
-		    if (compositeService.getProbe() != null)
-			compositeService.getProbe().serviceOperationTimeout(service, operationName, params);
+			compositeService.getProbeList().serviceOperationTimeout(service, operationName, params);
 		    
 		    // Check effector if there is any alternative service to pick
 		    alternateService = compositeService.getEffector().selectAlternativeService(service, operationName, params);
@@ -637,8 +635,10 @@ public class TaskGraphInterpreter {
 		}
 	    } while (alternateService != null);
 
-	    if (!(resultVal instanceof TimeOutError) && compositeService.getProbe() != null)
-		compositeService.getProbe().serviceOperationReturned(service, resultVal, operationName, params);
+	    if (!(resultVal instanceof TimeOutError)){
+		compositeService.getProbeList().serviceOperationReturned(service, resultVal, operationName, params);
+		compositeService.getProbeList().costOperation(alternateService, operationName);
+	    }
 
 	    retryAttempts++;
 	} while (resultVal instanceof TimeOutError && retryAttempts < compositeService.getConfiguration().maxRetryAttempts);

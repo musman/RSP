@@ -1,8 +1,8 @@
 package service.utility;
-import service.adaptation.Probe;
+import service.adaptation.probes.Probe;
 import service.auxiliary.ServiceDescription;
 
-public class LogFailure implements Probe{
+public class LogFailure extends Probe{
 
     @Override
     public void workflowStarted(String qosRequirement, Object[] params) {
