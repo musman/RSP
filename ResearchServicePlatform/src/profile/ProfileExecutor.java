@@ -19,7 +19,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class ProfileExecutor {
 
 	private static XStream xstream=new XStream(new StaxDriver());
-	public static InputProfile profile=null;
+	public static InputProfile profile=new InputProfile();
 	
 	static{
 		xstream.alias("InputProfile", InputProfile.class);
@@ -48,18 +48,26 @@ public class ProfileExecutor {
 
 	public static void main(String[] args){
 		
+		
+		//String xmlPath="/Users/ryf/Documents/github/TeleAssistanceSystem/resources/profile.xml";
+		
+		String xmlPath="inputProfile.xml";
+
+		
+		ProfileExecutor.profile.name="profile1";
+		ProfileExecutor.profile.maxSteps=100;
+		ProfileExecutor.profile.variables.put("pick", 2);
+		ProfileExecutor.profile.variables.put("analysisResult", 1);
+		
+		ProfileExecutor.writeToXml(xmlPath);
+		
 		/*
-		String xmlPath="/Users/ryf/Documents/github/TeleAssistanceSystem/resources/profile.xml";
+		ProfileExecutor.readFromXml(xmlPath);
+		System.out.println("Variable analysisResult: "+ProfileExecutor.profile.getVariable("analysisResult"));*/
+
 		
-		Profile profile=new Profile();
-		profile.name="profile1";
-		profile.maxNumofInvocations=10;
-		profile.variables.put("pick", 2);
-		profile.variables.put("analysisResult", 1);
-		
-		String xml=xstream.toXML(profile);
-		System.out.println(xml);
-		profile.writeToXml(xmlPath);*/
+		//String xml=xstream.toXML(profile);
+		//System.out.println(xml);
 		
 		/*
 		Profile profile=new Profile(xmlPath);

@@ -13,18 +13,18 @@ import java.util.Map;
  */
 public class InputProfile {
 
-	private String name;
-	private int maxNumofInvocations;
-	private String workflowPath;
-	private Map<String,Object> variables=new HashMap<>();
+	protected String name;
+	protected int maxSteps;
+	protected String workflowPath;
+	protected Map<String,Object> variables=new HashMap<>();
 	
 	public InputProfile(){
 		
 	}
 	
-	public InputProfile(String name, int invocationNum, String workflowPath, Map<String,Object> variables){
+	public InputProfile(String name, int maxSteps, String workflowPath, Map<String,Object> variables){
 		this.name=name;
-		this.maxNumofInvocations=invocationNum;
+		this.maxSteps=maxSteps;
 		this.workflowPath=workflowPath;
 		this.variables=variables;
 
@@ -40,8 +40,8 @@ public class InputProfile {
 	/**
 	 * @return the maxNumofInvocations
 	 */
-	public int getMaxNumofInvocations() {
-		return maxNumofInvocations;
+	public int getMaxSteps() {
+		return maxSteps;
 	}
 
 	/**
