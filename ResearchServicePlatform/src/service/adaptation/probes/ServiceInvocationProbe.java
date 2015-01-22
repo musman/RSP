@@ -2,7 +2,7 @@ package service.adaptation.probes;
 
 import service.auxiliary.ServiceDescription;
 
-public abstract class ServiceInvocationProbe extends Probe{
+public abstract class ServiceInvocationProbe extends AbstractProbe{
 
     @Override
     public abstract void serviceOperationInvoked(ServiceDescription service, String opName, Object[] params);

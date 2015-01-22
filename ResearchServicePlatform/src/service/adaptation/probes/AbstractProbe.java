@@ -10,7 +10,7 @@ import service.auxiliary.ServiceDescription;
  * @email  ry222ad@student.lnu.se
  *
  */
-public abstract class Probe {
+public abstract class AbstractProbe {
 	public void workflowStarted(String qosRequirement, Object[] params){}
 	public void workflowEnded(Object result,String qosRequirement,Object[] params){}
 	public void serviceOperationInvoked(ServiceDescription service, String opName, Object[] params){}

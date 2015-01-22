@@ -66,6 +66,10 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
 	return list;
     }
     
+    /**
+     * Update service description
+     * @param description
+     */
     @ServiceOperation
     public void update(ServiceDescription description){
     	ServiceDescription oldDescription=serviceList.remove(description.getRegisterID());

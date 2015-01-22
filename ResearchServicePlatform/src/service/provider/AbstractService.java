@@ -89,9 +89,6 @@ public abstract class AbstractService implements MessageListener {
 
     public Object sendRequest(String service, String destination, boolean reply, String opName, Object... params) {
 	try {
-	    // System.out.println(destination);
-	    // System.out.println(address);
-	    // System.out.println("Sending request message: ");
 	    int messageID = messageCount.incrementAndGet();
 	    Request request = new Request(messageID, "dynamicQueues/" + this.serviceEndpoint, service, opName, params);
 	    XMLBuilder build = new XMLBuilder();
@@ -123,9 +120,6 @@ public abstract class AbstractService implements MessageListener {
 
     public Object sendRequest(String service, String destination, boolean reply, long responseTime, String opName, Object... params) {
 	try {
-	    // System.out.println(destination);
-	    // System.out.println(address);
-	    // System.out.println("Sending request message: ");
 	    int messageID = messageCount.incrementAndGet();
 	    Request request = new Request(messageID, "dynamicQueues/" + this.serviceEndpoint, service, opName, params);
 	    XMLBuilder build = new XMLBuilder();
@@ -140,17 +134,12 @@ public abstract class AbstractService implements MessageListener {
 	    if (reply) {
 		synchronized (this) {
 		    long startTime = System.currentTimeMillis();
-		    // System.out.println(responseTime);
-		    // double time=System.currentTimeMillis()+responseTime*1000.0;
-		    // System.out.println(time);
-		    // System.out.println(startTime);
-		    // System.out.println(System.currentTimeMillis());
 		    while (!results.containsKey(messageID)) {
 			this.wait(responseTime * 1000);
 			// System.out.println(time);
 			long endTime = System.currentTimeMillis();
 			if ((endTime - startTime) / 1000.0 >= responseTime) {
-			    //System.out.println("time out");
+			    // System.out.println("time out");
 			    results.put(messageID, new TimeOutError());
 			}
 		    }
@@ -201,26 +190,6 @@ public abstract class AbstractService implements MessageListener {
 	}
     }
 
-    /*
-    public void sendResponseToClient(Message message, Object result) {
-	try {
-	    Response response = new Response(messageCount.get(), -1, this.serviceEndpoint, result);
-	    XMLBuilder build = new XMLBuilder();
-	    String responseMessage = build.toXML(response);
-
-	    Connection connection = queueConnectingFactory.createConnection();
-	    Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-	    MessageProducer sender = session.createProducer(message.getJMSReplyTo());
-	    sender.setDeliveryMode(DeliveryMode.PERSISTENT);
-
-	    sender.send(session.createTextMessage(responseMessage));
-
-	    messageCount.incrementAndGet();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-
-    }*/
 
     @Override
     public void onMessage(final Message message) {
@@ -316,6 +285,9 @@ public abstract class AbstractService implements MessageListener {
 
     abstract public Object invokeOperation(String opName, Param[] args);
 
+    /**
+     * Register to the service registry
+     */
     public void register() {
 
 	// this.sendRequest("ServiceRegistry", "register", params, "ServiceRegistry");
@@ -324,15 +296,21 @@ public abstract class AbstractService implements MessageListener {
 	System.out.println("The service " + serviceDescription.getServiceName() + " has been registered. The registerID is " + this.serviceDescription.getRegisterID());
     }
 
+    /**
+     * Un register from the service registry
+     */
     public void unRegister() {
 	this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "unRegister", this.serviceDescription.getRegisterID());
     }
-    
+
+    /**
+     * Helps to dynamically update the service description
+     */
     public void updateServiceDescription() {
-    	if (serviceDescription.getRegisterID() > 0)
-    		this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "update", this.serviceDescription);
-    	else
-    		System.err.println("Service is not registered in the registy yet. It can't be updated.");
+	if (serviceDescription.getRegisterID() > 0)
+	    this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "update", this.serviceDescription);
+	else
+	    System.err.println("Service is not registered in the registy yet. It can't be updated.");
     }
 
     public ServiceDescription getServiceDescription() {
@@ -343,18 +321,19 @@ public abstract class AbstractService implements MessageListener {
 	this.serviceDescription = serviceDescription;
     }
 
+    //////////////////////////////////////////// Service Configuration //////////////////////////////////////////////////////
     protected Configuration configuration;
 
     public Configuration getConfiguration() {
 	return this.configuration;
     }
-    
-    protected void createServiceDescription(){
+
+    protected void createServiceDescription() {
 	List<Operation> opList = new ArrayList<Operation>();
 	for (Method operation : this.getClass().getMethods()) {
 	    if (operation.getAnnotation(ServiceOperation.class) != null) {
 		ServiceOperation serviceOperation = operation.getAnnotation(ServiceOperation.class);
-		Operation op = new Operation(operation.getName(),operation.getParameterTypes(),operation.getReturnType().getName());
+		Operation op = new Operation(operation.getName(), operation.getParameterTypes(), operation.getReturnType().getName());
 		op.setCost(serviceOperation.OperationCost());
 		opList.add(op);
 	    }

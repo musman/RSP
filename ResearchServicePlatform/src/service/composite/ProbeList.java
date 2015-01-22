@@ -2,7 +2,7 @@ package service.composite;
 
 import java.util.ArrayList;
 
-import service.adaptation.probes.Probe;
+import service.adaptation.probes.AbstractProbe;
 import service.auxiliary.ServiceDescription;
 
 /**
@@ -10,7 +10,7 @@ import service.auxiliary.ServiceDescription;
  * @author M. Usman Iftikhar
  *
  */
-public class ProbeList extends ArrayList<Probe> {
+public class ProbeList extends ArrayList<AbstractProbe> {
 
     public void workflowStarted(String qosRequirement, Object[] params) {
 	for (int i = 0; i < size(); i++) {

@@ -628,16 +628,16 @@ public class TaskGraphInterpreter {
 			compositeService.getProbeList().serviceOperationTimeout(service, operationName, params);
 		    
 		    // Check effector if there is any alternative service to pick
-		    alternateService = compositeService.getEffector().selectAlternativeService(service, operationName, params);
-		    if (alternateService != null) {
-			service = alternateService;
-		    }
+		   // alternateService = compositeService.getEffector().selectAlternativeService(service, operationName, params);
+		    //if (alternateService != null) {
+		//	service = alternateService;
+		   // }
 		}
 	    } while (alternateService != null);
 
 	    if (!(resultVal instanceof TimeOutError)){
 		compositeService.getProbeList().serviceOperationReturned(service, resultVal, operationName, params);
-		compositeService.getProbeList().costOperation(alternateService, operationName);
+		compositeService.getProbeList().costOperation(service, operationName);
 	    }
 
 	    retryAttempts++;
