@@ -27,14 +27,14 @@ public class Operation implements Serializable{
 		return returnType;
 	}
 	
-	private double cost;
+	private double opCost;
 	
 	public double getCost() {
-	    return cost;
+	    return opCost;
 	}
 	
-	public void setCost(double cost) {
-	    this.cost = cost;
+	public void setCost(double opCost) {
+	    this.opCost = opCost;
 	}
 
 

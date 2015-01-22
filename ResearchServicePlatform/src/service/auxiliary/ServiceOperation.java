@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ServiceOperation {
-    public double Cost() default 0.0;
+    public double OperationCost() default 0.0;
 }
