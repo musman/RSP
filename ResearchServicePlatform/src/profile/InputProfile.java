@@ -52,5 +52,12 @@ public class InputProfile {
 		this.variables.add(variable);
 	}
 
+	public InputProfileVariable getVariable(String variableName){
+		for(InputProfileVariable variable:variables){
+			if(variable.name.equals(variableName))
+				return variable;
+		}
+		return null;
+	}
 
 }
