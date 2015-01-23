@@ -3,7 +3,6 @@
  */
 package service.adaptation.effector;
 
-import service.auxiliary.ServiceDescription;
 import service.composite.CompositeService;
 
 /**
@@ -26,7 +25,7 @@ public class AbstractEffector {
 	public CompositeService getCompositeService() {
 		return compositeService;
 	}
-
+	
 	/**
 	 * @param compositeService the compositeService to set
 	 */
@@ -41,7 +40,7 @@ public class AbstractEffector {
 	 * @param params
 	 * @return
 	 */
-	 public ServiceDescription selectAlternativeService(ServiceDescription service, String opName, Object[] params){
-	     return null;
-	 }
+	// public ServiceDescription selectAlternativeService(ServiceDescription service, String opName, Object[] params){
+	//     return null;
+	// }
 }

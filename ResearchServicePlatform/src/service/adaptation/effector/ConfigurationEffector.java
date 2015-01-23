@@ -10,6 +10,7 @@ public class ConfigurationEffector extends AbstractEffector {
 
     /**
      * Change timout factor
+     * 
      * @param timeout
      */
     public void changeTimeout(int timeout) {

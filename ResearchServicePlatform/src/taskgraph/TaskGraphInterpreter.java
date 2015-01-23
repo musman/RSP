@@ -637,7 +637,7 @@ public class TaskGraphInterpreter {
 
 	    if (!(resultVal instanceof TimeOutError)){
 		compositeService.getProbeList().serviceOperationReturned(service, resultVal, operationName, params);
-		compositeService.getProbeList().costOperation(service, operationName);
+		compositeService.getProbeList().costOperation(service, operationName, service.getOperation(operationName).getCost());
 	    }
 
 	    retryAttempts++;

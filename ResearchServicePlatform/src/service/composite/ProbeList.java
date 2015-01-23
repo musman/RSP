@@ -42,9 +42,9 @@ public class ProbeList extends ArrayList<AbstractProbe> {
 	}
     }
 
-    public void costOperation(ServiceDescription service, String opName) {
+    public void costOperation(ServiceDescription service, String opName, double cost) {
 	for (int i = 0; i < size(); i++) {
-	    this.get(i).costOperation(service, opName);
+	    this.get(i).costOperation(service, opName, cost);
 	}
     }
 }
