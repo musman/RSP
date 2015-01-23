@@ -4,8 +4,10 @@
 package service.composite;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +53,13 @@ public class SDCache{
 		return false;
 	}
 
+	public Set<String> getServices(){
+		Set<String> services=new HashSet<>();
+		for (Description key: caches.keySet()) {
+			services.add(key.serviceName);
+		}
+		return services;
+	}
 
 	public int getMaxCacheSize() {
 		return maxCacheSize;
