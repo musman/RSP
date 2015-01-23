@@ -29,11 +29,11 @@ public class Operation implements Serializable{
 	
 	private double opCost;
 	
-	public double getCost() {
+	public double getOpCost() {
 	    return opCost;
 	}
 	
-	public void setCost(double opCost) {
+	public void setOpCost(double opCost) {
 	    this.opCost = opCost;
 	}
 

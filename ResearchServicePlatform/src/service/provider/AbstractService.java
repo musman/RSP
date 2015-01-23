@@ -334,7 +334,7 @@ public abstract class AbstractService implements MessageListener {
 	    if (operation.getAnnotation(ServiceOperation.class) != null) {
 		ServiceOperation serviceOperation = operation.getAnnotation(ServiceOperation.class);
 		Operation op = new Operation(operation.getName(), operation.getParameterTypes(), operation.getReturnType().getName());
-		op.setCost(serviceOperation.OperationCost());
+		op.setOpCost(serviceOperation.OperationCost());
 		opList.add(op);
 	    }
 	}

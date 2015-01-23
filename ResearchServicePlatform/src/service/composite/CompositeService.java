@@ -8,7 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import service.adaptation.effector.AbstractEffector;
+import service.adaptation.effector.CacheEffector;
+import service.adaptation.effector.ConfigurationEffector;
+import service.adaptation.effector.WorkflowEffector;
 import service.adaptation.probes.AbstractProbe;
+import service.adaptation.probes.CostProbe;
+import service.adaptation.probes.ServiceInvocationProbe;
+import service.adaptation.probes.WorkflowProbe;
 import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.Configuration;
 import service.auxiliary.Param;
@@ -23,6 +29,16 @@ public class CompositeService extends AbstractService {
 
     String workflow;
 
+    // Initializing probes
+    CostProbe costProbe = new CostProbe();
+    ServiceInvocationProbe serviceInvocationProbe = new ServiceInvocationProbe();
+    WorkflowProbe workflowProbe = new WorkflowProbe();
+
+    // Initializing effectors
+    CacheEffector cacheEffector = new CacheEffector(this);
+    ConfigurationEffector configurationEffector = new ConfigurationEffector(this);
+    WorkflowEffector workflowEffector = new WorkflowEffector(this);
+
     /**
      * @param workflow
      *            the workflow to set
@@ -32,23 +48,6 @@ public class CompositeService extends AbstractService {
     }
 
     Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
-    ProbeList probeList = new ProbeList();
-    EffectorList effectorList = new EffectorList();
-
-    /**
-     * @return the effector
-     */
-    public EffectorList getEffectorList() {
-	return effectorList;
-    }
-
-    /**
-     * @param effector
-     *            the effector to set
-     */
-    public void addEffector(AbstractEffector effector) {
-	this.effectorList.add(effector);
-    }
 
     SDCache cache;
 
@@ -63,30 +62,14 @@ public class CompositeService extends AbstractService {
 	    if (annotation != null && annotation instanceof CompositeServiceConfiguration) {
 		CompositeServiceConfiguration CSConfiguration = (CompositeServiceConfiguration) annotation;
 		this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize(),
-			CSConfiguration.Timeout(), CSConfiguration.IgnoreTimeOutError(), CSConfiguration.MaxRetryAttempts(), CSConfiguration.SDCacheMode(), CSConfiguration.SDCacheShared(),
-			CSConfiguration.SDCacheTimeout(), CSConfiguration.SDCacheSize());
+			CSConfiguration.Timeout(), CSConfiguration.IgnoreTimeOutError(), CSConfiguration.MaxRetryAttempts(), CSConfiguration.SDCacheMode(),
+			CSConfiguration.SDCacheShared(), CSConfiguration.SDCacheTimeout(), CSConfiguration.SDCacheSize());
 	    } else {
 		this.configuration = new Configuration(false, 1, 0, 10, false, 1, false, false, 0, 0);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-    }
-
-    /**
-     * @return the probeList
-     */
-    public ProbeList getProbeList() {
-	return probeList;
-    }
-
-    /**
-     * Add Probe to the list
-     * 
-     * @param probe
-     */
-    public void addProbe(AbstractProbe probe) {
-	this.getProbeList().add(probe);
     }
 
     public CompositeService(String serviceName, String serviceEndpoint, String workflow) {
@@ -124,13 +107,11 @@ public class CompositeService extends AbstractService {
 	SDCache sdCache = cache == null ? new SDCache() : cache;
 	WorkflowEngine engine = new WorkflowEngine(this, sdCache);
 
-	if (probeList != null)
-	    probeList.workflowStarted(qosRequirementName, params);
+	workflowProbe.workflowStarted(qosRequirementName, params);
 
 	Object result = engine.executeWorkflow(workflow, qosRequirement, params);
 
-	if (probeList != null)
-	    probeList.workflowEnded(result, qosRequirementName, params);
+	workflowProbe.workflowEnded(result, qosRequirementName, params);
 
 	return result;
 
@@ -175,5 +156,29 @@ public class CompositeService extends AbstractService {
 	}
 
 	return serviceDescriptions;
+    }
+    
+    public CostProbe getCostProbe() {
+	return costProbe;
+    }
+    
+    public ServiceInvocationProbe getServiceInvocationProbe() {
+	return serviceInvocationProbe;
+    }
+    
+    public WorkflowProbe getWorkflowProbe() {
+	return workflowProbe;
+    }
+    
+    public WorkflowEffector getWorkflowEffector() {
+	return workflowEffector;
+    }
+    
+    public CacheEffector getCacheEffector() {
+	return cacheEffector;
+    }
+    
+    public ConfigurationEffector getConfigurationEffector() {
+	return configurationEffector;
     }
 }

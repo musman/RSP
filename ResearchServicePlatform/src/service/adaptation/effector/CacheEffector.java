@@ -17,8 +17,7 @@ public class CacheEffector extends AbstractEffector {
      * @param service
      */
     public void removeService(ServiceDescription service) {
-	for (Operation operation : service.getOperationList())
-	    compositeService.getCache().remove(service, operation.getOpName());
+	    compositeService.getCache().remove(service);
     }
 
     /**

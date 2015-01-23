@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import service.auxiliary.Operation;
 import service.auxiliary.ServiceDescription;
 
 /**
@@ -83,6 +84,11 @@ public class SDCache{
     	} 	
     	return null;
     }
+    
+    public void remove(ServiceDescription service) {
+   	for (Operation operation : service.getOperationList())
+   	    remove(service, operation.getOpName());
+       }
     
     public boolean remove(String serviceType,String opName){
     	Description description=new Description(serviceType,opName);

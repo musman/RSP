@@ -16,7 +16,6 @@ public class AbstractEffector {
 	
 	public AbstractEffector(CompositeService compositeService){
 		this.compositeService=compositeService;
-		compositeService.addEffector(this);
 	}
 	
 	/**

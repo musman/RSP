@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <inputProfile>
 	<maxSteps>100</maxSteps>
-	<qosRequirement>AlarmServiceQoSFailureRate</qosRequirement>
+	<qosRequirement>ReliabilityQoS</qosRequirement>
 	<variables>
 		<variable>
 			<name>patientId</name>

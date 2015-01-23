@@ -104,6 +104,10 @@ public class ServiceDescription implements Serializable {
 	customProperties.put(RESPONSE_TIME, responseTime);
     }
 
+    public double getOperationCost(String opName){
+	return getOperation(opName).getOpCost();
+    }
+    
 /*    public void setServiceCost(double serviceCost) {
 	this.serviceCost = serviceCost;
     }
