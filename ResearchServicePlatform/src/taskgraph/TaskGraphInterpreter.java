@@ -394,6 +394,8 @@ public class TaskGraphInterpreter {
 		    resultInvoke = invokeServiceOperation(call.getServiceName(), call.getOperationName(), params);
 		}
 
+		if(!compositeService.getConfiguration().ignoreTimeoutError && resultInvoke instanceof TimeOutError)
+			return resultInvoke;
 		call.setValue(resultInvoke);
 		CT = CT.getNext();
 		break;

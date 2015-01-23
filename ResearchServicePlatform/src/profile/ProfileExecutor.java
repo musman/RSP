@@ -8,6 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.util.ArrayList;
+
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
@@ -22,7 +25,9 @@ public class ProfileExecutor {
 	public static InputProfile profile=new InputProfile();
 	
 	static{
-		xstream.alias("InputProfile", InputProfile.class);
+		xstream.alias("inputProfile", InputProfile.class);
+		xstream.alias("variable", InputProfileVariable.class);
+		xstream.alias("value", InputProfileValue.class);
 	}
 	
 	public static void readFromXml(String xmlPath){
@@ -52,14 +57,33 @@ public class ProfileExecutor {
 		//String xmlPath="/Users/ryf/Documents/github/TeleAssistanceSystem/resources/profile.xml";
 		
 		String xmlPath="inputProfile.xml";
+		
+		ProfileExecutor.profile.maxSteps=100;
 
 		
-		ProfileExecutor.profile.name="profile1";
-		ProfileExecutor.profile.maxSteps=100;
-		ProfileExecutor.profile.variables.put("pick", 2);
-		ProfileExecutor.profile.variables.put("analysisResult", 1);
+		InputProfileValue value=new InputProfileValue(1,1);
+		InputProfileVariable variable=new InputProfileVariable("patientId");
+		variable.addValue(value);
+		
+		ProfileExecutor.profile.addVariable(variable);
+		
+		value=new InputProfileValue(1,0.75);
+		variable=new InputProfileVariable("pick");
+		variable.addValue(value);
+		
+		value=new InputProfileValue(2,0.25);
+		variable.addValue(value);
+		ProfileExecutor.profile.addVariable(variable);
+		
+		ProfileExecutor.profile.qosRequirement="AlarmServiceQoSFailureRate";
 		
 		ProfileExecutor.writeToXml(xmlPath);
+				
+		
+		//ProfileExecutor.profile.variables.add(new Variable("pick",new Value(1,1)));
+		//ProfileExecutor.profile.variables.put("analysisResult", 1);
+		
+		//ProfileExecutor.writeToXml(xmlPath);
 		
 		/*
 		ProfileExecutor.readFromXml(xmlPath);

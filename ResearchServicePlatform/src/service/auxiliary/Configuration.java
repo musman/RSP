@@ -21,10 +21,11 @@ public class Configuration {
      * @param sDCacheTimeout
      * @param sDCacheSize
      */
-    public Configuration(boolean multipleThreads, int maxNoOfThreads, int maxQueueSize, int timeout, int maxRetryAttempts,boolean sDCacheMode, boolean sDCacheShared, int sDCacheTimeout,
+    public Configuration(boolean multipleThreads, int maxNoOfThreads, int maxQueueSize, int timeout, boolean ignoreTimeoutError,int maxRetryAttempts,boolean sDCacheMode, boolean sDCacheShared, int sDCacheTimeout,
 	    int sDCacheSize) {
 	this(multipleThreads, maxNoOfThreads, maxQueueSize);
 	this.timeout = timeout;
+	this.ignoreTimeoutError = ignoreTimeoutError;
 	this.maxRetryAttempts = maxRetryAttempts;
 	SDCacheMode = sDCacheMode;
 	SDCacheShared = sDCacheShared;
@@ -57,6 +58,7 @@ public class Configuration {
     public int maxNoOfThreads;
     public int maxQueueSize;
     public int timeout;
+    public boolean ignoreTimeoutError;
     public int maxRetryAttempts;
     public boolean SDCacheMode;
     public boolean SDCacheShared;

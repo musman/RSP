@@ -2,8 +2,12 @@
  * 
  */
 package profile;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import service.workflow.AbstractQoSRequirement;
 
 
 /**
@@ -13,45 +17,40 @@ import java.util.Map;
  */
 public class InputProfile {
 
-	protected String name;
+	//protected String name;
 	protected int maxSteps;
-	protected String workflowPath;
-	protected Map<String,Object> variables=new HashMap<>();
+	//protected String workflowPath;
+	protected String qosRequirement;
+	protected List<InputProfileVariable> variables=new ArrayList<>();
+	
+	//Map<String,Map<String,Double>> variables=new HashMap<>();
+	
+	//protected Map<String,Object> variables=new HashMap<>();
 	
 	public InputProfile(){
 		
 	}
 	
-	public InputProfile(String name, int maxSteps, String workflowPath, Map<String,Object> variables){
-		this.name=name;
+	public InputProfile(int maxSteps, String qosRequirement,List<InputProfileVariable> variables){
 		this.maxSteps=maxSteps;
-		this.workflowPath=workflowPath;
+		this.qosRequirement=qosRequirement;
 		this.variables=variables;
-
-	}
-	
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
 	}
 
-	/**
-	 * @return the maxNumofInvocations
-	 */
+
 	public int getMaxSteps() {
 		return maxSteps;
 	}
 
-	/**
-	 * @return the workflowPath
-	 */
-	public String getWorkflowPath() {
-		return workflowPath;
+
+	public String getQosRequirement() {
+		return qosRequirement;
 	}
 	
-	public Object getVariable(String variable){
-		return this.variables.get(variable);
+	
+	public void addVariable(InputProfileVariable variable){
+		this.variables.add(variable);
 	}
+
+
 }
