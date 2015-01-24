@@ -55,8 +55,9 @@ public class SDCache{
 
 	public Set<String> getServices(){
 		Set<String> services=new HashSet<>();
-		for (Description key: caches.keySet()) {
-			services.add(key.serviceName);
+		for (List<ServiceDescription> serviceList : caches.values()) {
+			for(ServiceDescription service:serviceList)
+				services.add(service.getServiceName());
 		}
 		return services;
 	}
@@ -151,24 +152,24 @@ public class SDCache{
     }
     
     class Description{
-		String serviceName;
+		String serviceType;
     	String opName;
     	
-		public Description(String serviceName, String opName) {
-			this.serviceName = serviceName;
+		public Description(String serviceType, String opName) {
+			this.serviceType = serviceType;
 			this.opName = opName;
 		}
 		
 		@Override
 		public int hashCode(){
-			return serviceName.hashCode()+opName.hashCode();
+			return serviceType.hashCode()+opName.hashCode();
 		}
 		
 		@Override
 		public boolean equals(Object obj){
 			if(obj instanceof Description){
 				Description description=(Description)obj;
-				if(description.serviceName.equals(serviceName) && description.opName.equals(opName))
+				if(description.serviceType.equals(serviceType) && description.opName.equals(opName))
 					return true;
 			}
 			return false;
