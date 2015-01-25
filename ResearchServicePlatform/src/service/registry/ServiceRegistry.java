@@ -18,6 +18,14 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     	super(NAME, ADDRESS);
     }
 
+    public List<String> getAllServices(){
+    	List<String> allServices=new ArrayList<>();
+    	for (ServiceDescription service : serviceList.values()) {
+    		allServices.add(service.getServiceName());
+    	}
+    	return allServices;
+    }
+    
     @ServiceOperation
     public int register(ServiceDescription serviceDescription) {
 	
