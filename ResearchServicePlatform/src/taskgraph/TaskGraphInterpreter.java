@@ -560,9 +560,15 @@ public class TaskGraphInterpreter {
     /*
      * Search through service registry to get the list of service descriptions
      */
-    public List<ServiceDescription> lookupService(String serviceName, String opName) {
+    public List<ServiceDescription> lookupService(String serviceType, String opName) {
 
-	return compositeService.lookupService(serviceName, opName);
+	List<ServiceDescription> list  = compositeService.lookupService(serviceType, opName);
+	if (list == null || list.size() == 0){
+		compositeService.getWorkflowProbe().serviceNotFound(serviceType, opName);
+		list  = compositeService.lookupService(serviceType, opName);
+	}
+	
+	return list;
     }
 
     protected ServiceDescription applyQoSRequirement(AbstractQoSRequirement qosRequirement, List<ServiceDescription> serviceDescriptions, String opName, Object... params) {
@@ -606,9 +612,10 @@ public class TaskGraphInterpreter {
 	do {
 	    List<ServiceDescription> services = lookupService(serviceName, operationName);
 	    if (services == null || services.size() == 0) {
-		throw new RuntimeException(serviceName + "." + operationName + " not found!");
+		System.out.println("ServiceName: " + serviceName +"." + operationName + "not found!");
+		 return new TimeOutError();
 	    }
-
+	    
 	    // Apply strategy
 	    ServiceDescription service = applyQoSRequirement(qosRequirement, services, operationName, params);
 
@@ -621,13 +628,13 @@ public class TaskGraphInterpreter {
 	    do {
 		alternateService = null;
 
-		    compositeService.getServiceInvocationProbe().serviceOperationInvoked(service, operationName, params);
+		    compositeService.getWorkflowProbe().serviceOperationInvoked(service, operationName, params);
 
-		int maxResponseTime = timeout != 0 ? timeout : service.getResponseTime();
+		int maxResponseTime = timeout != 0 ? timeout : service.getResponseTime() * 3;
 		resultVal = compositeService.sendRequest(service.getServiceType(), service.getServiceEndpoint(), true, maxResponseTime, operationName, params);
 
 		if (resultVal instanceof TimeOutError) {
-			compositeService.getServiceInvocationProbe().serviceOperationTimeout(service, operationName, params);
+			compositeService.getWorkflowProbe().serviceOperationTimeout(service, operationName, params);
 		    
 		    // Check effector if there is any alternative service to pick
 		   // alternateService = compositeService.getEffector().selectAlternativeService(service, operationName, params);
@@ -638,7 +645,7 @@ public class TaskGraphInterpreter {
 	    } while (alternateService != null);
 
 	    if (!(resultVal instanceof TimeOutError)){
-		compositeService.getServiceInvocationProbe().serviceOperationReturned(service, resultVal, operationName, params);
+		compositeService.getWorkflowProbe().serviceOperationReturned(service, resultVal, operationName, params);
 		compositeService.getCostProbe().costOperation(service, operationName);
 	    }
 

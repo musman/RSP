@@ -131,7 +131,13 @@ public class SDCache{
     }
     
     public boolean containsCache(String serviceType,String opName){
-    	return caches.containsKey(new Description(serviceType,opName));
+	Description description = new Description(serviceType, opName);
+    	if (caches.containsKey(description))
+    	{
+    	    List<ServiceDescription> descriptions = caches.get(description);
+    	    return descriptions!= null && descriptions.size() > 0;
+    	}
+    	return false;
     }
     
     public void refresh(){
@@ -174,5 +180,32 @@ public class SDCache{
 			}
 			return false;
 		}
+		
+		@Override
+		public String toString(){
+		    return serviceType + "." + opName;
+		}
+    }
+
+    public ServiceDescription getServiceDescription(int registerId){
+	for (List<ServiceDescription> serviceList : caches.values()) {
+		for(ServiceDescription service:serviceList){
+			if (service.getRegisterID() == registerId)
+			    return service;
+		}
+	}
+	
+	return null;
+    }
+    
+    public void remove(int registerId) {
+	ServiceDescription serviceDescription = getServiceDescription(registerId);
+	if (serviceDescription != null){
+	    remove(serviceDescription);
+	}
+	else{
+	    System.err.println("Service not found with registeration Id:" + registerId);
+	    System.err.println("Service cannot be removed.");
+	}
     }
 }

@@ -35,9 +35,9 @@ public class CompositeService extends AbstractService {
     WorkflowProbe workflowProbe = new WorkflowProbe();
 
     // Initializing effectors
-    CacheEffector cacheEffector = new CacheEffector(this);
+   // CacheEffector cacheEffector = new CacheEffector(this);
     ConfigurationEffector configurationEffector = new ConfigurationEffector(this);
-    WorkflowEffector workflowEffector = new WorkflowEffector(this);
+    //WorkflowEffector workflowEffector = new WorkflowEffector(this);
 
     /**
      * @param workflow
@@ -147,12 +147,12 @@ public class CompositeService extends AbstractService {
     /*
      * Search through service registry to get the list of service descriptions
      */
-    public List<ServiceDescription> lookupService(String serviceName, String opName) {
+    public List<ServiceDescription> lookupService(String serviceType, String opName) {
 
-	List<ServiceDescription> serviceDescriptions = cache.get(serviceName, opName);
+	List<ServiceDescription> serviceDescriptions = cache.get(serviceType, opName);
 	if (serviceDescriptions == null) {
-	    serviceDescriptions = (List<ServiceDescription>) this.sendRequest(ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true, "lookup", serviceName, opName);
-	    cache.add(serviceName, opName, serviceDescriptions);
+	    serviceDescriptions = (List<ServiceDescription>) this.sendRequest(ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true, "lookup", serviceType, opName);
+	    cache.add(serviceType, opName, serviceDescriptions);
 	}
 
 	return serviceDescriptions;
@@ -162,23 +162,42 @@ public class CompositeService extends AbstractService {
 	return costProbe;
     }
     
-    public ServiceInvocationProbe getServiceInvocationProbe() {
-	return serviceInvocationProbe;
-    }
+//    public WorkflowProbe getServiceInvocationProbe() {
+//	return workflowProbe;
+//    }
     
     public WorkflowProbe getWorkflowProbe() {
 	return workflowProbe;
     }
     
-    public WorkflowEffector getWorkflowEffector() {
-	return workflowEffector;
-    }
+    //public WorkflowEffector getWorkflowEffector() {
+	//return workflowEffector;
+    //}
     
-    public CacheEffector getCacheEffector() {
-	return cacheEffector;
-    }
+    //public CacheEffector getCacheEffector() {
+	//return cacheEffector;
+    //}
     
     public ConfigurationEffector getConfigurationEffector() {
 	return configurationEffector;
+    }
+
+    /**
+     * Returns true if composite service cache contains instances of the specific service type with operation name
+     * @param serviceType
+     * @param opName
+     * @return
+     */
+    public boolean containServices(String serviceType, String opName) {
+	return cache.containsCache(serviceType, opName);
+    }
+    
+    /**
+     * Get service description using registeration ID of the service from cache
+     * @param serviceId
+     * @return
+     */
+    public ServiceDescription getServiceDescription(int registerId){
+	return cache.getServiceDescription(registerId);
     }
 }

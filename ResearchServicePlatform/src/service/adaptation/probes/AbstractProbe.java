@@ -35,6 +35,9 @@ public abstract class AbstractProbe<E> {
     public void costOperation(ServiceDescription service, String opName) {
     }
     
+    public void serviceNotFound(String serviceType, String serviceName){
+    }
+    
     public void register(E e){
 	subscribers.add(e);
     }

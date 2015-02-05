@@ -17,4 +17,7 @@ public class ConfigurationEffector extends AbstractEffector {
 	compositeService.getConfiguration().timeout = timeout;
     }
 
+    public void setMaxRetryAttempts(int maxRetryAttempts) {
+   	compositeService.getConfiguration().maxRetryAttempts = maxRetryAttempts;
+    }
 }

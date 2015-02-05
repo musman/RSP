@@ -1,6 +1,7 @@
 package service.provider;
 
 import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -175,7 +176,11 @@ public abstract class AbstractService implements MessageListener {
 	    receiver.setMessageListener(this);
 	    // System.out.println(this.getClass());
 	    queueConnection.start();
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
+	    if (e.getCause() instanceof ConnectException){
+		System.err.println("Cannot connect to ActivMQ. Please make sure that ActivMQ is working.");
+	    }
 	    e.printStackTrace();
 	}
     }

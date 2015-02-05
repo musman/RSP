@@ -171,4 +171,8 @@ public class ServiceDescription implements Serializable {
 	}
 	return false;
     }
+
+    public void setOperationCost(String opName, double cost) {
+	getOperation(opName).setOpCost(cost);
+    }
 }

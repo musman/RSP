@@ -6,10 +6,11 @@ import service.auxiliary.Operation;
 import service.auxiliary.ServiceDescription;
 import service.composite.CompositeService;
 
-public class CacheEffector extends AbstractEffector {
+public class CacheEffector {
 
+    private CompositeService compositeService;
     public CacheEffector(CompositeService compositeService) {
-	super(compositeService);
+	this.compositeService = compositeService;
     }
 
     /**
@@ -18,6 +19,14 @@ public class CacheEffector extends AbstractEffector {
      */
     public void removeService(ServiceDescription service) {
 	    compositeService.getCache().remove(service);
+    }
+    
+    /**
+     * Remove service from cache with registeration id
+     * @param service
+     */
+    public void removeService(int registerId) {
+	    compositeService.getCache().remove(registerId);
     }
 
     /**
@@ -34,6 +43,11 @@ public class CacheEffector extends AbstractEffector {
      */
     public void refreshCache() {
 	compositeService.getCache().refresh();
+    }
+    
+    public void getAllServices(String serviceType, String opName){
+	compositeService.getCache().remove(serviceType, opName);
+	compositeService.lookupService(serviceType, opName);
     }
 
     /**
