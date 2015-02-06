@@ -7,13 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import service.adaptation.effector.AbstractEffector;
-import service.adaptation.effector.CacheEffector;
 import service.adaptation.effector.ConfigurationEffector;
-import service.adaptation.effector.WorkflowEffector;
-import service.adaptation.probes.AbstractProbe;
 import service.adaptation.probes.CostProbe;
-import service.adaptation.probes.ServiceInvocationProbe;
 import service.adaptation.probes.WorkflowProbe;
 import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.Configuration;
@@ -31,13 +26,10 @@ public class CompositeService extends AbstractService {
 
     // Initializing probes
     CostProbe costProbe = new CostProbe();
-    ServiceInvocationProbe serviceInvocationProbe = new ServiceInvocationProbe();
     WorkflowProbe workflowProbe = new WorkflowProbe();
 
     // Initializing effectors
-   // CacheEffector cacheEffector = new CacheEffector(this);
     ConfigurationEffector configurationEffector = new ConfigurationEffector(this);
-    //WorkflowEffector workflowEffector = new WorkflowEffector(this);
 
     /**
      * @param workflow
