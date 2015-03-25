@@ -88,7 +88,7 @@ public class SDCache{
     		List<ServiceDescription> services=new ArrayList<>();
     		for(ServiceDescription serviceDescription : caches.get(description)){
     			//System.out.println(serviceDescription);
-				services.add((ServiceDescription)serviceDescription.clone());
+				services.add((ServiceDescription)serviceDescription);
     		}
     		return services;
     	} 	

@@ -2,13 +2,13 @@ package service.auxiliary;
 
 public class AbstractMessage {
 	private int id;
-	private String address;
-	private String type;
+	private String endpoint;
+	private String msgType;
 	
-	public AbstractMessage(int id, String address, String type){
+	public AbstractMessage(int id, String endpoint, String msgType){
 		this.id=id;
-		this.address=address;
-		this.type=type;
+		this.endpoint=endpoint;
+		this.msgType=msgType;
 	}
 	
 	public void setId(int id) {
@@ -20,18 +20,18 @@ public class AbstractMessage {
 	}
 	
 	public void setAddress(String address) {
-	    this.address = address;
+	    this.endpoint = address;
 	}
 	
 	public String getAddress() {
-	    return address;
+	    return endpoint;
 	}
 	
-	public void setType(String type) {
-	    this.type = type;
+	public void setType(String msgType) {
+	    this.msgType = msgType;
 	}
 	
 	public String getType() {
-	    return type;
+	    return msgType;
 	}
 }
