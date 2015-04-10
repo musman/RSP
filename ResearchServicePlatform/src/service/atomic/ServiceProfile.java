@@ -1,7 +1,7 @@
 package service.atomic;
 
 public abstract class ServiceProfile {
-
+		
 	/*
 	 * This method is called before invoking service operations. Argument operationName have the value of the operation which is going to invoke. 
 	 * If this method returns true then that service operation will be invoked. If this method

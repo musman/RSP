@@ -16,23 +16,32 @@ import service.auxiliary.Operation;
 import service.auxiliary.ServiceDescription;
 
 /**
+ * Cache for available services
  * @author yfruan
  * @email  ry222ad@student.lnu.se
  *
  */
 public class SDCache{
+	
     Map<Description, List<ServiceDescription>> caches = new ConcurrentHashMap<Description, List<ServiceDescription>>();
     int maxCacheSize;
-    int refreshPeriod=10000;
+    int refreshPeriod=10000;         
     Timer timer = null;    
     
-
-    
+    /**
+     * 
+     * @return
+     */
 	public int getRefreshPeriod() {
 		return refreshPeriod;
 	}
 
 
+	/**
+	 * 
+	 * @param refreshPeriod
+	 * @return
+	 */
 	public boolean setRefreshPeriod(int refreshPeriod) {
 		this.refreshPeriod = refreshPeriod;
 		if (timer != null){
@@ -53,6 +62,10 @@ public class SDCache{
 		return false;
 	}
 
+	/**
+	 * Return available services
+	 * @return
+	 */
 	public Set<String> getServices(){
 		Set<String> services=new HashSet<>();
 		for (List<ServiceDescription> serviceList : caches.values()) {
@@ -62,15 +75,29 @@ public class SDCache{
 		return services;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public int getMaxCacheSize() {
 		return maxCacheSize;
 	}
 
-
+	/**
+	 * 
+	 * @param maxCacheSize
+	 */
 	public void setMaxCacheSize(int maxCacheSize) {
 		this.maxCacheSize = maxCacheSize;
 	}
 
+	/**
+	 * 
+	 * @param serviceType
+	 * @param opName
+	 * @param serviceDescriptions
+	 * @return
+	 */
 	public boolean add(String serviceType,String opName,List<ServiceDescription> serviceDescriptions){
 		if(maxCacheSize<=caches.size() && maxCacheSize>0)
 			return false;
@@ -82,6 +109,12 @@ public class SDCache{
     	return true;
     }
     
+	/**
+	 * Get services with specific type and operation
+	 * @param serviceType
+	 * @param opName
+	 * @return
+	 */
     public List<ServiceDescription> get(String serviceType,String opName){
     	Description description=new Description(serviceType,opName);
     	if(caches.containsKey(description)){
@@ -95,11 +128,21 @@ public class SDCache{
     	return null;
     }
     
+    /**
+     * 
+     * @param service
+     */
     public void remove(ServiceDescription service) {
    	for (Operation operation : service.getOperationList())
    	    remove(service, operation.getOpName());
        }
     
+    /**
+     * 
+     * @param serviceType
+     * @param opName
+     * @return
+     */
     public boolean remove(String serviceType,String opName){
     	Description description=new Description(serviceType,opName);
     	if(caches.containsKey(description)){
@@ -109,6 +152,13 @@ public class SDCache{
     	return false;
     }
     
+    /**
+     * 
+     * @param serviceType
+     * @param opName
+     * @param service
+     * @return
+     */
     public boolean remove(String serviceType,String opName,ServiceDescription service){
     	Description description=new Description(serviceType,opName);
     	if(caches.containsKey(description)){
@@ -122,14 +172,30 @@ public class SDCache{
     	return false;
     }
     
+    /**
+     * 
+     * @param service
+     * @param opName
+     * @return
+     */
     public boolean remove(ServiceDescription service, String opName){
     	return this.remove(service.getServiceType(), opName,service);
     }
     
+    /**
+     * 
+     * @return
+     */
     public int size(){
     	return caches.size();
     }
     
+    /**
+     * 
+     * @param serviceType
+     * @param opName
+     * @return
+     */
     public boolean containsCache(String serviceType,String opName){
 	Description description = new Description(serviceType, opName);
     	if (caches.containsKey(description))
@@ -144,6 +210,13 @@ public class SDCache{
         caches.clear();
     }
 
+    /**
+     * 
+     * @param oldService
+     * @param newService
+     * @param opName
+     * @return
+     */
     public boolean update(ServiceDescription oldService, ServiceDescription newService, String opName){
     	Description description=new Description(oldService.getServiceType(),opName);
     	if(caches.containsKey(description)){
@@ -157,6 +230,11 @@ public class SDCache{
     	return false;
     }
     
+    /**
+     * 
+     * @author ryf
+     *
+     */
     class Description{
 		String serviceType;
     	String opName;
@@ -187,6 +265,11 @@ public class SDCache{
 		}
     }
 
+    /**
+     * 
+     * @param registerId
+     * @return
+     */
     public ServiceDescription getServiceDescription(int registerId){
 	for (List<ServiceDescription> serviceList : caches.values()) {
 		for(ServiceDescription service:serviceList){
@@ -198,6 +281,10 @@ public class SDCache{
 	return null;
     }
     
+    /**
+     * 
+     * @param registerId
+     */
     public void remove(int registerId) {
 	ServiceDescription serviceDescription = getServiceDescription(registerId);
 	if (serviceDescription != null){

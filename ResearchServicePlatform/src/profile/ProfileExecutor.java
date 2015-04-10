@@ -8,13 +8,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
+ * Read and write input profile to xml file
  * @author yfruan
  * @email  ry222ad@student.lnu.se
  *
@@ -30,6 +30,10 @@ public class ProfileExecutor {
 		xstream.alias("value", InputProfileValue.class);
 	}
 	
+	/**
+	 * 
+	 * @param xmlPath
+	 */
 	public static void readFromXml(String xmlPath){
 		try {
 			InputStream input = new FileInputStream(xmlPath);
@@ -39,6 +43,10 @@ public class ProfileExecutor {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param xmlPath
+	 */
 	public static void writeToXml(String xmlPath){
 		try {
 			BufferedWriter writer=new BufferedWriter(new FileWriter(xmlPath));	
@@ -52,15 +60,11 @@ public class ProfileExecutor {
 	}
 
 	public static void main(String[] args){
-		
-		
-		//String xmlPath="/Users/ryf/Documents/github/TeleAssistanceSystem/resources/profile.xml";
-		
+			
 		String xmlPath="inputProfile.xml";
 		
 		ProfileExecutor.profile.maxSteps=100;
 
-		
 		InputProfileValue value=new InputProfileValue(1,1);
 		InputProfileVariable variable=new InputProfileVariable("patientId");
 		variable.addValue(value);
@@ -79,7 +83,6 @@ public class ProfileExecutor {
 		
 		ProfileExecutor.writeToXml(xmlPath);
 				
-		
 		//ProfileExecutor.profile.variables.add(new Variable("pick",new Value(1,1)));
 		//ProfileExecutor.profile.variables.put("analysisResult", 1);
 		
@@ -95,8 +98,6 @@ public class ProfileExecutor {
 		
 		/*
 		Profile profile=new Profile(xmlPath);
-		System.out.println("Variable analysisResult: "+profile.getVariable("analysisResult"));*/
-
-		
+		System.out.println("Variable analysisResult: "+profile.getVariable("analysisResult"));*/	
 	}
 }

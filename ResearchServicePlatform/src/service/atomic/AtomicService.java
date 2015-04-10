@@ -2,6 +2,8 @@ package service.atomic;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import service.auxiliary.AbstractService;
 import service.auxiliary.AtomicServiceConfiguration;
@@ -12,7 +14,8 @@ import service.auxiliary.ServiceOperation;
 
 public abstract class AtomicService extends AbstractService {
 		
-	private ServiceProfile serviceProfile=null;
+	//private ServiceProfile serviceProfile=null;
+	private List<ServiceProfile> serviceProfiles=new ArrayList<>();
 	
     public AtomicService(String serviceName, String serviceEndpoint, int responseTime) {
 	super(serviceName, serviceEndpoint, responseTime);
@@ -22,13 +25,23 @@ public abstract class AtomicService extends AbstractService {
 	super(serviceName, serviceEndpoint);
     }
 
-    public ServiceProfile getServiceProfile() {
-	return serviceProfile;
+    
+    public void removeServiceProfile(int index){
+    	serviceProfiles.remove(index);
+    }
+    
+    public void removeServiceProfile(ServiceProfile serviceProfile){
+    	serviceProfiles.remove(serviceProfile);
+    }
+    
+    public void addServiceProfile(ServiceProfile serviceProfile){
+    	this.serviceProfiles.add(serviceProfile);
+    }
+    
+    public List<ServiceProfile> getServiceProfiles(){
+    	return this.serviceProfiles;
     }
 
-    public void setServiceProfile(ServiceProfile serviceProfile) {
-	this.serviceProfile = serviceProfile;
-    }
 
     @Override
     public Object invokeOperation(String opName, Param[] params) {
@@ -44,13 +57,31 @@ public abstract class AtomicService extends AbstractService {
 			    for (int i = 0; i < size; i++) {
 				args[i] = params[i].getValue();
 			    }
-
-			    boolean flag = serviceProfile != null ? serviceProfile.preInvokeOperation(opName, args) : true;
+			    
+			    int serviceProfileNum=this.serviceProfiles.size();
+			    boolean flag=true;
+			    
+			    for(int i=0;i<serviceProfileNum;i++){
+				    if(!(flag=serviceProfiles.get(i).preInvokeOperation(opName, args)))
+				    	break;
+			    }
+			    		
+			    //boolean flag = serviceProfile != null ? serviceProfile.preInvokeOperation(opName, args) : true;
+			    
 			    Object result;
+			    
 			    if (flag) {
+			    	
 				result = operation.invoke(this, args);
-				Object mResult = serviceProfile != null ? serviceProfile.postInvokeOperation(opName, result, args) : result;
-				return mResult;
+				
+				for(int i=0;i<serviceProfileNum;i++){
+					result=serviceProfiles.get(i).postInvokeOperation(opName, result, args);
+				}
+				
+				//Object mResult = serviceProfile != null ? serviceProfile.postInvokeOperation(opName, result, args) : result;
+				
+				return result;
+				
 			    } else {
 				// return null;
 				return new OperationAborted(null);

@@ -14,7 +14,10 @@ import service.atomic.ServiceProfile;
  */
 public class LogAtomicService extends ServiceProfile {
 
-    public boolean preInvokeOperation(String operationName, Object... args) {
+    public LogAtomicService() {
+	}
+    
+	public boolean preInvokeOperation(String operationName, Object... args) {
 	System.out.println("Operation: " + operationName);
 	System.out.println("Arguments: " + Arrays.toString(args));
 	return true;
