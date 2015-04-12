@@ -1,5 +1,10 @@
 package service.auxiliary;
 
+/**
+ * 
+ * @author Yifan Ruan
+ * @email  ry222ad@student.lnu.se
+ */
 public class AbstractMessage {
 	private int id;
 	private String endpoint;
@@ -11,26 +16,50 @@ public class AbstractMessage {
 		this.msgType=msgType;
 	}
 	
+	/**
+	 * 
+	 * @param id
+	 */
 	public void setId(int id) {
 	    this.id = id;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getId() {
 	    return id;
 	}
 	
-	public void setAddress(String address) {
-	    this.endpoint = address;
+	/**
+	 * 
+	 * @param address
+	 */
+	public void setEndpoint(String endpoint) {
+	    this.endpoint = endpoint;
 	}
 	
-	public String getAddress() {
+	/**
+	 * 
+	 * @return
+	 */
+	public String getEndpoint() {
 	    return endpoint;
 	}
 	
+	/**
+	 * 
+	 * @param msgType
+	 */
 	public void setType(String msgType) {
 	    this.msgType = msgType;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getType() {
 	    return msgType;
 	}

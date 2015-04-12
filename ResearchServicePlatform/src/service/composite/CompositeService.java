@@ -23,17 +23,16 @@ import service.workflow.WorkflowEngine;
 public class CompositeService extends AbstractService {
 
     String workflow;
-
     // Initializing probes
     CostProbe costProbe = new CostProbe();
     WorkflowProbe workflowProbe = new WorkflowProbe();
-
     // Initializing effectors
     ConfigurationEffector configurationEffector = new ConfigurationEffector(this);
 
+
     /**
+     * 
      * @param workflow
-     *            the workflow to set
      */
     public void setWorkflow(String workflow) {
 	this.workflow = workflow;
@@ -44,41 +43,52 @@ public class CompositeService extends AbstractService {
     SDCache cache;
 
     public SDCache getCache() {
-	return cache;
+    	return cache;
     }
 
     @Override
     protected void readConfiguration() {
-	try {
-	    Annotation annotation = this.getClass().getAnnotation(CompositeServiceConfiguration.class);
-	    if (annotation != null && annotation instanceof CompositeServiceConfiguration) {
-		CompositeServiceConfiguration CSConfiguration = (CompositeServiceConfiguration) annotation;
-		this.configuration = new Configuration(CSConfiguration.MultipeThreads(), CSConfiguration.MaxNoOfThreads(), CSConfiguration.MaxQueueSize(),
-			CSConfiguration.Timeout(), CSConfiguration.IgnoreTimeOutError(), CSConfiguration.MaxRetryAttempts(), CSConfiguration.SDCacheMode(),
-			CSConfiguration.SDCacheShared(), CSConfiguration.SDCacheTimeout(), CSConfiguration.SDCacheSize());
-	    } else {
-		this.configuration = new Configuration(false, 1, 0, 10, false, 1, false, false, 0, 0);
-	    }
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+		try {
+			Annotation annotation = this.getClass().getAnnotation(
+					CompositeServiceConfiguration.class);
+			if (annotation != null
+					&& annotation instanceof CompositeServiceConfiguration) {
+				CompositeServiceConfiguration CSConfiguration = (CompositeServiceConfiguration) annotation;
+				this.configuration = new Configuration(
+						CSConfiguration.MultipeThreads(),
+						CSConfiguration.MaxNoOfThreads(),
+						CSConfiguration.MaxQueueSize(),
+						CSConfiguration.Timeout(),
+						CSConfiguration.IgnoreTimeOutError(),
+						CSConfiguration.MaxRetryAttempts(),
+						CSConfiguration.SDCacheMode(),
+						CSConfiguration.SDCacheShared(),
+						CSConfiguration.SDCacheTimeout(),
+						CSConfiguration.SDCacheSize());
+			} else {
+				this.configuration = new Configuration(false, 1, 0, 10, false,
+						1, false, false, 0, 0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     public CompositeService(String serviceName, String serviceEndpoint, String workflow) {
-	super(serviceName, serviceEndpoint);
-	this.workflow = workflow;
+		super(serviceName, serviceEndpoint);
+		this.workflow = workflow;
 
-	if (this.configuration.SDCacheMode) {
-	    cache = new SDCache();
-	}
+		if (this.configuration.SDCacheMode) {
+			cache = new SDCache();
+		}
     }
 
     public void addQosRequirement(String requirementName, AbstractQoSRequirement qosRequirement) {
-	qosRequirements.put(requirementName, qosRequirement);
+    	qosRequirements.put(requirementName, qosRequirement);
     }
 
     public Map<String, AbstractQoSRequirement> getQosRequirements() {
-	return qosRequirements;
+    	return qosRequirements;
     }
 
     /**
@@ -88,25 +98,20 @@ public class CompositeService extends AbstractService {
      */
     @ServiceOperation
     public List<String> getQosRequirementNames() {
-	List<String> list = new LinkedList<String>();
-	list.addAll(qosRequirements.keySet());
-	return list;
+		List<String> list = new LinkedList<String>();
+		list.addAll(qosRequirements.keySet());
+		return list;
     }
 
     @ServiceOperation
     public Object invokeCompositeService(String qosRequirementName, Object params[]) {
-	AbstractQoSRequirement qosRequirement = qosRequirements.get(qosRequirementName);
-	SDCache sdCache = cache == null ? new SDCache() : cache;
-	WorkflowEngine engine = new WorkflowEngine(this, sdCache);
-
-	workflowProbe.workflowStarted(qosRequirementName, params);
-
-	Object result = engine.executeWorkflow(workflow, qosRequirement, params);
-
-	workflowProbe.workflowEnded(result, qosRequirementName, params);
-
-	return result;
-
+		AbstractQoSRequirement qosRequirement = qosRequirements.get(qosRequirementName);
+		SDCache sdCache = cache == null ? new SDCache() : cache;
+		WorkflowEngine engine = new WorkflowEngine(this, sdCache);
+		workflowProbe.workflowStarted(qosRequirementName, params);
+		Object result = engine.executeWorkflow(workflow, qosRequirement, params);
+		workflowProbe.workflowEnded(result, qosRequirementName, params);
+		return result;
     }
 
     @Override
@@ -123,7 +128,6 @@ public class CompositeService extends AbstractService {
 			    for (int i = 0; i < size; i++) {
 				args[i] = params[i].getValue();
 			    }
-
 			    return operation.invoke(this, args);
 			}
 		    }
@@ -140,38 +144,28 @@ public class CompositeService extends AbstractService {
      * Search through service registry to get the list of service descriptions
      */
     public List<ServiceDescription> lookupService(String serviceType, String opName) {
+		List<ServiceDescription> serviceDescriptions = cache.get(serviceType,
+				opName);
+		if (serviceDescriptions == null) {
+			serviceDescriptions = (List<ServiceDescription>) this.sendRequest(
+					ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true,
+					"lookup", serviceType, opName);
+			cache.add(serviceType, opName, serviceDescriptions);
+		}
 
-	List<ServiceDescription> serviceDescriptions = cache.get(serviceType, opName);
-	if (serviceDescriptions == null) {
-	    serviceDescriptions = (List<ServiceDescription>) this.sendRequest(ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true, "lookup", serviceType, opName);
-	    cache.add(serviceType, opName, serviceDescriptions);
-	}
-
-	return serviceDescriptions;
+		return serviceDescriptions;
     }
     
     public CostProbe getCostProbe() {
-	return costProbe;
+    	return costProbe;
     }
-    
-//    public WorkflowProbe getServiceInvocationProbe() {
-//	return workflowProbe;
-//    }
     
     public WorkflowProbe getWorkflowProbe() {
-	return workflowProbe;
+    	return workflowProbe;
     }
-    
-    //public WorkflowEffector getWorkflowEffector() {
-	//return workflowEffector;
-    //}
-    
-    //public CacheEffector getCacheEffector() {
-	//return cacheEffector;
-    //}
-    
+     
     public ConfigurationEffector getConfigurationEffector() {
-	return configurationEffector;
+    	return configurationEffector;
     }
 
     /**
@@ -181,7 +175,7 @@ public class CompositeService extends AbstractService {
      * @return
      */
     public boolean containServices(String serviceType, String opName) {
-	return cache.containsCache(serviceType, opName);
+    	return cache.containsCache(serviceType, opName);
     }
     
     /**
@@ -190,6 +184,6 @@ public class CompositeService extends AbstractService {
      * @return
      */
     public ServiceDescription getServiceDescription(int registerId){
-	return cache.getServiceDescription(registerId);
+    	return cache.getServiceDescription(registerId);
     }
 }

@@ -12,7 +12,7 @@ public class CompositeServiceClient {
      * @param serviceEndpoint
      */
     public CompositeServiceClient(String serviceEndpoint){
-	client = new AbstractServiceClient(serviceEndpoint);
+    	client = new AbstractServiceClient(serviceEndpoint);
     }
     
     /*
@@ -23,10 +23,10 @@ public class CompositeServiceClient {
     }
     
     public Object invokeCompositeService(String qosRequirement, Object...params){
-	return client.sendRequest("invokeCompositeService", qosRequirement, params);
+    	return client.sendRequest("invokeCompositeService", qosRequirement, params);
     }
     
     public List<String> getQosRequirementNames(){
-	return (List<String>) client.sendRequest("getQosRequirementNames"); 
+    	return (List<String>) client.sendRequest("getQosRequirementNames"); 
     }
 }

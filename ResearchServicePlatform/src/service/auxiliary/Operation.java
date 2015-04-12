@@ -3,14 +3,20 @@ package service.auxiliary;
 import java.io.Serializable;
 
 public class Operation implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private String opName;
+
 	/**
-	 * @return the opName
+	 * 
+	 * @return
 	 */
 	public String getOpName() {
 		return opName;
 	}
+	
 	private Class<?>[] paramTypes;
+	
 	/**
 	 * @return the paramTypes
 	 */

@@ -27,62 +27,59 @@ public class ActiveMQProvider implements ServiceProvider, MessageListener {
     MessageReceiver messageReceiver;
 
     public void sendMessage(String msgText, String destinationEndPoint) {
-	try {
-
-	    Queue destination = (Queue) initContext.lookup("dynamicQueues/" + destinationEndPoint);
-
-	    QueueConnection connection = queueConnectingFactory.createQueueConnection();
-	    QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-	    MessageProducer sender = session.createProducer(destination);
-	    sender.send(session.createTextMessage(msgText));
-
-	    connection.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+    	try {
+    		Queue destination = (Queue) initContext.lookup("dynamicQueues/" + destinationEndPoint);
+    		QueueConnection connection = queueConnectingFactory.createQueueConnection();
+    		QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    		MessageProducer sender = session.createProducer(destination);
+    		sender.send(session.createTextMessage(msgText));
+    		connection.close();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
     }
 
     public void startListening(String endPoint, MessageReceiver messageReceiver) {
-	try {
-	    this.endPoint = endPoint;
-	    this.messageReceiver = messageReceiver;
+    	try {
+    		this.endPoint = endPoint;
+    		this.messageReceiver = messageReceiver;
 	    
-	    initContext = new InitialContext();
-	    queueConnectingFactory = (QueueConnectionFactory) initContext.lookup("ConnectionFactory");
+    		initContext = new InitialContext();
+    		queueConnectingFactory = (QueueConnectionFactory) initContext.lookup("ConnectionFactory");
 
-	    Queue queue = (Queue) initContext.lookup("dynamicQueues/" + endPoint);
+    		Queue queue = (Queue) initContext.lookup("dynamicQueues/" + endPoint);
 
-	    queueConnection = queueConnectingFactory.createQueueConnection();
-	    QueueSession session = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+    		queueConnection = queueConnectingFactory.createQueueConnection();
+    		QueueSession session = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
-	    MessageConsumer receiver = session.createConsumer(queue);
-	    receiver.setMessageListener(this);
+    		MessageConsumer receiver = session.createConsumer(queue);
+    		receiver.setMessageListener(this);
 
-	    queueConnection.start();
-	} catch (Exception e) {
-	    if (e.getCause() instanceof ConnectException) {
-		System.err.println("Cannot connect to ActivMQ. Please make sure that ActivMQ is working.");
-	    }
-	    e.printStackTrace();
-	}
+    		queueConnection.start();
+    	} catch (Exception e) {
+    		if (e.getCause() instanceof ConnectException) {
+    			System.err.println("Cannot connect to ActivMQ. Please make sure that ActivMQ is working.");
+    		}
+    		e.printStackTrace();
+    	}
     }
 
     public void stopListening() {
-	try {
-	    queueConnection.close();
-	} catch (JMSException e) {
-	    e.printStackTrace();
-	}
+    	try {
+    		queueConnection.close();
+    	} catch (JMSException e) {
+    		e.printStackTrace();
+    	}
     }
 
     @Override
     public void onMessage(Message message) {
-	String msgText;
-	try {
-	    msgText = ((TextMessage) message).getText();
-	    messageReceiver.onMessage(msgText);
-	} catch (JMSException e) {
-	    e.printStackTrace();
-	}
+		String msgText;
+		try {
+			msgText = ((TextMessage) message).getText();
+			messageReceiver.onMessage(msgText);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
     }
 }

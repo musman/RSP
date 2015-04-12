@@ -5,12 +5,10 @@ package profile;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Profile for how to execute the workflow
- * @author yfruan
+ * @author Yifan Ruan
  * @email  ry222ad@student.lnu.se
- *
  */
 public class InputProfile {
 	protected int maxSteps;

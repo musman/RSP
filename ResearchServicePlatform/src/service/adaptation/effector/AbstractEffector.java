@@ -6,9 +6,9 @@ package service.adaptation.effector;
 import service.composite.CompositeService;
 
 /**
- * @author yfruan
+ * 
+ * @author Yifan Ruan
  * @email  ry222ad@student.lnu.se
- *
  */
 public class AbstractEffector {
 	

@@ -17,7 +17,7 @@ import service.auxiliary.ServiceDescription;
 
 /**
  * Cache for available services
- * @author yfruan
+ * @author Yifan Ruan
  * @email  ry222ad@student.lnu.se
  *
  */
@@ -92,7 +92,7 @@ public class SDCache{
 	}
 
 	/**
-	 * 
+	 * Add new services
 	 * @param serviceType
 	 * @param opName
 	 * @param serviceDescriptions
@@ -133,9 +133,9 @@ public class SDCache{
      * @param service
      */
     public void remove(ServiceDescription service) {
-   	for (Operation operation : service.getOperationList())
-   	    remove(service, operation.getOpName());
-       }
+    	for (Operation operation : service.getOperationList())
+    		remove(service, operation.getOpName());
+    }
     
     /**
      * 
@@ -191,7 +191,7 @@ public class SDCache{
     }
     
     /**
-     * 
+     * Check cache has specific service 
      * @param serviceType
      * @param opName
      * @return
@@ -206,6 +206,9 @@ public class SDCache{
     	return false;
     }
     
+    /**
+     * 
+     */
     public void refresh(){
         caches.clear();
     }
@@ -232,9 +235,34 @@ public class SDCache{
     
     /**
      * 
-     * @author ryf
-     *
+     * @param registerId
+     * @return
      */
+    public ServiceDescription getServiceDescription(int registerId){
+    	for (List<ServiceDescription> serviceList : caches.values()) {
+    		for(ServiceDescription service:serviceList){
+    			if (service.getRegisterID() == registerId)
+    				return service;
+    		}
+    	}	
+    	return null;
+    }
+    
+    /**
+     * 
+     * @param registerId
+     */
+    public void remove(int registerId) {
+    	ServiceDescription serviceDescription = getServiceDescription(registerId);
+    	if (serviceDescription != null){
+    		remove(serviceDescription);
+    	}
+    	else{
+    		System.err.println("Service not found with registeration Id:" + registerId);
+    		System.err.println("Service cannot be removed.");
+    	}
+    }
+    
     class Description{
 		String serviceType;
     	String opName;
@@ -263,36 +291,5 @@ public class SDCache{
 		public String toString(){
 		    return serviceType + "." + opName;
 		}
-    }
-
-    /**
-     * 
-     * @param registerId
-     * @return
-     */
-    public ServiceDescription getServiceDescription(int registerId){
-	for (List<ServiceDescription> serviceList : caches.values()) {
-		for(ServiceDescription service:serviceList){
-			if (service.getRegisterID() == registerId)
-			    return service;
-		}
-	}
-	
-	return null;
-    }
-    
-    /**
-     * 
-     * @param registerId
-     */
-    public void remove(int registerId) {
-	ServiceDescription serviceDescription = getServiceDescription(registerId);
-	if (serviceDescription != null){
-	    remove(serviceDescription);
-	}
-	else{
-	    System.err.println("Service not found with registeration Id:" + registerId);
-	    System.err.println("Service cannot be removed.");
-	}
     }
 }

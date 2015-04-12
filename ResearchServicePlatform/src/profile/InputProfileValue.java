@@ -4,11 +4,9 @@
 package profile;
 
 /**
- * 
  * Combination of data and related ratio
- * @author yfruan
+ * @author Yifan Ruan
  * @email  ry222ad@student.lnu.se
- *
  */
 public class InputProfileValue {
 	Object data;

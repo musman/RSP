@@ -10,7 +10,7 @@ import service.auxiliary.ServiceDescription;
 
 /**
  * Abstract probe class with lists of defined interfaces
- * @author yfruan
+ * @author Yifan Ruan
  * @email ry222ad@student.lnu.se
  *
  */
