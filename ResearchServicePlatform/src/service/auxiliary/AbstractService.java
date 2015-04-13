@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import service.provider.MessageReceiver;
 import service.provider.ServiceProvider;
 import service.provider.ServiceProviderFactory;
+import service.utility.Time;
 
 public abstract class AbstractService implements MessageReceiver {
 
@@ -66,9 +67,9 @@ public abstract class AbstractService implements MessageReceiver {
 					} else {
 						long startTime = System.currentTimeMillis();
 						while (!results.containsKey(messageID)) {
-							this.wait(responseTime * 1000);
+							this.wait(responseTime * Time.scale);
 							long endTime = System.currentTimeMillis();
-							if ((endTime - startTime) / 1000.0 >= responseTime) {
+							if ((endTime - startTime) / Time.scale >= responseTime) {
 								results.put(messageID, new TimeOutError());
 							}
 						}

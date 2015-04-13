@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import service.auxiliary.Operation;
 import service.auxiliary.ServiceDescription;
+import service.utility.Time;
 
 /**
  * Cache for available services
@@ -25,7 +26,7 @@ public class SDCache{
 	
     Map<Description, List<ServiceDescription>> caches = new ConcurrentHashMap<Description, List<ServiceDescription>>();
     int maxCacheSize;
-    int refreshPeriod=10000;         
+    int refreshPeriod=10*Time.scale;         
     Timer timer = null;    
     
     /**

@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import service.provider.MessageReceiver;
+import service.utility.Time;
 
 public class RSPMessagingService {
     
@@ -40,25 +41,35 @@ public class RSPMessagingService {
 	    
 	    @Override
 	    public void run() {
-		
+		if (!(endPoint.contains(".client") || destinationEndPoint.contains(".client") ||
+				endPoint.endsWith(".registry") || destinationEndPoint.endsWith(".registry"))){
+			System.out.println("client" + endPoint);
+			System.out.println("dest" + destinationEndPoint);
 		if (messageLoss > 0){
-		    if (100 / messageLoss == messageCount)
-			return;
-		    else 
+		    if (100 / messageLoss == messageCount){
+		    	messageCount = 0;
+		    	return;
+		    }
+		    else {
 			messageCount++;
+		    }
 		}
 		
 		if (minDelay + maxDelay != 0){
 		    try {
-			Thread.sleep(random.nextInt(maxDelay - minDelay + 1) + minDelay);
+			Thread.sleep(random.nextInt((maxDelay - minDelay + 1) + minDelay)*Time.scale);
 		    } catch (InterruptedException e) {
 			e.printStackTrace();
 		    }
 		}
 		
+		}
 		queue.get(destinationEndPoint).onMessage(msgText);
 	    }
 	});
+	
+	
+	
     }
     
     public void setMessageDelay(int minDelay, int maxDelay) {
@@ -68,5 +79,17 @@ public class RSPMessagingService {
     
     public void setMessageLoss(int messageLoss) {
 	this.messageLoss = messageLoss;
+    }
+    
+    public int getMessageLoss(){
+    	return this.messageLoss;
+    }
+    
+    public int getMessageMinDelay(){
+    	return this.minDelay;
+    }
+    
+    public int getMessageMaxDelay(){
+    	return this.maxDelay;
     }
 }
