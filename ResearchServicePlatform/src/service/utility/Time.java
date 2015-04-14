@@ -6,5 +6,8 @@ package service.utility;
  * @email  ry222ad@student.lnu.se
  */
 public class Time {
-	public static int scale=100;   // scaling time with this parameter
+	/**
+	 * Scaling time with this parameter
+	 */
+	public static int scale=100;   
 }

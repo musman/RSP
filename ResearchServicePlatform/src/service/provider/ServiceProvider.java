@@ -9,8 +9,8 @@ public interface ServiceProvider {
  
     /**
      * This method enables a service to listen for messages on the given endpoint.
-     * @param endPoint
-     * @param messageReceiver
+     * @param endPoint   which endpoint to be listened
+     * @param messageReceiver  instance for dealing with incoming messages
      */
     public void startListening(String endPoint, MessageReceiver messageReceiver);
     
@@ -21,8 +21,8 @@ public interface ServiceProvider {
     
     /**
      * With this method, a service can send a message to the other service.
-     * @param msgText
-     * @param destinationEndPoint
+     * @param msgText  the message content
+     * @param destinationEndPoint  the destination to send the message
      */
     public void sendMessage(String msgText, String destinationEndPoint);
 }

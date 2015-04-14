@@ -19,11 +19,11 @@ import service.provider.ServiceProvider;
 
 public class ActiveMQProvider implements ServiceProvider, MessageListener {
 
-    InitialContext initContext;
-    QueueConnectionFactory queueConnectingFactory;
-    QueueConnection queueConnection;
-    String endPoint;
-    MessageReceiver messageReceiver;
+    private InitialContext initContext;
+    private QueueConnectionFactory queueConnectingFactory;
+    private QueueConnection queueConnection;
+    //private String endPoint;
+    private MessageReceiver messageReceiver;
 
     @Override
     public void sendMessage(String msgText, String destinationEndPoint) {
@@ -42,7 +42,7 @@ public class ActiveMQProvider implements ServiceProvider, MessageListener {
     @Override
     public void startListening(String endPoint, MessageReceiver messageReceiver) {
     	try {
-    		this.endPoint = endPoint;
+    		//this.endPoint = endPoint;
     		this.messageReceiver = messageReceiver;
 	    
     		initContext = new InitialContext();

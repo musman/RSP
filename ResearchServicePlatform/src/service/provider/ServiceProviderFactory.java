@@ -11,7 +11,7 @@ public class ServiceProviderFactory {
     
     /**
      * This method helps to choose a service provider from list of available service providers.
-     * @return ServiceProvider
+     * @return ServiceProvider  the specific service provider
      */
     public static ServiceProvider createServiceProvider() {
     	//return new ActiveMQProvider();

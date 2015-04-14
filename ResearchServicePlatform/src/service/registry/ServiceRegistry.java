@@ -14,17 +14,20 @@ import service.auxiliary.ServiceRegistryInterface;
  */
 public class ServiceRegistry extends AtomicService implements ServiceRegistryInterface{
     
-    HashMap<Integer, ServiceDescription> serviceList = new HashMap<>();
-    Map<String, Set<ServiceDescription>> services = new HashMap<String, Set<ServiceDescription>>(); // serviceName
-    int serviceCount = 0;
+	private HashMap<Integer, ServiceDescription> serviceList = new HashMap<>();
+	private Map<String, Set<ServiceDescription>> services = new HashMap<String, Set<ServiceDescription>>(); // serviceName
+	private int serviceCount = 0;
 
+	/**
+	 * Constructor
+	 */
     public ServiceRegistry() {
     	super(NAME, ADDRESS);
     }
 
     /**
-     * 
-     * @return
+     * Return list of service names
+     * @return list of service names
      */
     public List<String> getAllServices(){
     	List<String> allServices=new ArrayList<>();
@@ -34,7 +37,6 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     	return allServices;
     }
     
-
     @ServiceOperation
     public int register(ServiceDescription serviceDescription) {
     	serviceCount++;
@@ -81,7 +83,7 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     
     /**
      * Update service description
-     * @param description
+     * @param description the new service description
      */
     @ServiceOperation
     public void update(ServiceDescription description){

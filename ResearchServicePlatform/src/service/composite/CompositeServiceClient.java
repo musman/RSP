@@ -1,6 +1,7 @@
 package service.composite;
 
 import java.util.List;
+
 import service.client.AbstractServiceClient;
 
 public class CompositeServiceClient {
@@ -39,7 +40,8 @@ public class CompositeServiceClient {
      * Get list of QoS requirements
      * @return
      */
-    public List<String> getQosRequirementNames(){
+    @SuppressWarnings("unchecked")
+	public List<String> getQosRequirementNames(){
     	return (List<String>) client.sendRequest("getQosRequirementNames"); 
     }
 }

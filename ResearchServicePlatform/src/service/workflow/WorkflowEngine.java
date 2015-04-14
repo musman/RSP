@@ -15,13 +15,13 @@ import taskgraph.TaskGraphInterpreter;
 
 public class WorkflowEngine {
 
-    CompositeService service;
-    SDCache sdCache;
+    private CompositeService service;
+    private SDCache sdCache;
 
     /**
-     * 
-     * @param service
-     * @param cache
+     * Constructor
+     * @param service the conposite service
+     * @param cache the cache
      */
     public WorkflowEngine(CompositeService service, SDCache cache) {
     	this.service = service;
@@ -30,10 +30,10 @@ public class WorkflowEngine {
 
     /**
      * Execute the workflow with specific QoS requirement and initial parameters
-     * @param workFlow
-     * @param qosRequirement
-     * @param parameters
-     * @return
+     * @param workFlow the workflow to be executed
+     * @param qosRequirement the QoS requirements to be satisfied
+     * @param parameters   initial parameters for the workflow
+     * @return the result after executing the workflow
      */
     public Object executeWorkflow(String workFlow, AbstractQoSRequirement qosRequirement, Object... parameters) {
 		rspLexer lexer;

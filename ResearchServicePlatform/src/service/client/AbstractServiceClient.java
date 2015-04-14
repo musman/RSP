@@ -9,15 +9,15 @@ import service.provider.ServiceProviderFactory;
 
 public class AbstractServiceClient implements MessageReceiver {
     private String serviceAddress;
-    Object result = null;
+    private Object result = null;
 
-    static int clientId = 0;
-    String clientEndpoint;
-    ServiceProvider serviceProvider;
+    private static int clientId = 0;
+    private String clientEndpoint;
+    private ServiceProvider serviceProvider;
     
     /**
-     * 
-     * @param serviceEndpoint
+     * Constructor
+     * @param serviceEndpoint the service endpoint
      */
     public AbstractServiceClient(String serviceEndpoint) {
     	String clientEndpoint = serviceEndpoint + ".#CLIENT#." + (clientId == 0 ? "" : clientId);
@@ -26,9 +26,9 @@ public class AbstractServiceClient implements MessageReceiver {
     }
 
     /**
-     * 
-     * @param serviceEndpoint
-     * @param clientEndpoint
+     * Constructor
+     * @param serviceEndpoint the service endpoint
+     * @param clientEndpoint the client endpoint
      */
     public AbstractServiceClient(String serviceEndpoint, String clientEndpoint) {
     	initialize(serviceEndpoint, clientEndpoint);
@@ -43,9 +43,9 @@ public class AbstractServiceClient implements MessageReceiver {
 
     /**
      * Send a request to invoke a method
-     * @param methodName
-     * @param params
-     * @return
+     * @param methodName the method name
+     * @param params parameters for the method
+     * @return  the method result
      */
     public synchronized Object sendRequest(String methodName, Object... params) {
 		try {

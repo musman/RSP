@@ -9,7 +9,7 @@ public interface MessageReceiver {
     
     /**
      * The service provider will notify incoming messages through this method.
-     * @param message
+     * @param message the incoming message
      */
     public void onMessage(String message);
 }

@@ -24,14 +24,14 @@ import service.utility.Time;
  */
 public class SDCache{
 	
-    Map<Description, List<ServiceDescription>> caches = new ConcurrentHashMap<Description, List<ServiceDescription>>();
-    int maxCacheSize;
-    int refreshPeriod=10*Time.scale;         
-    Timer timer = null;    
+    private Map<Description, List<ServiceDescription>> caches = new ConcurrentHashMap<Description, List<ServiceDescription>>();
+    private int maxCacheSize;
+    private int refreshPeriod=10*Time.scale;         
+    private Timer timer = null;    
     
     /**
-     * 
-     * @return
+     * Return cache refresh period
+     * @return the refresh period
      */
 	public int getRefreshPeriod() {
 		return refreshPeriod;
@@ -39,9 +39,9 @@ public class SDCache{
 
 
 	/**
-	 * 
-	 * @param refreshPeriod
-	 * @return
+	 * Set cache refresh period
+	 * @param refreshPeriod the new refresh period
+	 * @return true if set successfully, otherwise false
 	 */
 	public boolean setRefreshPeriod(int refreshPeriod) {
 		this.refreshPeriod = refreshPeriod;
@@ -65,7 +65,7 @@ public class SDCache{
 
 	/**
 	 * Return available services
-	 * @return
+	 * @return list of available service names
 	 */
 	public Set<String> getServices(){
 		Set<String> services=new HashSet<>();
@@ -77,16 +77,16 @@ public class SDCache{
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Return max size of the cache
+	 * @return the max cache size
 	 */
 	public int getMaxCacheSize() {
 		return maxCacheSize;
 	}
 
 	/**
-	 * 
-	 * @param maxCacheSize
+	 * Set max size of the cache
+	 * @param maxCacheSize the new max cahche size
 	 */
 	public void setMaxCacheSize(int maxCacheSize) {
 		this.maxCacheSize = maxCacheSize;
@@ -94,10 +94,10 @@ public class SDCache{
 
 	/**
 	 * Add new services
-	 * @param serviceType
-	 * @param opName
-	 * @param serviceDescriptions
-	 * @return
+	 * @param serviceType the service type
+	 * @param opName the operation name 
+	 * @param serviceDescriptions new list of service descriptions
+	 * @return true if added successfully, otherwise false
 	 */
 	public boolean add(String serviceType,String opName,List<ServiceDescription> serviceDescriptions){
 		if(maxCacheSize<=caches.size() && maxCacheSize>0)
@@ -112,9 +112,9 @@ public class SDCache{
     
 	/**
 	 * Get services with specific type and operation
-	 * @param serviceType
-	 * @param opName
-	 * @return
+	 * @param serviceType the service type
+	 * @param opName the operation name
+	 * @return list of found service descriptions
 	 */
     public List<ServiceDescription> get(String serviceType,String opName){
     	Description description=new Description(serviceType,opName);
@@ -130,8 +130,8 @@ public class SDCache{
     }
     
     /**
-     * 
-     * @param service
+     * Remove a service from cache with its description
+     * @param service the service description
      */
     public void remove(ServiceDescription service) {
     	for (Operation operation : service.getOperationList())
@@ -139,10 +139,10 @@ public class SDCache{
     }
     
     /**
-     * 
-     * @param serviceType
-     * @param opName
-     * @return
+     * Remove a service from cache with its type and operation name
+     * @param serviceType the service type
+     * @param opName the operation name
+     * @return true if removed successfully, otherwise false
      */
     public boolean remove(String serviceType,String opName){
     	Description description=new Description(serviceType,opName);
@@ -154,11 +154,11 @@ public class SDCache{
     }
     
     /**
-     * 
-     * @param serviceType
-     * @param opName
-     * @param service
-     * @return
+     * Remove a service from cache with its type, operation name and service description
+     * @param serviceType the service type
+     * @param opName  the operation name
+     * @param service the service description
+     * @return true if removed successfully, otherwise false
      */
     public boolean remove(String serviceType,String opName,ServiceDescription service){
     	Description description=new Description(serviceType,opName);
@@ -174,18 +174,18 @@ public class SDCache{
     }
     
     /**
-     * 
-     * @param service
-     * @param opName
-     * @return
+     * Remove a service from cache with its description and operation name
+     * @param service the service description
+     * @param opName the operation name
+     * @return true if removed successfully, otherwise false
      */
     public boolean remove(ServiceDescription service, String opName){
     	return this.remove(service.getServiceType(), opName,service);
     }
     
     /**
-     * 
-     * @return
+     * Return current cahche size
+     * @return the current cache size
      */
     public int size(){
     	return caches.size();
@@ -193,9 +193,9 @@ public class SDCache{
     
     /**
      * Check cache has specific service 
-     * @param serviceType
-     * @param opName
-     * @return
+     * @param serviceType the service type
+     * @param opName the operation name
+     * @return true if cache contains a service with same type and operation, otherwise false
      */
     public boolean containsCache(String serviceType,String opName){
 	Description description = new Description(serviceType, opName);
@@ -208,7 +208,7 @@ public class SDCache{
     }
     
     /**
-     * 
+     * Refresh the cache
      */
     public void refresh(){
         caches.clear();
@@ -216,10 +216,10 @@ public class SDCache{
 
     /**
      * Update services containing same operation with new service description
-     * @param oldService
-     * @param newService
-     * @param opName
-     * @return
+     * @param oldService the old service description
+     * @param newService the new service description
+     * @param opName the operation name
+     * @return true if updated successfully, otherwise false
      */
     public boolean update(ServiceDescription oldService, ServiceDescription newService, String opName){
     	Description description=new Description(oldService.getServiceType(),opName);
@@ -235,9 +235,9 @@ public class SDCache{
     }
     
     /**
-     * 
-     * @param registerId
-     * @return
+     * Return the service description
+     * @param registerId the service register id
+     * @return the requested service description
      */
     public ServiceDescription getServiceDescription(int registerId){
     	for (List<ServiceDescription> serviceList : caches.values()) {
@@ -250,8 +250,8 @@ public class SDCache{
     }
     
     /**
-     * 
-     * @param registerId
+     * Remove service from cache with its register id
+     * @param registerId the register id of a service to be removed
      */
     public void remove(int registerId) {
     	ServiceDescription serviceDescription = getServiceDescription(registerId);

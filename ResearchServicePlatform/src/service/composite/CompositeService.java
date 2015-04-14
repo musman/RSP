@@ -22,29 +22,29 @@ import service.workflow.WorkflowEngine;
 
 public class CompositeService extends AbstractService {
 
-    String workflow;
+    private String workflow;
     // Initializing probes
-    CostProbe costProbe = new CostProbe();
-    WorkflowProbe workflowProbe = new WorkflowProbe();
+    private CostProbe costProbe = new CostProbe();
+    private WorkflowProbe workflowProbe = new WorkflowProbe();
     // Initializing effectors
-    ConfigurationEffector configurationEffector = new ConfigurationEffector(this);
+    private ConfigurationEffector configurationEffector = new ConfigurationEffector(this);
 
 
     /**
-     * 
-     * @param workflow
+     * Set the workflow 
+     * @param workflow the new workflow
      */
     public void setWorkflow(String workflow) {
     	this.workflow = workflow;
     }
 
-    Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
+    private Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
 
-    SDCache cache;
+    private SDCache cache;
 
     /**
-     * 
-     * @return
+     * Return the cache
+     * @return the current cache
      */
     public SDCache getCache() {
     	return cache;
@@ -80,10 +80,10 @@ public class CompositeService extends AbstractService {
     }
 
     /**
-     * 
-     * @param serviceName
-     * @param serviceEndpoint
-     * @param workflow
+     * Constructor
+     * @param serviceName the service name
+     * @param serviceEndpoint the service endpoint
+     * @param workflow the workflow
      */
     public CompositeService(String serviceName, String serviceEndpoint, String workflow) {
 		super(serviceName, serviceEndpoint);
@@ -95,17 +95,17 @@ public class CompositeService extends AbstractService {
     }
 
     /**
-     * 
-     * @param requirementName
-     * @param qosRequirement
+     * Add QoS requirement
+     * @param requirementName the QoS requirement name
+     * @param qosRequirement  the QoS requirement Object
      */
     public void addQosRequirement(String requirementName, AbstractQoSRequirement qosRequirement) {
     	qosRequirements.put(requirementName, qosRequirement);
     }
     
     /**
-     * 
-     * @return
+     * Return QoS requirements
+     * @return the current QoS requirements
      */
     public Map<String, AbstractQoSRequirement> getQosRequirements() {
     	return qosRequirements;
@@ -114,7 +114,7 @@ public class CompositeService extends AbstractService {
     /**
      * Returns list of QoS names added in to the composite service
      * 
-     * @return
+     * @return list of QoS requirement names
      */
     @ServiceOperation
     public List<String> getQosRequirementNames() {
@@ -127,9 +127,9 @@ public class CompositeService extends AbstractService {
      * Invoke this composite service to start a workflow with specific QoS requirements 
      * and initial parameters for the workflow
      * 
-     * @param qosRequirementName
-     * @param params
-     * @return
+     * @param qosRequirementName  the QoS requirement name for executing the workflow
+     * @param params  the initial parameters for the workflow
+     * @return the result after executing the workflow
      */
     @ServiceOperation
     public Object invokeCompositeService(String qosRequirementName, Object params[]) {
@@ -171,11 +171,12 @@ public class CompositeService extends AbstractService {
 
     /**
      * Search through service registry to get the list of service descriptions
-     * @param serviceType
-     * @param opName
-     * @return
+     * @param serviceType  the service type
+     * @param opName the operation name
+     * @return list of service descriptions with the same service type and operation name
      */
-    public List<ServiceDescription> lookupService(String serviceType, String opName) {
+    @SuppressWarnings("unchecked")
+	public List<ServiceDescription> lookupService(String serviceType, String opName) {
 		List<ServiceDescription> serviceDescriptions = cache.get(serviceType,
 				opName);
 		if (serviceDescriptions == null) {
@@ -184,29 +185,28 @@ public class CompositeService extends AbstractService {
 					"lookup", serviceType, opName);
 			cache.add(serviceType, opName, serviceDescriptions);
 		}
-
 		return serviceDescriptions;
     }
     
     /**
      * Returns the cost probe
-     * @return CostProbe
+     * @return the cost probe for this composite service
      */
     public CostProbe getCostProbe() {
     	return costProbe;
     }
     
     /**
-     * 
-     * @return
+     * Return the workflow probe
+     * @return the workflow probe for this composite service
      */
     public WorkflowProbe getWorkflowProbe() {
     	return workflowProbe;
     }
      
     /**
-     * 
-     * @return
+     * Return the configuration effector
+     * @return the configuration effector for this composite service
      */
     public ConfigurationEffector getConfigurationEffector() {
     	return configurationEffector;
@@ -214,18 +214,19 @@ public class CompositeService extends AbstractService {
 
     /**
      * Returns true if composite service cache contains instances of the specific service type with operation name
-     * @param serviceType
-     * @param opName
-     * @return
+     * @param serviceType the service type
+     * @param opName the operation name
+     * @return true if cache has service with the same type and operation, otherwise false
      */
     public boolean containServices(String serviceType, String opName) {
     	return cache.containsCache(serviceType, opName);
     }
     
+
     /**
-     * Get service description using registeration ID of the service from cache
-     * @param serviceId
-     * @return
+     * Get service description using register ID of the service from cache
+     * @param registerId the register id
+     * @return the service description
      */
     public ServiceDescription getServiceDescription(int registerId){
     	return cache.getServiceDescription(registerId);

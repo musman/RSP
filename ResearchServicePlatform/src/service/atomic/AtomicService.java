@@ -15,21 +15,20 @@ import service.auxiliary.ServiceOperation;
 public abstract class AtomicService extends AbstractService {		
 	private List<ServiceProfile> serviceProfiles=new ArrayList<>();
 	
-	
 	/**
-	 * 
-	 * @param serviceName
-	 * @param serviceEndpoint
-	 * @param responseTime
+	 * Constructor
+	 * @param serviceName  the service name
+	 * @param serviceEndpoint the source endpoint
+	 * @param responseTime the response time for incoming messages
 	 */
     public AtomicService(String serviceName, String serviceEndpoint, int responseTime) {
     	super(serviceName, serviceEndpoint, responseTime);
     }
 
     /**
-     * 
-     * @param serviceName
-     * @param serviceEndpoint
+     * Constructor 
+     * @param serviceName the service name
+     * @param serviceEndpoint the source endpoint
      */
     public AtomicService(String serviceName, String serviceEndpoint) {
     	super(serviceName, serviceEndpoint);
@@ -37,7 +36,7 @@ public abstract class AtomicService extends AbstractService {
 
     /**
      * Remove a service profile from the list with the unique index
-     * @param index
+     * @param index the profile index
      */
     public void removeServiceProfile(int index){
     	serviceProfiles.remove(index);
@@ -45,7 +44,7 @@ public abstract class AtomicService extends AbstractService {
     
     /**
      * Remove a service profile from the list 
-     * @param serviceProfile
+     * @param serviceProfile the service profile
      */
     public void removeServiceProfile(ServiceProfile serviceProfile){
     	serviceProfiles.remove(serviceProfile);
@@ -53,7 +52,7 @@ public abstract class AtomicService extends AbstractService {
     
     /**
      * Add a service profile to the list
-     * @param serviceProfile
+     * @param serviceProfile the service profile
      */
     public void addServiceProfile(ServiceProfile serviceProfile){
     	this.serviceProfiles.add(serviceProfile);
@@ -61,12 +60,11 @@ public abstract class AtomicService extends AbstractService {
     
     /**
      * Get the list of service profiles
-     * @return
+     * @return  list of service profiles
      */
     public List<ServiceProfile> getServiceProfiles(){
     	return this.serviceProfiles;
     }
-
 
     @Override
     public Object invokeOperation(String opName, Param[] params) {
