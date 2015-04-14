@@ -15,12 +15,21 @@ public class AbstractServiceClient implements MessageReceiver {
     String clientEndpoint;
     ServiceProvider serviceProvider;
     
+    /**
+     * 
+     * @param serviceEndpoint
+     */
     public AbstractServiceClient(String serviceEndpoint) {
-    	String clientEndpoint = serviceEndpoint + ".client" + (clientId == 0 ? "" : clientId);
+    	String clientEndpoint = serviceEndpoint + ".#CLIENT#." + (clientId == 0 ? "" : clientId);
     	clientId++;
     	initialize(serviceEndpoint, clientEndpoint);
     }
 
+    /**
+     * 
+     * @param serviceEndpoint
+     * @param clientEndpoint
+     */
     public AbstractServiceClient(String serviceEndpoint, String clientEndpoint) {
     	initialize(serviceEndpoint, clientEndpoint);
     }
@@ -28,11 +37,16 @@ public class AbstractServiceClient implements MessageReceiver {
     private void initialize(String serviceEndpoint, String clientEndpoint) {
 		this.serviceAddress = serviceEndpoint;
 		this.clientEndpoint = clientEndpoint;
-
 		serviceProvider = ServiceProviderFactory.createServiceProvider();
 		serviceProvider.startListening(clientEndpoint, this);
     }
 
+    /**
+     * Send a request to invoke a method
+     * @param methodName
+     * @param params
+     * @return
+     */
     public synchronized Object sendRequest(String methodName, Object... params) {
 		try {
 			Request request = new Request(0, clientEndpoint, clientEndpoint,methodName, params);
@@ -47,6 +61,22 @@ public class AbstractServiceClient implements MessageReceiver {
 			e.printStackTrace();
 			return null;
 		}
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getServiceAddress() {
+    	return serviceAddress;
+    }
+
+    /**
+     * 
+     * @param serviceAddress
+     */
+    public void setServiceAddress(String serviceAddress) {
+    	this.serviceAddress = serviceAddress;
     }
 
     @Override
@@ -67,11 +97,4 @@ public class AbstractServiceClient implements MessageReceiver {
 		}
     }
 
-    public String getServiceAddress() {
-    	return serviceAddress;
-    }
-
-    public void setServiceAddress(String serviceAddress) {
-    	this.serviceAddress = serviceAddress;
-    }
 }

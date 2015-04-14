@@ -8,8 +8,9 @@ import java.io.Serializable;
 import java.util.*;
 
 public class ServiceDescription implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    public static final String RESPONSE_TIME = "ResponseTime";
+	public static final String RESPONSE_TIME = "ResponseTime";
 
     private int registerID = -1;
     private String serviceEndpoint;

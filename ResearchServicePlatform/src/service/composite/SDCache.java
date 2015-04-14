@@ -215,7 +215,7 @@ public class SDCache{
     }
 
     /**
-     * 
+     * Update services containing same operation with new service description
      * @param oldService
      * @param newService
      * @param opName

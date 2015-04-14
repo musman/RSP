@@ -35,13 +35,17 @@ public class CompositeService extends AbstractService {
      * @param workflow
      */
     public void setWorkflow(String workflow) {
-	this.workflow = workflow;
+    	this.workflow = workflow;
     }
 
     Map<String, AbstractQoSRequirement> qosRequirements = new HashMap<String, AbstractQoSRequirement>();
 
     SDCache cache;
 
+    /**
+     * 
+     * @return
+     */
     public SDCache getCache() {
     	return cache;
     }
@@ -66,6 +70,7 @@ public class CompositeService extends AbstractService {
 						CSConfiguration.SDCacheTimeout(),
 						CSConfiguration.SDCacheSize());
 			} else {
+				// the default configuration
 				this.configuration = new Configuration(false, 1, 0, 10, false,
 						1, false, false, 0, 0);
 			}
@@ -74,6 +79,12 @@ public class CompositeService extends AbstractService {
 		}
     }
 
+    /**
+     * 
+     * @param serviceName
+     * @param serviceEndpoint
+     * @param workflow
+     */
     public CompositeService(String serviceName, String serviceEndpoint, String workflow) {
 		super(serviceName, serviceEndpoint);
 		this.workflow = workflow;
@@ -83,10 +94,19 @@ public class CompositeService extends AbstractService {
 		}
     }
 
+    /**
+     * 
+     * @param requirementName
+     * @param qosRequirement
+     */
     public void addQosRequirement(String requirementName, AbstractQoSRequirement qosRequirement) {
     	qosRequirements.put(requirementName, qosRequirement);
     }
-
+    
+    /**
+     * 
+     * @return
+     */
     public Map<String, AbstractQoSRequirement> getQosRequirements() {
     	return qosRequirements;
     }
@@ -103,6 +123,14 @@ public class CompositeService extends AbstractService {
 		return list;
     }
 
+    /**
+     * Invoke this composite service to start a workflow with specific QoS requirements 
+     * and initial parameters for the workflow
+     * 
+     * @param qosRequirementName
+     * @param params
+     * @return
+     */
     @ServiceOperation
     public Object invokeCompositeService(String qosRequirementName, Object params[]) {
 		AbstractQoSRequirement qosRequirement = qosRequirements.get(qosRequirementName);
@@ -116,32 +144,36 @@ public class CompositeService extends AbstractService {
 
     @Override
     public Object invokeOperation(String opName, Param[] params) {
-	// System.out.println(opName);
-	for (Method operation : this.getClass().getMethods()) {
-	    if (operation.getAnnotation(ServiceOperation.class) != null) {
-		try {
-		    if (operation.getName().equals(opName)) {
-			Class<?>[] paramTypes = operation.getParameterTypes();
-			int size = paramTypes.length;
-			if (size == params.length) {
-			    Object[] args = new Object[size];
-			    for (int i = 0; i < size; i++) {
-				args[i] = params[i].getValue();
-			    }
-			    return operation.invoke(this, args);
+		// System.out.println(opName);
+		for (Method operation : this.getClass().getMethods()) {
+			if (operation.getAnnotation(ServiceOperation.class) != null) {
+				try {
+					if (operation.getName().equals(opName)) {
+						Class<?>[] paramTypes = operation.getParameterTypes();
+						int size = paramTypes.length;
+						if (size == params.length) {
+							Object[] args = new Object[size];
+							for (int i = 0; i < size; i++) {
+								args[i] = params[i].getValue();
+							}
+							return operation.invoke(this, args);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("The operation name or params are not valid. Please check and send again!");
+				}
 			}
-		    }
-		} catch (Exception e) {
-		    e.printStackTrace();
-		    System.out.println("The operation name or params are not valid. Please check and send again!");
 		}
-	    }
-	}
-	return null;
+		return null;
     }
 
-    /*
+
+    /**
      * Search through service registry to get the list of service descriptions
+     * @param serviceType
+     * @param opName
+     * @return
      */
     public List<ServiceDescription> lookupService(String serviceType, String opName) {
 		List<ServiceDescription> serviceDescriptions = cache.get(serviceType,
@@ -156,14 +188,26 @@ public class CompositeService extends AbstractService {
 		return serviceDescriptions;
     }
     
+    /**
+     * 
+     * @return
+     */
     public CostProbe getCostProbe() {
     	return costProbe;
     }
     
+    /**
+     * 
+     * @return
+     */
     public WorkflowProbe getWorkflowProbe() {
     	return workflowProbe;
     }
      
+    /**
+     * 
+     * @return
+     */
     public ConfigurationEffector getConfigurationEffector() {
     	return configurationEffector;
     }

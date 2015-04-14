@@ -41,10 +41,8 @@ public class RSPMessagingService {
 	    
 	    @Override
 	    public void run() {
-		if (!(endPoint.contains(".client") || destinationEndPoint.contains(".client") ||
+		if (!(endPoint.contains(".#CLIENT#.") || destinationEndPoint.contains(".#CLIENT#.") ||
 				endPoint.endsWith(".registry") || destinationEndPoint.endsWith(".registry"))){
-			System.out.println("client" + endPoint);
-			System.out.println("dest" + destinationEndPoint);
 		if (messageLoss > 0){
 		    if (100 / messageLoss == messageCount){
 		    	messageCount = 0;

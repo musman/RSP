@@ -1,6 +1,5 @@
 package service.provider;
 
-import service.provider.activemq.ActiveMQProvider;
 import service.provider.rsp.RSPServiceProvider;
 
 /**

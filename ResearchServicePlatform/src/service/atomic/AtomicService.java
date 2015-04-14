@@ -12,32 +12,57 @@ import service.auxiliary.OperationAborted;
 import service.auxiliary.Param;
 import service.auxiliary.ServiceOperation;
 
-public abstract class AtomicService extends AbstractService {
-		
-	//private ServiceProfile serviceProfile=null;
+public abstract class AtomicService extends AbstractService {		
 	private List<ServiceProfile> serviceProfiles=new ArrayList<>();
 	
+	
+	/**
+	 * 
+	 * @param serviceName
+	 * @param serviceEndpoint
+	 * @param responseTime
+	 */
     public AtomicService(String serviceName, String serviceEndpoint, int responseTime) {
     	super(serviceName, serviceEndpoint, responseTime);
     }
 
+    /**
+     * 
+     * @param serviceName
+     * @param serviceEndpoint
+     */
     public AtomicService(String serviceName, String serviceEndpoint) {
     	super(serviceName, serviceEndpoint);
     }
 
-    
+    /**
+     * Remove a service profile from the list with the unique index
+     * @param index
+     */
     public void removeServiceProfile(int index){
     	serviceProfiles.remove(index);
     }
     
+    /**
+     * Remove a service profile from the list 
+     * @param serviceProfile
+     */
     public void removeServiceProfile(ServiceProfile serviceProfile){
     	serviceProfiles.remove(serviceProfile);
     }
     
+    /**
+     * Add a service profile to the list
+     * @param serviceProfile
+     */
     public void addServiceProfile(ServiceProfile serviceProfile){
     	this.serviceProfiles.add(serviceProfile);
     }
     
+    /**
+     * Get the list of service profiles
+     * @return
+     */
     public List<ServiceProfile> getServiceProfiles(){
     	return this.serviceProfiles;
     }
@@ -59,35 +84,25 @@ public abstract class AtomicService extends AbstractService {
 							}
 
 							int serviceProfileNum = this.serviceProfiles.size();
+							
+							// execute "preInvokeOperation" in service profiles one after another
+							// if the current result is false, stop executing the next one
 							boolean flag = true;
-
 							for (int i = 0; i < serviceProfileNum; i++) {
 								if (!(flag = serviceProfiles.get(i).preInvokeOperation(opName, args)))
 									break;
 							}
 
-							// boolean flag = serviceProfile != null ?
-							// serviceProfile.preInvokeOperation(opName, args) :
-							// true;
-
+							// execute "postInvokeOperation" in service profiles one after another
+							// the previous result is one parameter for the current invocation
 							Object result;
-
 							if (flag) {
-
 								result = operation.invoke(this, args);
-
 								for (int i = 0; i < serviceProfileNum; i++) {
 									result = serviceProfiles.get(i).postInvokeOperation(opName,result, args);
 								}
-
-								// Object mResult = serviceProfile != null ?
-								// serviceProfile.postInvokeOperation(opName,
-								// result, args) : result;
-
 								return result;
-
 							} else {
-								// return null;
 								return new OperationAborted(null);
 							}
 						}
