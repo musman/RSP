@@ -5,7 +5,7 @@ import service.auxiliary.ServiceDescription;
 
 public class CostProbe extends AbstractProbe<CostProbeInterface> {
 
-    double cost;
+    private double cost;
     
     @Override
     public void costOperation(ServiceDescription service, String opName){
@@ -15,13 +15,14 @@ public class CostProbe extends AbstractProbe<CostProbeInterface> {
     
     /**
      * Notify subscribed probes the cost of a service
-     * @param serviceName
-     * @param opName
-     * @param cost
+     * @param serviceName  the invoked service name
+     * @param opName       the invoked operation name
+     * @param cost         the operation cost
      */
     private void notifyCostSubscribers(String serviceName, String opName, double cost){
     	for (CostProbeInterface subscriber : subscribers) {
     		subscriber.serviceCost(serviceName, opName, cost);
     	}
     }
+    
 }
