@@ -9,8 +9,12 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * @email  ry222ad@student.lnu.se
  */
 public class XMLBuilder {
-	XStream xstream = new XStream(new DomDriver());
 	
+	private XStream xstream = new XStream(new DomDriver());
+	
+	/**
+	 * Constructor
+	 */
 	public XMLBuilder(){
 		xstream.alias("request", Request.class);
 		xstream.alias("response", Response.class);
@@ -20,18 +24,18 @@ public class XMLBuilder {
 	}
 	
 	/**
-	 * 
-	 * @param obj
-	 * @return
+	 * Convert from object to xml string
+	 * @param obj object 
+	 * @return the converted xml string
 	 */
 	public String toXML(Object obj){
 		return xstream.toXML(obj);
 	}
 	
 	/**
-	 * 
-	 * @param str
-	 * @return
+	 * Convert from xml string to object
+	 * @param str xml string
+	 * @return the converted object
 	 */
 	public Object fromXML(String str){
 		return xstream.fromXML(str);

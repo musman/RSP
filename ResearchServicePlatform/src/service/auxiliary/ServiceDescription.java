@@ -16,16 +16,15 @@ public class ServiceDescription implements Serializable {
     private String serviceEndpoint;
     private String serviceType;
     private String serviceName;
-    //private double serviceCost;
 
     private HashMap<String, Object> customProperties = new HashMap<String, Object>();
     private List<Operation> opList = new ArrayList<Operation>();
 
     /**
-     * 
-     * @param serviceName
-     * @param serviceEndpoint
-     * @param responseTime
+     * Constructor
+     * @param serviceName the service name
+     * @param serviceEndpoint the service endpoint
+     * @param responseTime the response time
      */
     public ServiceDescription(String serviceName, String serviceEndpoint, int responseTime) {
     	this.serviceName = serviceName;
@@ -34,73 +33,73 @@ public class ServiceDescription implements Serializable {
     }
     
     /**
-     * 
-     * @return
+     * Return the register id
+     * @return the register id 
      */
     public int getRegisterID() {
     	return registerID;
     }
 
     /**
-     * 
-     * @param registerID
+     * Set the register id
+     * @param registerID the new register id
      */
     public void setRegisterID(int registerID) {
     	this.registerID = registerID;
     }
 
     /**
-     * 
-     * @return
+     * Return the service endpoint
+     * @return the service endpoint
      */
     public String getServiceEndpoint() {
     	return serviceEndpoint;
     }
 
     /**
-     * 
-     * @param serviceEndpoint
+     * Set the service endpoint
+     * @param serviceEndpoint the service endpoint
      */
     public void setServiceEndpoint(String serviceEndpoint) {
     	this.serviceEndpoint = serviceEndpoint;
     }
 
     /**
-     * 
-     * @return
+     * Return the service type
+     * @return the service type
      */
     public String getServiceType() {
     	return serviceType;
     }
 
     /**
-     * 
-     * @param serviceType
+     * Set the service type
+     * @param serviceType the new service type
      */
     public void setServiceType(String serviceType) {
     	this.serviceType = serviceType;
     }
     
     /**
-     * 
-     * @return
+     * Return the service name
+     * @return the service name
      */
     public String getServiceName() {
     	return serviceName;
     }
 
     /**
-     * 
-     * @param serviceName
+     * Set the service name
+     * @param serviceName the new service name
      */
     public void setServiceName(String serviceName) {
     	this.serviceName = serviceName;
     }
 
     /**
-     * 
-     * @param serviceName
-     * @param serviceEndpoint
+     * Constructor
+     * @param serviceName the service name
+     * @param serviceEndpoint the service endpoint
      */
     public ServiceDescription(String serviceName, String serviceEndpoint) {
     	this.serviceName = serviceName;
@@ -108,8 +107,8 @@ public class ServiceDescription implements Serializable {
     }
 
     /**
-     * 
-     * @return
+     * Return service operations
+     * @return list of service operations
      */
     public List<Operation> getOperationList() {
     	return opList;
@@ -117,8 +116,8 @@ public class ServiceDescription implements Serializable {
 
     /**
      * Check this service has a specific operation or not
-     * @param opName
-     * @return
+     * @param opName the operation name
+     * @return true if the service has the operation, otherwise false
      */
     public boolean containsOperation(String opName) {
     	for (int i = 0; i < opList.size(); i++) {
@@ -129,17 +128,17 @@ public class ServiceDescription implements Serializable {
     }
 
     /**
-     * 
-     * @param opList
+     * Set operation
+     * @param opList list of operations
      */
     public void setOperationList(List<Operation> opList) {
     	this.opList = opList;
     }
     
     /**
-     * 
-     * @param opName
-     * @return
+     * Return operation
+     * @param opName the operation name
+     * @return the found operation
      */
     public Operation getOperation(String opName){
     	for(Operation op: opList){
@@ -152,7 +151,7 @@ public class ServiceDescription implements Serializable {
 
     /**
      * Get custom properties of this service
-     * @return
+     * @return the custom properties
      */
     public HashMap<String, Object> getCustomProperties() {
     	return customProperties;
@@ -160,7 +159,7 @@ public class ServiceDescription implements Serializable {
 
     /**
      * Get response time if this service has custom property "RESPONSE_TIME"
-     * @return
+     * @return the response time
      */
     public int getResponseTime() {
     	if (customProperties.containsKey(RESPONSE_TIME))
@@ -169,8 +168,8 @@ public class ServiceDescription implements Serializable {
     }
 
     /**
-     * 
-     * @param responseTime
+     * Set the response time
+     * @param responseTime the new response time
      */
     public void setResponseTime(int responseTime) {
     	customProperties.put(RESPONSE_TIME, responseTime);
@@ -178,17 +177,17 @@ public class ServiceDescription implements Serializable {
 
     /**
      * Get the cost of an operation
-     * @param opName
-     * @return
+     * @param opName the operation name
+     * @return the operation cost
      */
     public double getOperationCost(String opName){
     	return getOperation(opName).getOpCost();
     }
     
     /**
-     *  
-     * @param opName
-     * @param cost
+     *  Set the operation cost
+     * @param opName the operation name
+     * @param cost the new operation cost
      */
     public void setOperationCost(String opName, double cost) {
     	getOperation(opName).setOpCost(cost);
@@ -222,11 +221,17 @@ public class ServiceDescription implements Serializable {
     	return null;
     }
 
+    /**
+     * Override the default "hashCode" method
+     */
     @Override
     public int hashCode() {
     	return serviceEndpoint.hashCode() + serviceType.hashCode();
     }
 
+    /**
+     * Override the default "equals" method
+     */
     @Override
     public boolean equals(Object obj) {
 		if (obj instanceof ServiceDescription) {
