@@ -33,6 +33,12 @@ public class Configuration {
 		SDCacheSize = sDCacheSize;
     }
 
+    /**
+     * 
+     * @param multipleThreads
+     * @param maxNoOfThreads
+     * @param maxQueueSize
+     */
     public Configuration(boolean multipleThreads, int maxNoOfThreads, int maxQueueSize) {
 		this.MultipleThreads = multipleThreads;
 		this.maxNoOfThreads = maxNoOfThreads;

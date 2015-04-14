@@ -116,7 +116,7 @@ public class ServiceDescription implements Serializable {
     }
 
     /**
-     * 
+     * Check this service has a specific operation or not
      * @param opName
      * @return
      */
@@ -151,7 +151,7 @@ public class ServiceDescription implements Serializable {
     }
 
     /**
-     * 
+     * Get custom properties of this service
      * @return
      */
     public HashMap<String, Object> getCustomProperties() {
@@ -177,13 +177,14 @@ public class ServiceDescription implements Serializable {
     }
 
     /**
-     * 
+     * Get the cost of an operation
      * @param opName
      * @return
      */
     public double getOperationCost(String opName){
     	return getOperation(opName).getOpCost();
     }
+    
     /**
      *  
      * @param opName

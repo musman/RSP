@@ -35,15 +35,29 @@ public class Operation implements Serializable{
 	
 	private double opCost;
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public double getOpCost() {
 	    return opCost;
 	}
 	
+	/**
+	 * 
+	 * @param opCost
+	 */
 	public void setOpCost(double opCost) {
 	    this.opCost = opCost;
 	}
 
 
+	/**
+	 * 
+	 * @param opName
+	 * @param paramTypes
+	 * @param returnType
+	 */
 	public Operation(String opName,Class<?>[] paramTypes,String returnType){
 		this.opName=opName;
 		this.paramTypes=paramTypes;

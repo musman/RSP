@@ -27,6 +27,11 @@ public abstract class AbstractService implements MessageReceiver {
 
     public static final boolean DEBUG = false;
 
+    /**
+     * 
+     * @param serviceName
+     * @param serviceEndpoint
+     */
     public AbstractService(String serviceName, String serviceEndpoint) {
 		serviceProvider = ServiceProviderFactory.createServiceProvider();
 		this.serviceName = serviceName;
@@ -37,15 +42,40 @@ public abstract class AbstractService implements MessageReceiver {
 		applyConfiguration();
     }
 
+    /**
+     * 
+     * @param serviceName
+     * @param serviceEndpoint
+     * @param responseTime
+     */
     public AbstractService(String serviceName, String serviceEndpoint, int responseTime) {
     	this(serviceName, serviceEndpoint);
     	serviceDescription = new ServiceDescription(serviceName, serviceEndpoint, responseTime);
     }
 
+    /**
+     * Send request to invoke a service
+     * @param service     the service
+     * @param destination the target endpoint
+     * @param reply       requires reply or not
+     * @param opName      specific operation
+     * @param params      parameters of this operation
+     * @return
+     */
     public Object sendRequest(String service, String destination, boolean reply, String opName, Object... params) {
     	return sendRequest(service, destination, reply, -1, opName, params);
     }
 
+    /**
+     * Send request to invoke a service with specific waiting time
+     * @param service
+     * @param destination
+     * @param reply
+     * @param responseTime   the max time for waiting a reply
+     * @param opName
+     * @param params
+     * @return
+     */
     public Object sendRequest(String service, String destination, boolean reply, long responseTime, String opName, Object... params) {
 		try {
 			int messageID = messageCount.incrementAndGet();
@@ -87,6 +117,12 @@ public abstract class AbstractService implements MessageReceiver {
 		}
     }
 
+    /**
+     * Send response with a result for a specific request message
+     * @param requestID
+     * @param result
+     * @param destination
+     */
     private void sendResponse(int requestID, Object result, String destination) {
     	Response response = new Response(messageCount.incrementAndGet(), requestID, this.serviceEndpoint, result);
     	XMLBuilder build = new XMLBuilder();
@@ -94,10 +130,16 @@ public abstract class AbstractService implements MessageReceiver {
     	serviceProvider.sendMessage(responseMessage, destination);
     }
 
+    /**
+     * 
+     */
     public void startService() {
     	serviceProvider.startListening(serviceEndpoint, this);
     }
 
+    /**
+     * 
+     */
     public void stopService() {
     	serviceProvider.stopListening();
     }
@@ -187,10 +229,18 @@ public abstract class AbstractService implements MessageReceiver {
     		System.err.println("Service is not registered in the registy yet. It can't be updated.");
     }
 
+    /**
+     * 
+     * @return
+     */
     public ServiceDescription getServiceDescription() {
     	return serviceDescription;
     }
 
+    /**
+     * 
+     * @param serviceDescription
+     */
     public void setServiceDescription(ServiceDescription serviceDescription) {
     	this.serviceDescription = serviceDescription;
     }
@@ -198,10 +248,17 @@ public abstract class AbstractService implements MessageReceiver {
     // ////////////////////////////////////////// Service Configuration //////////////////////////////////////////////////////
     protected Configuration configuration;
 
+    /**
+     * 
+     * @return
+     */
     public Configuration getConfiguration() {
     	return this.configuration;
     }
 
+    /**
+     * 
+     */
     protected void createServiceDescription() {
 		List<Operation> opList = new ArrayList<Operation>();
 		for (Method operation : this.getClass().getMethods()) {

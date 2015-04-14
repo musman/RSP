@@ -1,7 +1,7 @@
 package service.auxiliary;
 
 /**
- * 
+ * Definition of formated message
  * @author Yifan Ruan
  * @email  ry222ad@student.lnu.se
  */
@@ -10,6 +10,12 @@ public class AbstractMessage {
 	private String endpoint;
 	private String msgType;
 	
+	/**
+	 * 
+	 * @param id
+	 * @param endpoint
+	 * @param msgType
+	 */
 	public AbstractMessage(int id, String endpoint, String msgType){
 		this.id=id;
 		this.endpoint=endpoint;

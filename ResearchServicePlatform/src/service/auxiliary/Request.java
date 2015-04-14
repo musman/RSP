@@ -5,6 +5,14 @@ public class Request extends AbstractMessage{
 	private String opName;
 	private Param [] params;
 	
+	/**
+	 * 
+	 * @param messageID
+	 * @param address
+	 * @param serviceName
+	 * @param opName
+	 * @param params
+	 */
 	public Request(int messageID,String address, String serviceName, String opName, Object[] params){
 		super(messageID,address,"request");
 		this.serviceName=serviceName;
@@ -15,32 +23,63 @@ public class Request extends AbstractMessage{
 		}
 	}
 	
+	/**
+	 * 
+	 * @param messageID
+	 * @param address
+	 * @param serviceName
+	 * @param opName
+	 */
 	public Request(int messageID,String address,String serviceName, String opName){
 		super(messageID,address,"request");
 		this.serviceName=serviceName;
 		this.opName=opName;
 	}
 	
+	/**
+	 * 
+	 * @param serviceName
+	 */
 	public void setServiceName(String serviceName) {
 	    this.serviceName = serviceName;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getServiceName() {
 	    return serviceName;
 	}
 	
+	/**
+	 * 
+	 * @param opName
+	 */
 	public void setOpName(String opName) {
 	    this.opName = opName;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getOpName() {
 	    return opName;
 	}
 	
+	/**
+	 * 
+	 * @param params
+	 */
 	public void setParams(Param[] params) {
 	    this.params = params;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Param[] getParams() {
 	    return params;
 	}
