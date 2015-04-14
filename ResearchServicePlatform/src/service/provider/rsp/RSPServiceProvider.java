@@ -9,25 +9,28 @@ public class RSPServiceProvider implements ServiceProvider {
     private String endPoint;
     private MessageReceiver messageReceiver;
    
+    /**
+     * 
+     */
     public RSPServiceProvider() {
-	rspMessagingService = RSPMessagingService.getInstance();
+    	rspMessagingService = RSPMessagingService.getInstance();
     }
    
     @Override
     public void startListening(String endPoint, MessageReceiver messageReceiver) {
-	this.endPoint = endPoint;
-	this.messageReceiver = messageReceiver;
-	rspMessagingService.register(endPoint, messageReceiver);
+    	this.endPoint = endPoint;
+    	this.messageReceiver = messageReceiver;
+    	rspMessagingService.register(endPoint, messageReceiver);
     }
 
     @Override
     public void stopListening() {
-	rspMessagingService.deregister(endPoint);
+    	rspMessagingService.deregister(endPoint);
     }
 
     @Override
     public void sendMessage(String msgText, String destinationEndPoint) {
-	rspMessagingService.sendMessage(endPoint, destinationEndPoint, msgText);
+    	rspMessagingService.sendMessage(endPoint, destinationEndPoint, msgText);
     }
 
 }

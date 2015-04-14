@@ -34,6 +34,7 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     	return allServices;
     }
     
+
     @ServiceOperation
     public int register(ServiceDescription serviceDescription) {
     	serviceCount++;

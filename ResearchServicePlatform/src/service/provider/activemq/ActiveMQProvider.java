@@ -22,10 +22,10 @@ public class ActiveMQProvider implements ServiceProvider, MessageListener {
     InitialContext initContext;
     QueueConnectionFactory queueConnectingFactory;
     QueueConnection queueConnection;
-
     String endPoint;
     MessageReceiver messageReceiver;
 
+    @Override
     public void sendMessage(String msgText, String destinationEndPoint) {
     	try {
     		Queue destination = (Queue) initContext.lookup("dynamicQueues/" + destinationEndPoint);
@@ -39,6 +39,7 @@ public class ActiveMQProvider implements ServiceProvider, MessageListener {
     	}
     }
 
+    @Override
     public void startListening(String endPoint, MessageReceiver messageReceiver) {
     	try {
     		this.endPoint = endPoint;
@@ -63,7 +64,8 @@ public class ActiveMQProvider implements ServiceProvider, MessageListener {
     		e.printStackTrace();
     	}
     }
-
+    
+    @Override
     public void stopListening() {
     	try {
     		queueConnection.close();

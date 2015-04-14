@@ -15,6 +15,6 @@ public class ServiceProviderFactory {
      */
     public static ServiceProvider createServiceProvider() {
     	//return new ActiveMQProvider();
-	return new RSPServiceProvider();
+    	return new RSPServiceProvider();
     }
 }
