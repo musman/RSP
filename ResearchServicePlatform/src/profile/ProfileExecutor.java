@@ -21,6 +21,10 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class ProfileExecutor {
 
 	private static XStream xstream=new XStream(new StaxDriver());
+	
+	/**
+	 * The constructed profile can be fetched outside
+	 */
 	public static InputProfile profile=new InputProfile();
 	
 	static{
@@ -30,8 +34,8 @@ public class ProfileExecutor {
 	}
 	
 	/**
-	 * 
-	 * @param xmlPath
+	 * Read profile object from xml file
+	 * @param xmlPath the xml file path
 	 */
 	public static void readFromXml(String xmlPath){
 		try {
@@ -43,8 +47,8 @@ public class ProfileExecutor {
 	}
 	
 	/**
-	 * 
-	 * @param xmlPath
+	 * Write profile object to xml file
+	 * @param xmlPath the xml file path
 	 */
 	public static void writeToXml(String xmlPath){
 		try {

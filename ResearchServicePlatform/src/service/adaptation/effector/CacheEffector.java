@@ -9,21 +9,26 @@ import service.composite.CompositeService;
 public class CacheEffector {
 
     private CompositeService compositeService;
+  
+    /**
+     * Constructor
+     * @param compositeService which composite service to be affected
+     */
     public CacheEffector(CompositeService compositeService) {
-	this.compositeService = compositeService;
+    	this.compositeService = compositeService;
     }
 
     /**
      * Remove service from cache
-     * @param service
+     * @param service the service description
      */
     public void removeService(ServiceDescription service) {
 	    compositeService.getCache().remove(service);
     }
     
     /**
-     * Remove service from cache with registeration id
-     * @param service
+     * Remove service from cache with register id
+     * @param service the unique register id
      */
     public void removeService(int registerId) {
 	    compositeService.getCache().remove(registerId);
@@ -31,45 +36,51 @@ public class CacheEffector {
 
     /**
      * Remove service from cache with service description and operation name
-     * @param service
-     * @param opName
+     * @param service the service description
+     * @param opName the operation name
      */
     public void removeService(ServiceDescription service, String opName) {
-	compositeService.getCache().remove(service, opName);
+    	compositeService.getCache().remove(service, opName);
     }
 
     /**
-     * Refresh the cache; all services will be removed.
+     * Refresh the cache
+     * all services will be removed.
      */
     public void refreshCache() {
-	compositeService.getCache().refresh();
+    	compositeService.getCache().refresh();
     }
     
+    /**
+     * Return all services with same type and operation
+     * @param serviceType the service type
+     * @param opName the operation name
+     */
     public void getAllServices(String serviceType, String opName){
-	compositeService.getCache().remove(serviceType, opName);
-	compositeService.lookupService(serviceType, opName);
+    	compositeService.getCache().remove(serviceType, opName);
+    	compositeService.lookupService(serviceType, opName);
     }
 
     /**
-     * Remove all the services who has 
-     * @param service
-     * @param opName
-     * @return
+     * Remove all services with same service description and operation
+     * @param service the service description
+     * @param opName the operation name
+     * @return a list of service descriptions after refreshing
      */
     public List<ServiceDescription> refreshCache(ServiceDescription service, String opName) {
-	removeService(service, opName);
-	return compositeService.lookupService(service.getServiceType(), opName);
+    	removeService(service, opName);
+    	return compositeService.lookupService(service.getServiceType(), opName);
     }
 
     /**
      * Update service description
-     * @param oldService
-     * @param newService
+     * @param oldService the old service description
+     * @param newService the new service description
      */
     public void updateServiceDescription(ServiceDescription oldService, ServiceDescription newService) {
-	if (oldService.getRegisterID() == newService.getRegisterID()) {
-	    for (Operation operation : oldService.getOperationList())
-		compositeService.getCache().update(oldService, newService, operation.getOpName());
-	}
+    	if (oldService.getRegisterID() == newService.getRegisterID()) {
+    		for (Operation operation : oldService.getOperationList())
+    			compositeService.getCache().update(oldService, newService, operation.getOpName());
+    	}
     }
 }

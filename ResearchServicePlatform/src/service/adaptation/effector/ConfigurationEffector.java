@@ -4,14 +4,18 @@ import service.composite.CompositeService;
 
 public class ConfigurationEffector extends AbstractEffector {
 
+	/**
+	 * Constructor
+	 * @param compositeService which composite service to be affected
+	 */
     public ConfigurationEffector(CompositeService compositeService) {
     	super(compositeService);
     }
 
     /**
-     * Change timout factor
+     * Change timeout factor
      * 
-     * @param timeout
+     * @param timeout new timeout factor
      */
     public void changeTimeout(int timeout) {
     	compositeService.getConfiguration().timeout = timeout;
@@ -19,7 +23,8 @@ public class ConfigurationEffector extends AbstractEffector {
 
     /**
      * Set the maximum retry attempts for sending messages
-     * @param maxRetryAttempts
+     * 
+     * @param maxRetryAttempts the value of max retry attempts 
      */
     public void setMaxRetryAttempts(int maxRetryAttempts) {
     	compositeService.getConfiguration().maxRetryAttempts = maxRetryAttempts;

@@ -8,8 +8,8 @@ public class WorkflowEffector extends AbstractEffector {
     private CacheEffector cacheEffector;
     
     /**
-     * 
-     * @param compositeService
+     * Constructor
+     * @param compositeService which composite service to be affected
      */
     public WorkflowEffector(CompositeService compositeService) {
     	super(compositeService);
@@ -18,7 +18,7 @@ public class WorkflowEffector extends AbstractEffector {
 
     /**
      * Update the workflow
-     * @param workflow
+     * @param workflow new workflow content
      */
     public void updateWorkflow(String workflow) {
     	compositeService.setWorkflow(workflow);
@@ -26,15 +26,15 @@ public class WorkflowEffector extends AbstractEffector {
     
     /**
      * Remove the service from workflow cache
-     * @param sd
+     * @param sd  the service description
      */
     public void removeService(ServiceDescription sd){
     	cacheEffector.removeService(sd);
     }
     
     /**
-     * Remove the service from workflow cache using serviceId
-     * @param serviceId
+     * Remove the service from workflow cache with service id
+     * @param serviceId the service id
      */
     public void removeService(int serviceId){
     	cacheEffector.removeService(serviceId);
@@ -49,8 +49,8 @@ public class WorkflowEffector extends AbstractEffector {
 
     /**
      * Clear the workflow cache
-     * @param serviceType
-     * @param opName
+     * @param serviceType  the service type
+     * @param opName the operation name
      */
     public void refreshAllServices(String serviceType, String opName){
     	cacheEffector.getAllServices(serviceType, opName);
@@ -59,8 +59,8 @@ public class WorkflowEffector extends AbstractEffector {
 
     /**
      * Update the service description in the workflow cache
-     * @param oldService
-     * @param newService
+     * @param oldService the old service description
+     * @param newService the new service description
      */
     public void updateServiceDescription(ServiceDescription oldService, ServiceDescription newService) {
     	cacheEffector.updateServiceDescription(oldService, newService);

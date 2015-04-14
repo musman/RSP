@@ -189,8 +189,8 @@ public class CompositeService extends AbstractService {
     }
     
     /**
-     * 
-     * @return
+     * Returns the cost probe
+     * @return CostProbe
      */
     public CostProbe getCostProbe() {
     	return costProbe;

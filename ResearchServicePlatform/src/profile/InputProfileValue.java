@@ -9,13 +9,14 @@ package profile;
  * @email  ry222ad@student.lnu.se
  */
 public class InputProfileValue {
-	Object data;
-	double ratio;
 	
-	/**
-	 * 
-	 * @param data
-	 * @param ratio
+	private Object data;
+	private double ratio;
+	
+	/** 
+	 * Constructor
+	 * @param data the data
+	 * @param ratio the definition of how many times to execute with this data
 	 */
 	public InputProfileValue(Object data, double ratio){
 		this.data=data;
@@ -23,16 +24,16 @@ public class InputProfileValue {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return data
+	 * @return the data of the value
 	 */
 	public Object getData(){
 		return this.data;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return ration
+	 * @return the ration of the value
 	 */
 	public double getRatio(){
 		return this.ratio;

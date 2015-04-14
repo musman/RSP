@@ -12,34 +12,22 @@ import service.composite.CompositeService;
  */
 public class AbstractEffector {
 	
-	CompositeService compositeService=null;
+	protected CompositeService compositeService=null;
 	
+	/**
+	 * Constructor
+	 * @param compositeService which composite service to be affected
+	 */
 	public AbstractEffector(CompositeService compositeService){
 		this.compositeService=compositeService;
 	}
 	
 	/**
+	 * Get composite service
 	 * @return the compositeService
 	 */
 	public CompositeService getCompositeService() {
 		return compositeService;
 	}
-	
-	/**
-	 * @param compositeService the compositeService to set
-	 */
-	//public void setCompositeService(CompositeService compositeService) {
-	//	this.compositeService = compositeService;
-	//}
-	
-	/**
-	 * Select another service, in case of failure
-	 * @param service
-	 * @param opName
-	 * @param params
-	 * @return
-	 */
-	// public ServiceDescription selectAlternativeService(ServiceDescription service, String opName, Object[] params){
-	//     return null;
-	// }
+
 }

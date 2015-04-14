@@ -11,20 +11,21 @@ import java.util.List;
  * @email  ry222ad@student.lnu.se
  */
 public class InputProfile {
+	
 	protected int maxSteps;
 	protected String qosRequirement;
 	protected List<InputProfileVariable> variables=new ArrayList<>();
 		
 	/**
-	 * 
+	 * Constructor without any parameters
 	 */
 	public InputProfile(){
 	}
 	
 	/**
-	 * 
-	 * @param maxSteps  steps for invoking the workflow
-	 * @param qosRequirement  
+	 * Constructor with parameters
+	 * @param maxSteps  steps for executing the workflow
+	 * @param qosRequirement  the specific QoS requirements to be satisfied
 	 * @param variables   specific variables
 	 */
 	public InputProfile(int maxSteps, String qosRequirement,List<InputProfileVariable> variables){
@@ -34,37 +35,37 @@ public class InputProfile {
 	}
 
 	/**
-	 * 
-	 * @return 
+	 * Get the max steps for executing the workflow
+	 * @return the max steps
 	 */
 	public int getMaxSteps() {
 		return maxSteps;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Get QoS requirement
+	 * @return the QoS requirements
 	 */
 	public String getQosRequirement() {
 		return qosRequirement;
 	}
 	
 	/**
-	 * 
-	 * @param variable
+	 * Add new input profile variable
+	 * @param variable the specific variable
 	 */
 	public void addVariable(InputProfileVariable variable){
 		this.variables.add(variable);
 	}
 
 	/**
-	 * 
-	 * @param variableName
-	 * @return
+	 * Return the variable with the name
+	 * @param variableName the name of input profile variable
+	 * @return the input profile variable
 	 */
 	public InputProfileVariable getVariable(String variableName){
 		for(InputProfileVariable variable:variables){
-			if(variable.name.equals(variableName))
+			if(variable.getName().equals(variableName))
 				return variable;
 		}
 		return null;

@@ -12,38 +12,47 @@ import java.util.List;
  */
 public class InputProfileVariable {
 
-	String name;
-	List<InputProfileValue> values=new ArrayList<>();
+	private String name;
+	private List<InputProfileValue> values=new ArrayList<>();
 	
 	/**
-	 * 
-	 * @param name
-	 * @param values
+	 * Construct
+	 * @param name specific name
+	 * @param values related list of values
 	 */
 	public InputProfileVariable(String name, List<InputProfileValue> values){
 		this.name=name;
 		this.values=values;
 	}
 	
+	
 	/**
-	 * 
-	 * @param name
+	 * Return name
+	 * @return the name of this variable
+	 */
+	public String getName(){
+		return this.name;
+	}
+	
+	/**
+	 * Construct
+	 * @param name specific name
 	 */
 	public InputProfileVariable(String name){
 		this.name=name;
 	}
 	
 	/**
-	 * 
-	 * @param value
+	 * Add new input profile value to the inherent list
+	 * @param value the value to be added
 	 */
 	public void addValue(InputProfileValue value){
 		this.values.add(value);
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return list of values
+	 * @return the list of values
 	 */
 	public List<InputProfileValue> getValues(){
 		return this.values;
