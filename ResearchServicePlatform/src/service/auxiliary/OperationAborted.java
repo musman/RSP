@@ -13,6 +13,10 @@ import javax.management.RuntimeErrorException;
 public class OperationAborted extends RuntimeErrorException {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Constructor
+	 * @param e the error
+	 */
 	public OperationAborted(Error e) {
 		super(e);
 	}

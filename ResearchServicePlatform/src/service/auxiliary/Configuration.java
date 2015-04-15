@@ -11,7 +11,7 @@ package service.auxiliary;
 public class Configuration {
     
     /**
-     * 
+     * Constructor
      * @param multipleThreads
      * @param maxNoOfThreads
      * @param maxQueueSize

@@ -8,8 +8,8 @@ public class Operation implements Serializable{
 	private String opName;
 
 	/**
-	 * 
-	 * @return
+	 * Return the operation name
+	 * @return the operation name
 	 */
 	public String getOpName() {
 		return opName;
@@ -18,6 +18,7 @@ public class Operation implements Serializable{
 	private Class<?>[] paramTypes;
 	
 	/**
+	 * Return the type array of parameters
 	 * @return the paramTypes
 	 */
 	public Class<?>[] getParamTypes() {
@@ -27,7 +28,8 @@ public class Operation implements Serializable{
 	private String returnType;
 	
 	/**
-	 * @return the returnType
+	 * Return the return type of the operation
+	 * @return the return type
 	 */
 	public String getReturnType() {
 		return returnType;
@@ -36,16 +38,16 @@ public class Operation implements Serializable{
 	private double opCost;
 	
 	/**
-	 * 
-	 * @return
+	 * Return the operation cost
+	 * @return the operation cost
 	 */
 	public double getOpCost() {
 	    return opCost;
 	}
 	
 	/**
-	 * 
-	 * @param opCost
+	 * Set the operation cost
+	 * @param opCost the new operation cost
 	 */
 	public void setOpCost(double opCost) {
 	    this.opCost = opCost;
@@ -53,10 +55,10 @@ public class Operation implements Serializable{
 
 
 	/**
-	 * 
-	 * @param opName
-	 * @param paramTypes
-	 * @param returnType
+	 * Constructor
+	 * @param opName the operation name
+	 * @param paramTypes the type array of parameters
+	 * @param returnType the return type
 	 */
 	public Operation(String opName,Class<?>[] paramTypes,String returnType){
 		this.opName=opName;
@@ -65,6 +67,9 @@ public class Operation implements Serializable{
 	}
 	
 	
+	/**
+	 * Override the "equals" method
+	 */
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof Operation){

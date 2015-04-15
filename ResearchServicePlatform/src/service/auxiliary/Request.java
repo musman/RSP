@@ -6,15 +6,15 @@ public class Request extends AbstractMessage{
 	private Param [] params;
 	
 	/**
-	 * 
-	 * @param messageID
-	 * @param address
-	 * @param serviceName
-	 * @param opName
-	 * @param params
+	 * Constructor
+	 * @param messageID the message id
+	 * @param endpoint the source endpoint
+	 * @param serviceName the service name
+	 * @param opName the operation name
+	 * @param params the parameters for the operation
 	 */
-	public Request(int messageID,String address, String serviceName, String opName, Object[] params){
-		super(messageID,address,"request");
+	public Request(int messageID,String endpoint, String serviceName, String opName, Object[] params){
+		super(messageID,endpoint,"request");
 		this.serviceName=serviceName;
 		this.opName=opName;
 		this.params = new Param[params.length];
@@ -24,61 +24,61 @@ public class Request extends AbstractMessage{
 	}
 	
 	/**
-	 * 
-	 * @param messageID
-	 * @param address
-	 * @param serviceName
-	 * @param opName
+	 * Constructor
+	 * @param messageID the message id
+	 * @param endpoint the source endpoint
+	 * @param serviceName the service name
+	 * @param opName the operation name
 	 */
-	public Request(int messageID,String address,String serviceName, String opName){
-		super(messageID,address,"request");
+	public Request(int messageID,String endpoint,String serviceName, String opName){
+		super(messageID,endpoint,"request");
 		this.serviceName=serviceName;
 		this.opName=opName;
 	}
 	
 	/**
-	 * 
-	 * @param serviceName
+	 * Set service name
+	 * @param serviceName the new service name
 	 */
 	public void setServiceName(String serviceName) {
 	    this.serviceName = serviceName;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return service name
+	 * @return the service name
 	 */
 	public String getServiceName() {
 	    return serviceName;
 	}
 	
 	/**
-	 * 
-	 * @param opName
+	 * Set operation name
+	 * @param opName the operation name
 	 */
 	public void setOpName(String opName) {
 	    this.opName = opName;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return operation name
+	 * @return the operation name
 	 */
 	public String getOpName() {
 	    return opName;
 	}
 	
 	/**
-	 * 
-	 * @param params
+	 * Set parameters for the operation
+	 * @param params the parameters
 	 */
 	public void setParams(Param[] params) {
 	    this.params = params;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return parameters
+	 * @return the parameters for the operation
 	 */
 	public Param[] getParams() {
 	    return params;

@@ -10,8 +10,8 @@ public class Param{
 	private Object value;
 	
 	/**
-	 * 
-	 * @param value
+	 * Constructor
+	 * @param value value of the parameter
 	 */
 	public Param(Object value){
 		if(value!=null){
@@ -24,37 +24,40 @@ public class Param{
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return the parameter type
+	 * @return the parameter type
 	 */
 	public Class<?> getType() {
 	    return type;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return the parameter value
+	 * @return the parameter value
 	 */
 	public Object getValue() {
 	    return value;
 	}
 	
 	/**
-	 * 
-	 * @param value
+	 * Set the parameter value
+	 * @param value the new value
 	 */
 	public void setValue(Object value) {
 	    this.value = value;
 	}
 	
 	/**
-	 * 
-	 * @param type
+	 * Set the parameter type
+	 * @param type the new type
 	 */
 	public void setType(Class<?> type) {
 	    this.type = type;
 	}
 	
+	/**
+	 * Override the default "toString" method
+	 */
 	@Override
 	public String toString() {
 	    return value.toString();
