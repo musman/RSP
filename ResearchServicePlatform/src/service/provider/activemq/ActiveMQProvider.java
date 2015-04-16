@@ -17,6 +17,12 @@ import javax.naming.InitialContext;
 import service.provider.MessageReceiver;
 import service.provider.ServiceProvider;
 
+
+/**
+ * 
+ * The service provider with ActiveMQ
+ * 
+ */
 public class ActiveMQProvider implements ServiceProvider, MessageListener {
 
     private InitialContext initContext;

@@ -6,5 +6,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+
+/**
+ * 
+ * Annotation for local operations, which cannot be invoked remotely
+ * 
+ */
 public @interface LocalOperation {  
 }

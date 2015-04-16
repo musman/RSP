@@ -8,6 +8,10 @@ import java.util.concurrent.Executors;
 import service.provider.MessageReceiver;
 import service.utility.Time;
 
+/**
+ * 
+ * Definition of a service for handling all messages
+ */
 public class RSPMessagingService {
     
     private static RSPMessagingService instance;
@@ -18,7 +22,7 @@ public class RSPMessagingService {
     
     /**
      * Get the single instance of RSPMessagingService
-     * @return
+     * @return the single instance 
      */
     public static RSPMessagingService getInstance() {
     	return instance;
@@ -34,8 +38,8 @@ public class RSPMessagingService {
     
     /**
      * Register new message receiver to the queue
-     * @param endPoint
-     * @param messageReceiver
+     * @param endPoint the service endpoint
+     * @param messageReceiver the message receiver for incoming messages
      */
     public void register(String endPoint, MessageReceiver messageReceiver) {
     	queue.put(endPoint, messageReceiver);
@@ -43,7 +47,7 @@ public class RSPMessagingService {
 
     /**
      * Deregister from the queue with the endpoint
-     * @param endPoint
+     * @param endPoint the service endpoint
      */
     public void deregister(String endPoint) {
     	queue.remove(endPoint);
@@ -87,9 +91,9 @@ public class RSPMessagingService {
     }
     
     /**
-     * 
-     * @param minDelay
-     * @param maxDelay
+     * Set the message delay
+     * @param minDelay the new minimum message delay
+     * @param maxDelay the new maxmum message delay
      */
     public void setMessageDelay(int minDelay, int maxDelay) {
     	this.minDelay = minDelay;
@@ -97,32 +101,32 @@ public class RSPMessagingService {
     }
     
     /**
-     * 
-     * @param messageLoss
+     * Set the message loss
+     * @param messageLoss the new message loss
      */
     public void setMessageLoss(int messageLoss) {
     	this.messageLoss = messageLoss;
     }
     
     /**
-     * 
-     * @return
+     * Return the message loss
+     * @return the message loss
      */
     public int getMessageLoss(){
     	return this.messageLoss;
     }
     
     /**
-     * 
-     * @return
+     * Return the minimum message delay
+     * @return the minimum message delay
      */
     public int getMessageMinDelay(){
     	return this.minDelay;
     }
     
     /**
-     * 
-     * @return
+     * Return the maxmum message delay
+     * @return the maxmum message delay
      */
     public int getMessageMaxDelay(){
     	return this.maxDelay;

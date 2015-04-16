@@ -20,6 +20,11 @@ import service.registry.ServiceRegistry;
 import service.workflow.AbstractQoSRequirement;
 import service.workflow.WorkflowEngine;
 
+/**
+ * 
+ * Providing an abstraction to create composite services
+ *
+ */
 public class CompositeService extends AbstractService {
 
     private String workflow;

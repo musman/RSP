@@ -3,6 +3,11 @@ package service.adaptation.probes;
 import service.adaptation.probes.interfaces.CostProbeInterface;
 import service.auxiliary.ServiceDescription;
 
+/**
+ * 
+ * Monitor the cost of service invocations
+ * 
+ */
 public class CostProbe extends AbstractProbe<CostProbeInterface> {
 
     private double cost;

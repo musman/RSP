@@ -13,28 +13,33 @@ import service.provider.ServiceProvider;
 import service.provider.ServiceProviderFactory;
 import service.utility.Time;
 
+/**
+ * 
+ *  Basic unit to create a service,
+ *  providing functionality to create atomic and composite services
+ */
 public abstract class AbstractService implements MessageReceiver {
 
-    String serviceName;
-    String serviceEndpoint;
-    ServiceProvider serviceProvider;
+    //private String serviceName;
+    private String serviceEndpoint;
+    private ServiceProvider serviceProvider;
 
-    AtomicInteger messageCount = new AtomicInteger(0);
-    Map<Integer, Object> results = new ConcurrentHashMap<Integer, Object>();
-    ServiceDescription serviceDescription;
+    private AtomicInteger messageCount = new AtomicInteger(0);
+    private Map<Integer, Object> results = new ConcurrentHashMap<Integer, Object>();
+    private ServiceDescription serviceDescription;
     private Object NullObject = new Object();
-    ExecutorService executors;
+    private ExecutorService executors;
 
     public static final boolean DEBUG = false;
 
     /**
-     * 
-     * @param serviceName
-     * @param serviceEndpoint
+     * Constructor
+     * @param serviceName  the service name
+     * @param serviceEndpoint the service endpoint
      */
     public AbstractService(String serviceName, String serviceEndpoint) {
 		serviceProvider = ServiceProviderFactory.createServiceProvider();
-		this.serviceName = serviceName;
+		//this.serviceName = serviceName;
 		this.serviceEndpoint = serviceEndpoint;
 		serviceDescription = new ServiceDescription(serviceName,serviceEndpoint);
 		createServiceDescription();
@@ -43,10 +48,10 @@ public abstract class AbstractService implements MessageReceiver {
     }
 
     /**
-     * 
-     * @param serviceName
-     * @param serviceEndpoint
-     * @param responseTime
+     * Constructor
+     * @param serviceName the service name
+     * @param serviceEndpoint the service endpoint
+     * @param responseTime the response time
      */
     public AbstractService(String serviceName, String serviceEndpoint, int responseTime) {
     	this(serviceName, serviceEndpoint);
@@ -55,12 +60,12 @@ public abstract class AbstractService implements MessageReceiver {
 
     /**
      * Send request to invoke a service
-     * @param service     the service
+     * @param service     the service name
      * @param destination the target endpoint
      * @param reply       requires reply or not
-     * @param opName      specific operation
-     * @param params      parameters of this operation
-     * @return
+     * @param opName      the invoked operation name
+     * @param params      parameters for the operation
+     * @return the service result
      */
     public Object sendRequest(String service, String destination, boolean reply, String opName, Object... params) {
     	return sendRequest(service, destination, reply, -1, opName, params);
@@ -68,13 +73,13 @@ public abstract class AbstractService implements MessageReceiver {
 
     /**
      * Send request to invoke a service with specific waiting time
-     * @param service
-     * @param destination
-     * @param reply
+     * @param service the service name
+     * @param destination the target endpoint
+     * @param reply requires reply or not
      * @param responseTime   the max time for waiting a reply
-     * @param opName
-     * @param params
-     * @return
+     * @param opName  the invoked operation name
+     * @param params parameters for the operation
+     * @return the service result
      */
     public Object sendRequest(String service, String destination, boolean reply, long responseTime, String opName, Object... params) {
 		try {
@@ -119,9 +124,9 @@ public abstract class AbstractService implements MessageReceiver {
 
     /**
      * Send response with a result for a specific request message
-     * @param requestID
-     * @param result
-     * @param destination
+     * @param requestID the id of request to be responsed
+     * @param result the result of invoked operation
+     * @param destination the target endpoint
      */
     private void sendResponse(int requestID, Object result, String destination) {
     	Response response = new Response(messageCount.incrementAndGet(), requestID, this.serviceEndpoint, result);
@@ -131,14 +136,15 @@ public abstract class AbstractService implements MessageReceiver {
     }
 
     /**
-     * 
+     * Start the service
+     * Listen for incoming messages
      */
     public void startService() {
     	serviceProvider.startListening(serviceEndpoint, this);
     }
 
     /**
-     * 
+     * Stop the service
      */
     public void stopService() {
     	serviceProvider.stopListening();
@@ -230,16 +236,16 @@ public abstract class AbstractService implements MessageReceiver {
     }
 
     /**
-     * 
-     * @return
+     * Return the service description
+     * @return the service description
      */
     public ServiceDescription getServiceDescription() {
     	return serviceDescription;
     }
 
     /**
-     * 
-     * @param serviceDescription
+     * Set the service description
+     * @param serviceDescription the new service description
      */
     public void setServiceDescription(ServiceDescription serviceDescription) {
     	this.serviceDescription = serviceDescription;
@@ -249,16 +255,13 @@ public abstract class AbstractService implements MessageReceiver {
     protected Configuration configuration;
 
     /**
-     * 
-     * @return
+     * Return the configuration
+     * @return the configuration
      */
     public Configuration getConfiguration() {
     	return this.configuration;
     }
 
-    /**
-     * 
-     */
     protected void createServiceDescription() {
 		List<Operation> opList = new ArrayList<Operation>();
 		for (Method operation : this.getClass().getMethods()) {

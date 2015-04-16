@@ -6,7 +6,7 @@ package service.adaptation.effector;
 import service.composite.CompositeService;
 
 /**
- * 
+ * Abstract effector, inherited with generic functions
  * @author Yifan Ruan
  * @email  ry222ad@student.lnu.se
  */

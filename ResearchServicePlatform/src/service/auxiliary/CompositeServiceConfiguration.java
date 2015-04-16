@@ -7,6 +7,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+
+/**
+ * 
+ * The configuration of composite service with properties
+ */
 public @interface CompositeServiceConfiguration{
     
     public boolean MultipeThreads() default false;

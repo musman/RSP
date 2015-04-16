@@ -1,6 +1,10 @@
 
 package service.adaptation.probes.interfaces;
 
+/**
+ * 
+ *  Interface with list of function definitions for cost probe
+ */
 public interface CostProbeInterface {
 
 	/**

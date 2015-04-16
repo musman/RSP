@@ -3,6 +3,11 @@ package service.provider.rsp;
 import service.provider.MessageReceiver;
 import service.provider.ServiceProvider;
 
+/**
+ * 
+ * A service provider with functions of 
+ * sending message and handling incoming messages
+ */
 public class RSPServiceProvider implements ServiceProvider {
 
     private RSPMessagingService rspMessagingService;
@@ -10,7 +15,7 @@ public class RSPServiceProvider implements ServiceProvider {
     private MessageReceiver messageReceiver;
    
     /**
-     * 
+     * Constructor
      */
     public RSPServiceProvider() {
     	rspMessagingService = RSPMessagingService.getInstance();

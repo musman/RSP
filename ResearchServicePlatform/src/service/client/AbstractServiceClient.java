@@ -7,8 +7,12 @@ import service.provider.MessageReceiver;
 import service.provider.ServiceProvider;
 import service.provider.ServiceProviderFactory;
 
+/**
+ * 
+ * The client for service invocation
+ */
 public class AbstractServiceClient implements MessageReceiver {
-    private String serviceAddress;
+    private String serviceEndpoint;
     private Object result = null;
 
     private static int clientId = 0;
@@ -35,7 +39,7 @@ public class AbstractServiceClient implements MessageReceiver {
     }
 
     private void initialize(String serviceEndpoint, String clientEndpoint) {
-		this.serviceAddress = serviceEndpoint;
+		this.serviceEndpoint = serviceEndpoint;
 		this.clientEndpoint = clientEndpoint;
 		serviceProvider = ServiceProviderFactory.createServiceProvider();
 		serviceProvider.startListening(clientEndpoint, this);
@@ -52,7 +56,7 @@ public class AbstractServiceClient implements MessageReceiver {
 			Request request = new Request(0, clientEndpoint, clientEndpoint,methodName, params);
 			XMLBuilder build = new XMLBuilder();
 			String requestMessage = build.toXML(request);
-			serviceProvider.sendMessage(requestMessage, serviceAddress);
+			serviceProvider.sendMessage(requestMessage, serviceEndpoint);
 			synchronized (this) {
 				this.wait();
 			}
@@ -64,19 +68,19 @@ public class AbstractServiceClient implements MessageReceiver {
     }
     
     /**
-     * 
-     * @return
+     * Return the service endpoint
+     * @return the service endpoint
      */
-    public String getServiceAddress() {
-    	return serviceAddress;
+    public String getServiceEndpoint() {
+    	return serviceEndpoint;
     }
 
     /**
-     * 
-     * @param serviceAddress
+     * Set the service endpoint
+     * @param serviceEndpoint the new service endpoint
      */
-    public void setServiceAddress(String serviceAddress) {
-    	this.serviceAddress = serviceAddress;
+    public void setServiceEndpoint(String serviceEndpoint) {
+    	this.serviceEndpoint = serviceEndpoint;
     }
 
     @Override

@@ -4,22 +4,22 @@
 package service.auxiliary;
 
 /**
- * @author Yifan Ruan, m.usman
- * @email ry222ad@student.lnu.se
+ * 
+ * List of parameter definitions for configuring
  * 
  */
 public class Configuration {
     
     /**
      * Constructor
-     * @param multipleThreads
-     * @param maxNoOfThreads
-     * @param maxQueueSize
-     * @param maxResponseTime
-     * @param sDCacheMode
-     * @param sDCacheShared
-     * @param sDCacheTimeout
-     * @param sDCacheSize
+     * @param multipleThreads use single thread or multiple threads
+     * @param maxNoOfThreads the max number of multiple threads to be used
+     * @param maxQueueSize the max queue size
+     * @param maxResponseTime the max responsible time for services
+     * @param sDCacheMode the mode to fetch the available services, from the local cache or from the service registry
+     * @param sDCacheShared   allow multiple threads to share the same cache or not
+     * @param sDCacheTimeout  the refresh period for the cache
+     * @param sDCacheSize the max cache size
      */
     public Configuration(boolean multipleThreads, int maxNoOfThreads, int maxQueueSize, int timeout, boolean ignoreTimeoutError,int maxRetryAttempts,boolean sDCacheMode, boolean sDCacheShared, int sDCacheTimeout,
 	    int sDCacheSize) {
@@ -34,10 +34,10 @@ public class Configuration {
     }
 
     /**
-     * 
-     * @param multipleThreads
-     * @param maxNoOfThreads
-     * @param maxQueueSize
+     * Constructor
+     * @param multipleThreads use single thread or multiple threads
+     * @param maxNoOfThreads the max number of multiple threads to be used
+     * @param maxQueueSize the max queue size
      */
     public Configuration(boolean multipleThreads, int maxNoOfThreads, int maxQueueSize) {
 		this.MultipleThreads = multipleThreads;

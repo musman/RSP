@@ -7,6 +7,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Definition of formated service description
+ * @author Yifan Ruan
+ * @email  ry222ad@student.lnu.se
+ */
 public class ServiceDescription implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -2,6 +2,12 @@ package service.auxiliary;
 
 import java.util.List;
 
+
+/**
+ * 
+ * Interface with a list of function definitions for service registry
+ */
+
 public interface ServiceRegistryInterface {
 	/**
 	 * The name

@@ -2,6 +2,11 @@ package service.auxiliary;
 
 import java.io.Serializable;
 
+/**
+ * Definition of a service operation
+ * @author Yifan Ruan
+ * @email  ry222ad@student.lnu.se
+ */
 public class Operation implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -86,4 +91,18 @@ public class Operation implements Serializable{
 		}
 		return false;
 	}	
+	
+	/**
+	 * Override the "toString" method
+	 */
+	@Override
+	public String toString(){
+		StringBuilder build=new StringBuilder();
+		build.append(returnType+" "+opName+" (");
+		for(Class<?> type:paramTypes)
+			build.append(type.getSimpleName()+",");
+		build.delete(build.length()-1, build.length());
+		build.append(")");
+		return build.toString();
+	}
 }

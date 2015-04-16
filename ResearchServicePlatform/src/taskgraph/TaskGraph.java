@@ -4,27 +4,35 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class TaskGraph {
+	
+	/**
+	 * Override the default "toString" method
+	 */
     @Override
     public String toString() {
-	return this.getClass().getSimpleName();
+    	return this.getClass().getSimpleName();
     }
 
+    /**
+     * 
+     * @param stopGraph
+     */
     public void printHierarchy(TaskGraph stopGraph) {
-	if (next == null || next == stopGraph) {
-	    return;
-	}
-	if (this instanceof IF) {
-	    IF ifTask = (IF) this;
-	    System.out.print(" --TrueSide-- ");
-	    ifTask.True.printHierarchy(ifTask.next);
-	    if (ifTask.False != ifTask.next) {
-		System.out.print(" --FalseSide-- ");
-		ifTask.True.printHierarchy(ifTask.next);
-	    }
-	    System.out.print(" --Next-- ");
-	}
-	System.out.print(this + "-->");
-	next.printHierarchy(stopGraph);
+		if (next == null || next == stopGraph) {
+			return;
+		}
+		if (this instanceof IF) {
+			IF ifTask = (IF) this;
+			System.out.print(" --TrueSide-- ");
+			ifTask.True.printHierarchy(ifTask.next);
+			if (ifTask.False != ifTask.next) {
+				System.out.print(" --FalseSide-- ");
+				ifTask.True.printHierarchy(ifTask.next);
+			}
+			System.out.print(" --Next-- ");
+		}
+		System.out.print(this + "-->");
+		next.printHierarchy(stopGraph);
     }
 
     protected TaskGraph next;
@@ -32,23 +40,23 @@ public abstract class TaskGraph {
     protected ETaskType taskType;
 
     public void setNext(TaskGraph next) {
-	this.next = next;
+    	this.next = next;
     }
 
     public TaskGraph getNext() {
-	return next;
+    	return next;
     }
 
     public void setPrev(TaskGraph prev) {
-	this.prev = prev;
+    	this.prev = prev;
     }
 
     public TaskGraph getPrev() {
-	return prev;
+    	return prev;
     }
 
     public ETaskType getTaskType() {
-	return taskType;
+    	return taskType;
     }
 
     @Override

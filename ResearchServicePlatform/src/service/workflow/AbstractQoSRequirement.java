@@ -4,6 +4,11 @@ import java.util.List;
 
 import service.auxiliary.ServiceDescription;
 
+/**
+ * 
+ * Interface to specify QoS requirements
+ * 
+ */
 public interface AbstractQoSRequirement {
 	/**
 	 * Select a best service from list of services

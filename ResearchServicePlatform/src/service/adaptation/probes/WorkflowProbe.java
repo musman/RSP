@@ -3,6 +3,11 @@ package service.adaptation.probes;
 import service.adaptation.probes.interfaces.WorkflowProbeInterface;
 import service.auxiliary.ServiceDescription;
 
+/**
+ * 
+ * Monitor the start and end of a workflow execution
+ * 
+ */
 public class WorkflowProbe extends AbstractProbe<WorkflowProbeInterface>{
     
     @Override

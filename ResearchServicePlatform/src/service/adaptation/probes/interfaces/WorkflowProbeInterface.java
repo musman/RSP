@@ -2,6 +2,11 @@ package service.adaptation.probes.interfaces;
 
 import service.auxiliary.ServiceDescription;
 
+
+/**
+ * 
+ * Interface with list of function definitions for workflow probe
+ */
 public interface WorkflowProbeInterface {
 
 	/**

@@ -1,5 +1,10 @@
 package service.auxiliary;
 
+/**
+ * Definition of formated response message
+ * @author Yifan Ruan
+ * @email  ry222ad@student.lnu.se
+ */
 public class Response extends AbstractMessage{
 
 	private int requestID;

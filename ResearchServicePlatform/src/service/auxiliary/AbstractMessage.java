@@ -11,10 +11,10 @@ public class AbstractMessage {
 	private String msgType;
 	
 	/**
-	 * 
-	 * @param id
-	 * @param endpoint
-	 * @param msgType
+	 * Constructor
+	 * @param id  the message id
+	 * @param endpoint the source endpoint
+	 * @param msgType the message type, request or response
 	 */
 	public AbstractMessage(int id, String endpoint, String msgType){
 		this.id=id;
@@ -23,48 +23,48 @@ public class AbstractMessage {
 	}
 	
 	/**
-	 * 
-	 * @param id
+	 * Set the message id
+	 * @param id the new message id
 	 */
 	public void setId(int id) {
 	    this.id = id;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return the message id
+	 * @return the message id
 	 */
 	public int getId() {
 	    return id;
 	}
 	
 	/**
-	 * 
-	 * @param address
+	 * Set the source endpoint
+	 * @param address the new source endpoint
 	 */
 	public void setEndpoint(String endpoint) {
 	    this.endpoint = endpoint;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return the source endpoint
+	 * @return the source endpoint
 	 */
 	public String getEndpoint() {
 	    return endpoint;
 	}
 	
 	/**
-	 * 
-	 * @param msgType
+	 * Set the message type
+	 * @param msgType the message type, request or response
 	 */
 	public void setType(String msgType) {
 	    this.msgType = msgType;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return message type
+	 * @return the message type, request or response
 	 */
 	public String getType() {
 	    return msgType;

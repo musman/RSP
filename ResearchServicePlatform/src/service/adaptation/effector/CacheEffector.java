@@ -6,6 +6,11 @@ import service.auxiliary.Operation;
 import service.auxiliary.ServiceDescription;
 import service.composite.CompositeService;
 
+/**
+ * 
+ * Responsible for changing cache
+ * 
+ */
 public class CacheEffector {
 
     private CompositeService compositeService;

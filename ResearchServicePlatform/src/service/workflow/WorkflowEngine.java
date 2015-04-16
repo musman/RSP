@@ -13,6 +13,10 @@ import service.workflow.ast.rspParser;
 import taskgraph.TaskGraph.START;
 import taskgraph.TaskGraphInterpreter;
 
+/**
+ * Workflow execution of composite service
+ * 
+ */
 public class WorkflowEngine {
 
     private CompositeService service;

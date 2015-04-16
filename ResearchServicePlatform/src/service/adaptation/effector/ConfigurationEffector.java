@@ -2,6 +2,11 @@ package service.adaptation.effector;
 
 import service.composite.CompositeService;
 
+/**
+ * 
+ * Responsible for changing configuration
+ * 
+ */
 public class ConfigurationEffector extends AbstractEffector {
 
 	/**

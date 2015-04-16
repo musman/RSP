@@ -12,6 +12,12 @@ import service.auxiliary.OperationAborted;
 import service.auxiliary.Param;
 import service.auxiliary.ServiceOperation;
 
+/**
+ *
+ * Inheriting from AbstractService,
+ * providing a logical entity for creating atomic services
+ * 
+ */
 public abstract class AtomicService extends AbstractService {		
 	private List<ServiceProfile> serviceProfiles=new ArrayList<>();
 	

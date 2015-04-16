@@ -1,5 +1,10 @@
 package service.atomic;
 
+/**
+ * 
+ * Responsible for emulating the non-functional characteristics 
+ * of the behavior of services. 
+ */
 public abstract class ServiceProfile {
 
 	/**

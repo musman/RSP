@@ -4,6 +4,11 @@ import java.util.List;
 
 import service.client.AbstractServiceClient;
 
+/**
+ * 
+ * Providing support for remotely accessing a composite service
+ * 
+ */
 public class CompositeServiceClient {
 
     AbstractServiceClient client;

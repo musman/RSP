@@ -3,6 +3,11 @@ package service.adaptation.effector;
 import service.auxiliary.ServiceDescription;
 import service.composite.CompositeService;
 
+/**
+ * 
+ * Responsible for changing workflow
+ * 
+ */
 public class WorkflowEffector extends AbstractEffector {
 
     private CacheEffector cacheEffector;

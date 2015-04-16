@@ -6,6 +6,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+
+/**
+ * 
+ * Annotation for properties of operations
+ */
 public @interface ServiceOperation {
 	
     public double OperationCost() default 0.0;
