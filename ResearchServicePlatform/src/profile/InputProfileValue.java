@@ -38,4 +38,20 @@ public class InputProfileValue {
 	public double getRatio(){
 		return this.ratio;
 	}
+	
+	/**
+	 * Set the ratio
+	 * @param ratio the new ratio
+	 */
+	public void setRatio(double ratio){
+		this.ratio=ratio;
+	}
+	
+	/**
+	 * Set the data
+	 * @param data the new data
+	 */
+	public void setData(Object data){
+		this.data=data;
+	}
 }

@@ -43,11 +43,27 @@ public class InputProfile {
 	}
 
 	/**
+	 * Set the max steps
+	 * @param maxSteps the max steps
+	 */
+	public void setMaxSteps(int maxSteps){
+		this.maxSteps=maxSteps;
+	}
+	
+	/**
 	 * Get QoS requirement
 	 * @return the QoS requirements
 	 */
 	public String getQosRequirement() {
 		return qosRequirement;
+	}
+	
+	/**
+	 * Set the QoS requirement
+	 * @param qosRequirement the QoS requirement
+	 */
+	public void setQosRequirement(String qosRequirement){
+		this.qosRequirement=qosRequirement;
 	}
 	
 	/**
@@ -58,6 +74,20 @@ public class InputProfile {
 		this.variables.add(variable);
 	}
 
+	
+	/**
+	 * Get list of variable names
+	 * @return the variable names
+	 */
+	public List<String> getVariableNames(){
+		List<String> variableNames=new ArrayList<>();
+		variables.forEach(variable->{
+			variableNames.add(variable.getName());
+		});
+		return variableNames;
+	}
+	
+	
 	/**
 	 * Return the variable with the name
 	 * @param variableName the name of input profile variable
