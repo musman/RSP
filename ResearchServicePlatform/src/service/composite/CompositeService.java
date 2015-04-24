@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import service.adaptation.effector.ConfigurationEffector;
 import service.adaptation.probes.CostProbe;
@@ -13,9 +15,11 @@ import service.adaptation.probes.WorkflowProbe;
 import service.auxiliary.AbstractService;
 import service.auxiliary.CompositeServiceConfiguration;
 import service.auxiliary.Configuration;
+import service.auxiliary.LocalOperation;
 import service.auxiliary.Param;
 import service.auxiliary.ServiceDescription;
 import service.auxiliary.ServiceOperation;
+import service.auxiliary.TimeOutError;
 import service.registry.ServiceRegistry;
 import service.workflow.AbstractQoSRequirement;
 import service.workflow.WorkflowEngine;
@@ -33,7 +37,9 @@ public class CompositeService extends AbstractService {
     private WorkflowProbe workflowProbe = new WorkflowProbe();
     // Initializing effectors
     private ConfigurationEffector configurationEffector = new ConfigurationEffector(this);
-
+    
+    // This variable will effect only one thread/invocation of the workflow
+    private AtomicBoolean stopRetrying = new AtomicBoolean(false);
 
     /**
      * Set the workflow 
@@ -77,7 +83,7 @@ public class CompositeService extends AbstractService {
 			} else {
 				// the default configuration
 				this.configuration = new Configuration(false, 1, 0, 10, false,
-						1, false, false, 0, 0);
+						1, true, true, -1, -1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -94,9 +100,19 @@ public class CompositeService extends AbstractService {
 		super(serviceName, serviceEndpoint);
 		this.workflow = workflow;
 
-		if (this.configuration.SDCacheMode) {
-			cache = new SDCache();
+		if (configuration.SDCacheMode == false){
+		    System.err.println("Warning! Cache mode cannot be turned off.");
 		}
+		else if (configuration.SDCacheShared == false){
+		    System.err.println("Warning! Cache mode sharing cannot be turned off.");
+		}
+		else if (configuration.SDCacheSize == 0){
+		    System.err.println("Warning! Cache size cannot be equal to zero.");
+		}
+		
+		//if (this.configuration.SDCacheMode) {
+			cache = new SDCache();
+		//}
     }
 
     /**
@@ -138,11 +154,15 @@ public class CompositeService extends AbstractService {
      */
     @ServiceOperation
     public Object invokeCompositeService(String qosRequirementName, Object params[]) {
-		AbstractQoSRequirement qosRequirement = qosRequirements.get(qosRequirementName);
-		SDCache sdCache = cache == null ? new SDCache() : cache;
-		WorkflowEngine engine = new WorkflowEngine(this, sdCache);
+		//AbstractQoSRequirement qosRequirement = qosRequirements.get(qosRequirementName);
+		
+		// If SDCache shared is not on then a new cache object for the workflow should be created
+		//ToDo: Cache is shared among all the workflow invocations. separate local cache is not supported yet.
+		//SDCache sdCache = configuration.SDCacheShared == true ? cache : new SDCache() ;
+		//WorkflowEngine engine = new WorkflowEngine(this, sdCache);
+		WorkflowEngine engine = new WorkflowEngine(this);
 		workflowProbe.workflowStarted(qosRequirementName, params);
-		Object result = engine.executeWorkflow(workflow, qosRequirement, params);
+		Object result = engine.executeWorkflow(workflow, qosRequirementName, params);
 		workflowProbe.workflowEnded(result, qosRequirementName, params);
 		return result;
     }
@@ -188,7 +208,12 @@ public class CompositeService extends AbstractService {
 			serviceDescriptions = (List<ServiceDescription>) this.sendRequest(
 					ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true,
 					"lookup", serviceType, opName);
-			cache.add(serviceType, opName, serviceDescriptions);
+			if (serviceDescriptions == null || serviceDescriptions.size() == 0) {
+			    this.getWorkflowProbe().serviceNotFound(serviceType, opName);
+			    //serviceDescriptions = this.lookupService(serviceType, opName);
+			}
+			else{
+			cache.add(serviceType, opName, serviceDescriptions);}
 		}
 		return serviceDescriptions;
     }
@@ -235,5 +260,80 @@ public class CompositeService extends AbstractService {
      */
     public ServiceDescription getServiceDescription(int registerId){
     	return cache.getServiceDescription(registerId);
+    }
+
+    protected ServiceDescription applyQoSRequirement(String qosRequirementName, List<ServiceDescription> serviceDescriptions, String opName, Object... params) {
+	AbstractQoSRequirement qosRequirement = qosRequirements.get(qosRequirementName);
+	if (qosRequirement == null) {
+	    System.err.println("QoS requirement is null. To select among multiple services, a QoS requirement must have been provided.");
+	    System.err.println("Selecting a service randomly...");
+	    return serviceDescriptions.get(new Random().nextInt(serviceDescriptions.size()));
+	}
+	return qosRequirement.applyQoSRequirement(serviceDescriptions, opName, params);
+    }
+
+    public Object invokeServiceOperation(String qosRequirement, String serviceName, String operationName, Object[] params) {
+
+	int timeout = this.getConfiguration().timeout;
+	Object resultVal;
+	int retryAttempts = 0;
+	stopRetrying.set(false);
+	do {
+	    List<ServiceDescription> services = lookupService(serviceName, operationName);
+	    if (services == null || services.size() == 0) {
+		System.out.println("ServiceName: " + serviceName + "." + operationName + "not found!");
+		return new TimeOutError();
+	    }
+
+	    // Apply strategy
+	    ServiceDescription service = applyQoSRequirement(qosRequirement, services, operationName, params);
+
+	    System.out.println("Operation " + service.getServiceType() + "." + operationName + " has been selected with following custom properties:"
+		    + service.getCustomProperties());
+
+	    this.getWorkflowProbe().serviceOperationInvoked(service, operationName, params);
+
+	    int maxResponseTime = timeout != 0 ? timeout : service.getResponseTime() * 3;
+	    resultVal = this.sendRequest(service.getServiceType(), service.getServiceEndpoint(), true, maxResponseTime, operationName, params);
+
+	    if (resultVal instanceof TimeOutError) {
+		this.getWorkflowProbe().serviceOperationTimeout(service, operationName, params);
+	    } else {
+		this.getWorkflowProbe().serviceOperationReturned(service, resultVal, operationName, params);
+		this.getCostProbe().costOperation(service, operationName);
+	    }
+	    
+	    if (stopRetrying.get() == true){
+		stopRetrying.set(false);
+		break;
+	    }
+
+	    retryAttempts++;
+	} while (resultVal instanceof TimeOutError && retryAttempts < this.getConfiguration().maxRetryAttempts);
+
+	return resultVal;
+    }
+
+    public Object invokeLocalOperation(String operationName, Object[] params) {
+	for (Method operation : this.getClass().getMethods()) {
+	    if (operation.getAnnotation(LocalOperation.class) != null) {
+		if (operation.getName().equals(operationName)) {
+		    try {
+			return operation.invoke(this, params);
+		    } catch (Exception e) {
+			e.printStackTrace();
+		    }
+		}
+	    }
+	}
+	throw new RuntimeException("Local operation " + operationName + " is not found.");
+    }
+    
+    /**
+     * If a service failed and composite service is retrying, this method will effect to stop retrying for that service. 
+     * This method once called will effect only one service invocation/thread.
+     */
+    public void stopRetrying(){
+	stopRetrying.set(true);
     }
 }

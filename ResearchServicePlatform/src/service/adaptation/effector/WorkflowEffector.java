@@ -70,4 +70,22 @@ public class WorkflowEffector extends AbstractEffector {
     public void updateServiceDescription(ServiceDescription oldService, ServiceDescription newService) {
     	cacheEffector.updateServiceDescription(oldService, newService);
     }
+    
+    /**
+     * Update a custom property of a service in service description. This method only effects the values in cache.
+     * @param serviceId the service id
+     * @param propertyName the property name
+     * @param value the value
+     */
+    public void updateServiceCustomProperty(int serviceId, String propertyName, Object value){
+	cacheEffector.getService(serviceId).getCustomProperties().put(propertyName, value);
+    }
+    
+    /**
+     * If a service failed and composite service is retrying, this method will effect to stop retrying for that service. 
+     * This method once called will effect only one service invocation/thread.
+     */
+    public void stopRetrying(){
+	compositeService.stopRetrying();
+    }
 }

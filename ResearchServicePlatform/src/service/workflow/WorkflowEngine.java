@@ -20,16 +20,16 @@ import taskgraph.TaskGraphInterpreter;
 public class WorkflowEngine {
 
     private CompositeService service;
-    private SDCache sdCache;
+    //private SDCache sdCache;
 
     /**
-     * Constructor
-     * @param service the conposite service
+     * Constructor to create workflow engine. Local cache is not supported.
+     * @param service the composite service
      * @param cache the cache
      */
-    public WorkflowEngine(CompositeService service, SDCache cache) {
+    public WorkflowEngine(CompositeService service) {
     	this.service = service;
-    	this.sdCache = cache;
+    	//this.sdCache = cache;
     }
 
     /**
@@ -39,7 +39,7 @@ public class WorkflowEngine {
      * @param parameters   initial parameters for the workflow
      * @return the result after executing the workflow
      */
-    public Object executeWorkflow(String workFlow, AbstractQoSRequirement qosRequirement, Object... parameters) {
+    public Object executeWorkflow(String workFlow, String qosRequirement, Object... parameters) {
 		rspLexer lexer;
 		try {
 			lexer = new rspLexer(new ANTLRFileStream(workFlow));
@@ -57,7 +57,7 @@ public class WorkflowEngine {
 			// tgVisualizer.exportGML(workFlow + "_TaskGraph", startGraph);
 
 			TaskGraphInterpreter interpreter = new TaskGraphInterpreter();
-			Object value = interpreter.interpret(startGraph, sdCache,
+			Object value = interpreter.interpret(startGraph, 
 					qosRequirement, service, parameters);
 			System.out.println("Result:" + value);
 			return value;

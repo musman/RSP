@@ -5,6 +5,7 @@ import java.util.List;
 import service.auxiliary.Operation;
 import service.auxiliary.ServiceDescription;
 import service.composite.CompositeService;
+import service.composite.SDCache;
 
 /**
  * 
@@ -87,5 +88,14 @@ public class CacheEffector {
     		for (Operation operation : oldService.getOperationList())
     			compositeService.getCache().update(oldService, newService, operation.getOpName());
     	}
+    }
+    
+    /**
+     * Returns a service description by its registration id
+     * @param registerationId
+     * @return service description of the service
+     */
+    public ServiceDescription getService(int registerId){
+	return compositeService.getCache().getServiceDescription(registerId);
     }
 }
