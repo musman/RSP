@@ -15,7 +15,9 @@ public class Configuration {
      * @param multipleThreads use single thread or multiple threads
      * @param maxNoOfThreads the max number of multiple threads to be used
      * @param maxQueueSize the max queue size
-     * @param maxResponseTime the max responsible time for services
+     * @param timeout the max responsible time for services
+     * @param ignoreTimeoutError true if ignoring timeout error, otherwise false
+     * @param maxRetryAttempts the max number of retry attempts 
      * @param sDCacheMode the mode to fetch the available services, from the local cache or from the service registry
      * @param sDCacheShared   allow multiple threads to share the same cache or not
      * @param sDCacheTimeout  the refresh period for the cache

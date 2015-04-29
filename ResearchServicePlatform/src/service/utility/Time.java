@@ -2,8 +2,7 @@ package service.utility;
 
 /**
  * Responsible for managing relationship between actual time and logical time 
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class Time {
 	/**

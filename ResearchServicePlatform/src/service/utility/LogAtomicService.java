@@ -8,8 +8,7 @@ import java.util.Arrays;
 import service.atomic.ServiceProfile;
 
 /**
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  *
  */
 public class LogAtomicService extends ServiceProfile {    

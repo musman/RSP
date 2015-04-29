@@ -75,7 +75,6 @@ public class TaskGraphVisualizer extends GMLExporter {
 	 * 
 	 * @param baseFilename exported file name (without extension)
 	 * @param allTaskGraphs map of unique scope ID to Task Graphs
-	 * @param symbolTable Symbol Table used to retrieve scope information
 	 * @throws IOException if writing to external file has failed
 	 */
 	public void exportGML(String baseFilename,

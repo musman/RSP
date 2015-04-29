@@ -62,7 +62,7 @@ public class TaskGraphInterpreter {
     /**
      * Returns the heap object specified by pointer
      * 
-     * @param heapPointer
+     * @param name
      *            heap object template instance identifier
      * @return resulting object
      */

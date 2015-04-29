@@ -3,7 +3,7 @@ package service.provider;
 /**
  * This interface should be implemented by the classes that are interested to provide communication mechanism between different services.
  * 
- * @author M. Usman Iftikhar & Yifan Ruan
+ * @author M. Usman Iftikhar, Yifan Ruan
  */
 public interface ServiceProvider {
  

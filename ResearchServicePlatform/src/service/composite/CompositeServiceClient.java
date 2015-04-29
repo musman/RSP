@@ -15,7 +15,7 @@ public class CompositeServiceClient {
     
     /**
      * Automatically take care the client endpoint
-     * @param serviceEndpoint
+     * @param serviceEndpoint the service endpoint
      */
     public CompositeServiceClient(String serviceEndpoint){
     	client = new AbstractServiceClient(serviceEndpoint);
@@ -23,8 +23,8 @@ public class CompositeServiceClient {
     
     /**
      * Note: client endpoint should be unique
-     * @param serviceEndpoint
-     * @param clientEndpoint
+     * @param serviceEndpoint the service endpoint
+     * @param clientEndpoint the client endpoint
      */
     public CompositeServiceClient(String serviceEndpoint, String clientEndpoint){
     	client = new AbstractServiceClient(serviceEndpoint, clientEndpoint);
@@ -33,9 +33,9 @@ public class CompositeServiceClient {
     /**
      * Invoke related composite service to start a workflow with specific QoS requirements 
      * and initial parameters for the workflow
-     * @param qosRequirement
-     * @param params
-     * @return
+     * @param qosRequirement the QoS requirements
+     * @param params  the initial parameters
+     * @return the result 
      */
     public Object invokeCompositeService(String qosRequirement, Object...params){
     	return client.sendRequest("invokeCompositeService", qosRequirement, params);
@@ -43,7 +43,7 @@ public class CompositeServiceClient {
     
     /**
      * Get list of QoS requirements
-     * @return
+     * @return the list of QoS requirement names
      */
     @SuppressWarnings("unchecked")
 	public List<String> getQosRequirementNames(){

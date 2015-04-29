@@ -5,7 +5,7 @@ import service.provider.rsp.RSPServiceProvider;
 /**
  * This class helps to choose a service provider.
  * 
- * @author M. Usman Iftikhar & Yifan Ruan
+ * @author M. Usman Iftikhar, Yifan Ruan
  */
 public class ServiceProviderFactory {
     

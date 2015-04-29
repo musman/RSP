@@ -18,10 +18,8 @@ public @interface CompositeServiceConfiguration{
     public int MaxNoOfThreads() default -1;
     public int MaxQueueSize() default 0;
     
-    /**
-     * Return timeout error if any service invocation failed. 
-     */
-    public boolean IgnoreTimeOutError() default false;
+
+    public boolean IgnoreTimeOutError() default false; //Return timeout error if any service invocation failed. 
     public int Timeout() default 10;
     public int MaxRetryAttempts() default 1;
     public boolean SDCacheMode() default false;

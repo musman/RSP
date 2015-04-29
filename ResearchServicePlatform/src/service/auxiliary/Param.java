@@ -2,8 +2,7 @@ package service.auxiliary;
 
 /**
  * Combination of type and value for a parameter
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class Param{
 	private Class<?> type;

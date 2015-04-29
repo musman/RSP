@@ -2,8 +2,7 @@ package service.auxiliary;
 
 /**
  * Definition of formated message
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class AbstractMessage {
 	private int id;
@@ -40,7 +39,7 @@ public class AbstractMessage {
 	
 	/**
 	 * Set the source endpoint
-	 * @param address the new source endpoint
+	 * @param endpoint the new source endpoint
 	 */
 	public void setEndpoint(String endpoint) {
 	    this.endpoint = endpoint;

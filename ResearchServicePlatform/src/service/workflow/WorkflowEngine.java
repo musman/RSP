@@ -20,16 +20,13 @@ import taskgraph.TaskGraphInterpreter;
 public class WorkflowEngine {
 
     private CompositeService service;
-    //private SDCache sdCache;
 
     /**
      * Constructor to create workflow engine. Local cache is not supported.
      * @param service the composite service
-     * @param cache the cache
      */
     public WorkflowEngine(CompositeService service) {
     	this.service = service;
-    	//this.sdCache = cache;
     }
 
     /**

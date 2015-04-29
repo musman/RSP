@@ -34,7 +34,7 @@ public class CacheEffector {
     
     /**
      * Remove service from cache with register id
-     * @param service the unique register id
+     * @param registerId the unique register id
      */
     public void removeService(int registerId) {
 	    compositeService.getCache().remove(registerId);
@@ -89,11 +89,11 @@ public class CacheEffector {
     			compositeService.getCache().update(oldService, newService, operation.getOpName());
     	}
     }
-    
+
     /**
      * Returns a service description by its registration id
-     * @param registerationId
-     * @return service description of the service
+     * @param registerId registerId the service register id
+     * @return the service description
      */
     public ServiceDescription getService(int registerId){
 	return compositeService.getCache().getServiceDescription(registerId);

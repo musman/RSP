@@ -9,8 +9,7 @@ import service.auxiliary.ServiceRegistryInterface;
 
 /**
  * Service for registering and finding services
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class ServiceRegistry extends AtomicService implements ServiceRegistryInterface{
     

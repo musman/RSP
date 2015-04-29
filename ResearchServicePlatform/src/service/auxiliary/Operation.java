@@ -4,8 +4,7 @@ import java.io.Serializable;
 
 /**
  * Definition of a service operation
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class Operation implements Serializable{
 

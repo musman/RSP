@@ -15,8 +15,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * Read and write input profile to xml file
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class ProfileExecutor {
 

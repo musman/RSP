@@ -15,7 +15,7 @@ public abstract class TaskGraph {
 
     /**
      * 
-     * @param stopGraph
+     * @param stopGraph the stop graph
      */
     public void printHierarchy(TaskGraph stopGraph) {
 		if (next == null || next == stopGraph) {

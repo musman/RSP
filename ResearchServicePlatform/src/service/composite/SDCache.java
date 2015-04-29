@@ -18,8 +18,7 @@ import service.utility.Time;
 
 /**
  * Cache for available services
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  *
  */
 public class SDCache{

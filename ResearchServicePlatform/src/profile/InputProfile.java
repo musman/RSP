@@ -7,8 +7,7 @@ import java.util.List;
 
 /**
  * Profile for how to execute the workflow
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class InputProfile {
 	

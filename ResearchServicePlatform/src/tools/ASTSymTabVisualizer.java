@@ -32,7 +32,6 @@ public class ASTSymTabVisualizer extends GMLExporter {
 	 * 
 	 * @param baseFilename exported file name (without extension)
 	 * @param rootNode root of AST
-	 * @param symbolTable symbol table of provided Uppaal program
 	 * @throws IOException if writing to external file has failed
 	 */
 	public void exportGML(String baseFilename,

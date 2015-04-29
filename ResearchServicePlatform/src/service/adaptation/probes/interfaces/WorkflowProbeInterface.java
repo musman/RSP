@@ -45,7 +45,7 @@ public interface WorkflowProbeInterface {
     /**
      * Generates an event when the workflow cannot find a concrete service for the given service type and operation.
      * @param serviceType the not found service type
-     * @param serviceName the not found service name
+     * @param opName the not found service operation name
      */
     public void serviceNotFound(String serviceType, String opName);
 

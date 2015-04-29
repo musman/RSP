@@ -10,8 +10,7 @@ import service.auxiliary.ServiceDescription;
 
 /**
  * Abstract probe class with lists of defined interfaces
- * @author Yifan Ruan
- * @email ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  *
  */
 public abstract class AbstractProbe<E> {

@@ -2,8 +2,7 @@ package service.auxiliary;
 
 /**
  * Definition of formated request message
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class Request extends AbstractMessage{
 	private String serviceName;

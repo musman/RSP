@@ -7,8 +7,7 @@ import service.composite.CompositeService;
 
 /**
  * Abstract effector, inherited with generic functions
- * @author Yifan Ruan
- * @email  ry222ad@student.lnu.se
+ * @author Yifan Ruan (ry222ad@student.lnu.se)
  */
 public class AbstractEffector {
 	
