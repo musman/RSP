@@ -1,14 +1,13 @@
 profile
-service.adaptation.effector
+service.adaptation.effectors
 service.adaptation.probes
 service.adaptation.probes.interfaces
 service.atomic
 service.auxiliary
 service.client
 service.composite
+service.messagingservice
 service.provider
-service.provider.activemq
-service.provider.rsp
 service.registry
 service.utility
 service.workflow
