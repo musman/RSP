@@ -17,9 +17,9 @@ public class ServiceDescription implements Serializable {
 	public static final String RESPONSE_TIME = "ResponseTime";
 
     private int registerID = -1;
-    private String serviceEndpoint;
-    private String serviceType;
-    private String serviceName;
+    private String endpoint;
+    private String type;
+    private String name;
 
     private HashMap<String, Object> customProperties = new HashMap<String, Object>();
     private List<Operation> opList = new ArrayList<Operation>();
@@ -31,8 +31,8 @@ public class ServiceDescription implements Serializable {
      * @param responseTime the response time
      */
     public ServiceDescription(String serviceName, String serviceEndpoint, int responseTime) {
-    	this.serviceName = serviceName;
-    	this.serviceEndpoint = serviceEndpoint;
+    	this.name = serviceName;
+    	this.endpoint = serviceEndpoint;
     	setResponseTime(responseTime);
     }
     
@@ -57,7 +57,7 @@ public class ServiceDescription implements Serializable {
      * @return the service endpoint
      */
     public String getServiceEndpoint() {
-    	return serviceEndpoint;
+    	return endpoint;
     }
 
     /**
@@ -65,7 +65,7 @@ public class ServiceDescription implements Serializable {
      * @param serviceEndpoint the service endpoint
      */
     public void setServiceEndpoint(String serviceEndpoint) {
-    	this.serviceEndpoint = serviceEndpoint;
+    	this.endpoint = serviceEndpoint;
     }
 
     /**
@@ -73,7 +73,7 @@ public class ServiceDescription implements Serializable {
      * @return the service type
      */
     public String getServiceType() {
-    	return serviceType;
+    	return type;
     }
 
     /**
@@ -81,7 +81,7 @@ public class ServiceDescription implements Serializable {
      * @param serviceType the new service type
      */
     public void setServiceType(String serviceType) {
-    	this.serviceType = serviceType;
+    	this.type = serviceType;
     }
     
     /**
@@ -89,7 +89,7 @@ public class ServiceDescription implements Serializable {
      * @return the service name
      */
     public String getServiceName() {
-    	return serviceName;
+    	return name;
     }
 
     /**
@@ -97,7 +97,7 @@ public class ServiceDescription implements Serializable {
      * @param serviceName the new service name
      */
     public void setServiceName(String serviceName) {
-    	this.serviceName = serviceName;
+    	this.name = serviceName;
     }
 
     /**
@@ -106,8 +106,8 @@ public class ServiceDescription implements Serializable {
      * @param serviceEndpoint the service endpoint
      */
     public ServiceDescription(String serviceName, String serviceEndpoint) {
-    	this.serviceName = serviceName;
-    	this.serviceEndpoint = serviceEndpoint;
+    	this.name = serviceName;
+    	this.endpoint = serviceEndpoint;
     }
 
     /**
@@ -230,7 +230,7 @@ public class ServiceDescription implements Serializable {
      */
     @Override
     public int hashCode() {
-    	return serviceEndpoint.hashCode() + serviceType.hashCode();
+    	return endpoint.hashCode() + type.hashCode();
     }
 
     /**
@@ -241,8 +241,8 @@ public class ServiceDescription implements Serializable {
 		if (obj instanceof ServiceDescription) {
 			ServiceDescription service = (ServiceDescription) obj;
 			if (registerID == service.getRegisterID()
-					&& serviceEndpoint.equals(service.getServiceEndpoint())
-					&& serviceType.equals(service.getServiceType())) {
+					&& endpoint.equals(service.getServiceEndpoint())
+					&& type.equals(service.getServiceType())) {
 
 				for (int i = 0; i < opList.size(); i++) {
 					if (!opList.get(i)

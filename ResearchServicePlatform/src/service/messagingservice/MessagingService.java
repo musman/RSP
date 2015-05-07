@@ -1,4 +1,4 @@
-package service.provider.rsp;
+package service.messagingservice;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -12,19 +12,19 @@ import service.utility.Time;
  * 
  * Definition of a service for handling all messages
  */
-public class RSPMessagingService {
+public class MessagingService {
     
-    private static RSPMessagingService instance;
+    private static MessagingService instance;
     
     static{
-    	instance = new RSPMessagingService();
+    	instance = new MessagingService();
     }
     
     /**
      * Get the single instance of RSPMessagingService
      * @return the single instance 
      */
-    public static RSPMessagingService getInstance() {
+    public static MessagingService getInstance() {
     	return instance;
     }
 
@@ -46,10 +46,10 @@ public class RSPMessagingService {
     }
 
     /**
-     * Deregister from the queue with the endpoint
+     * Unregister from the queue with the endpoint
      * @param endPoint the service endpoint
      */
-    public void deregister(String endPoint) {
+    public void unRegister(String endPoint) {
     	queue.remove(endPoint);
     }
     

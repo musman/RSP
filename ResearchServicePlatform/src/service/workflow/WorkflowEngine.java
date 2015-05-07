@@ -33,10 +33,10 @@ public class WorkflowEngine {
      * Execute the workflow with specific QoS requirement and initial parameters
      * @param workFlow the workflow to be executed
      * @param qosRequirement the QoS requirements to be satisfied
-     * @param parameters   initial parameters for the workflow
+     * @param params   initial parameters for the workflow
      * @return the result after executing the workflow
      */
-    public Object executeWorkflow(String workFlow, String qosRequirement, Object... parameters) {
+    public Object executeWorkflow(String workFlow, String qosRequirement, Object... params) {
 		rspLexer lexer;
 		try {
 			lexer = new rspLexer(new ANTLRFileStream(workFlow));
@@ -55,7 +55,7 @@ public class WorkflowEngine {
 
 			TaskGraphInterpreter interpreter = new TaskGraphInterpreter();
 			Object value = interpreter.interpret(startGraph, 
-					qosRequirement, service, parameters);
+					qosRequirement, service, params);
 			System.out.println("Result:" + value);
 			return value;
 		} catch (IOException | RecognitionException e) {

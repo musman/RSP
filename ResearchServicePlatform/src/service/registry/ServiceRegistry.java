@@ -37,19 +37,19 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     }
     
     @ServiceOperation
-    public int register(ServiceDescription serviceDescription) {
+    public int register(ServiceDescription description) {
     	serviceCount++;
-    	serviceDescription.setRegisterID(serviceCount);
-    	serviceList.put(serviceCount, serviceDescription);
-    	String type = serviceDescription.getServiceType();
+    	description.setRegisterID(serviceCount);
+    	serviceList.put(serviceCount, description);
+    	String type = description.getServiceType();
     	if (services.containsKey(type)) {
-    		services.get(type).add(serviceDescription);
+    		services.get(type).add(description);
     	} else {
     		Set<ServiceDescription> set = new HashSet<ServiceDescription>();
-    		set.add(serviceDescription);
+    		set.add(description);
     		services.put(type, set);
     	}	
-    	System.out.println("Service " + serviceDescription.getServiceType() + " is registered.");	
+    	System.out.println("Service " + description.getServiceType() + " is registered.");	
     	return serviceCount;
     }
 
@@ -65,11 +65,11 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     }
 
     @ServiceOperation
-    public List<ServiceDescription> lookup(String serviceType, String opName) {
-    	System.out.println("Lookup " + serviceType + "." + opName);
+    public List<ServiceDescription> lookup(String type, String opName) {
+    	System.out.println("Lookup " + type + "." + opName);
     	List<ServiceDescription> list = new ArrayList<ServiceDescription>();
-    	if (services.containsKey(serviceType)) {
-    		Set<ServiceDescription> set = services.get(serviceType);
+    	if (services.containsKey(type)) {
+    		Set<ServiceDescription> set = services.get(type);
     		Iterator<ServiceDescription> iter = set.iterator();
     		while (iter.hasNext()) {
     			ServiceDescription service = iter.next();

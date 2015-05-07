@@ -20,12 +20,12 @@ import service.utility.Time;
 public abstract class AbstractService implements MessageReceiver {
 
     //private String serviceName;
-    private String serviceEndpoint;
+    private String endpoint;
     private ServiceProvider serviceProvider;
 
     private AtomicInteger messageCount = new AtomicInteger(0);
     private Map<Integer, Object> results = new ConcurrentHashMap<Integer, Object>();
-    private ServiceDescription serviceDescription;
+    private ServiceDescription description;
     private Object NullObject = new Object();
     private ExecutorService executors;
 
@@ -39,8 +39,8 @@ public abstract class AbstractService implements MessageReceiver {
     public AbstractService(String serviceName, String serviceEndpoint) {
 		serviceProvider = ServiceProviderFactory.createServiceProvider();
 		//this.serviceName = serviceName;
-		this.serviceEndpoint = serviceEndpoint;
-		serviceDescription = new ServiceDescription(serviceName,serviceEndpoint);
+		this.endpoint = serviceEndpoint;
+		description = new ServiceDescription(serviceName,serviceEndpoint);
 		createServiceDescription();
 		readConfiguration();
 		applyConfiguration();
@@ -54,7 +54,7 @@ public abstract class AbstractService implements MessageReceiver {
      */
     public AbstractService(String serviceName, String serviceEndpoint, int responseTime) {
     	this(serviceName, serviceEndpoint);
-    	serviceDescription = new ServiceDescription(serviceName, serviceEndpoint, responseTime);
+    	description = new ServiceDescription(serviceName, serviceEndpoint, responseTime);
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class AbstractService implements MessageReceiver {
     public Object sendRequest(String service, String destination, boolean reply, long responseTime, String opName, Object... params) {
 		try {
 			int messageID = messageCount.incrementAndGet();
-			Request request = new Request(messageID, this.serviceEndpoint,service, opName, params);
+			Request request = new Request(messageID, this.endpoint,service, opName, params);
 			XMLBuilder build = new XMLBuilder();
 			String requestMessage = build.toXML(request);
 
@@ -128,7 +128,7 @@ public abstract class AbstractService implements MessageReceiver {
      * @param destination the target endpoint
      */
     private void sendResponse(int requestID, Object result, String destination) {
-    	Response response = new Response(messageCount.incrementAndGet(), requestID, this.serviceEndpoint, result);
+    	Response response = new Response(messageCount.incrementAndGet(), requestID, this.endpoint, result);
     	XMLBuilder build = new XMLBuilder();
     	String responseMessage = build.toXML(response);
     	serviceProvider.sendMessage(responseMessage, destination);
@@ -139,7 +139,7 @@ public abstract class AbstractService implements MessageReceiver {
      * Listen for incoming messages
      */
     public void startService() {
-    	serviceProvider.startListening(serviceEndpoint, this);
+    	serviceProvider.startListening(endpoint, this);
     }
 
     /**
@@ -212,24 +212,24 @@ public abstract class AbstractService implements MessageReceiver {
      * Register to the service registry
      */
     public void register() {
-    	int registerId = (int) this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "register", serviceDescription);
-    	this.serviceDescription.setRegisterID(registerId);
-    	System.out.println("The service " + serviceDescription.getServiceType() + " has been registered. The registerID is " + this.serviceDescription.getRegisterID());
+    	int registerId = (int) this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "register", description);
+    	this.description.setRegisterID(registerId);
+    	System.out.println("The service " + description.getServiceType() + " has been registered. The registerID is " + this.description.getRegisterID());
     }
 
     /**
      * Un register from the service registry
      */
     public void unRegister() {
-    	this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "unRegister", this.serviceDescription.getRegisterID());
+    	this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "unRegister", this.description.getRegisterID());
     }
 
     /**
      * Helps to dynamically update the service description
      */
     public void updateServiceDescription() {
-    	if (serviceDescription.getRegisterID() > 0)
-    		this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "update", this.serviceDescription);
+    	if (description.getRegisterID() > 0)
+    		this.sendRequest(ServiceRegistryInterface.NAME, ServiceRegistryInterface.ADDRESS, true, "update", this.description);
     	else
     		System.err.println("Service is not registered in the registy yet. It can't be updated.");
     }
@@ -239,7 +239,7 @@ public abstract class AbstractService implements MessageReceiver {
      * @return the service description
      */
     public ServiceDescription getServiceDescription() {
-    	return serviceDescription;
+    	return description;
     }
 
     /**
@@ -247,7 +247,7 @@ public abstract class AbstractService implements MessageReceiver {
      * @param serviceDescription the new service description
      */
     public void setServiceDescription(ServiceDescription serviceDescription) {
-    	this.serviceDescription = serviceDescription;
+    	this.description = serviceDescription;
     }
 
     // ////////////////////////////////////////// Service Configuration //////////////////////////////////////////////////////
@@ -271,14 +271,14 @@ public abstract class AbstractService implements MessageReceiver {
 				opList.add(op);
 			}
 		}
-		serviceDescription.setOperationList(opList);
-		serviceDescription.setServiceType(this.getClass().getSimpleName());
+		description.setOperationList(opList);
+		description.setServiceType(this.getClass().getSimpleName());
     }
 
     abstract protected void readConfiguration();
 
     protected void applyConfiguration() {
-		if (configuration.MultipleThreads == false) {
+		if (configuration.multipleThreads == false) {
 			executors = Executors.newSingleThreadExecutor();
 		} else {
 			executors = Executors.newFixedThreadPool(configuration.maxNoOfThreads);

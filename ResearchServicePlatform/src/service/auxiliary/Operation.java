@@ -9,14 +9,14 @@ import java.io.Serializable;
 public class Operation implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private String opName;
+	private String name;
 
 	/**
 	 * Return the operation name
 	 * @return the operation name
 	 */
 	public String getOpName() {
-		return opName;
+		return name;
 	}
 	
 	private Class<?>[] paramTypes;
@@ -39,14 +39,14 @@ public class Operation implements Serializable{
 		return returnType;
 	}
 	
-	private double opCost;
+	private double cost;
 	
 	/**
 	 * Return the operation cost
 	 * @return the operation cost
 	 */
 	public double getOpCost() {
-	    return opCost;
+	    return cost;
 	}
 	
 	/**
@@ -54,7 +54,7 @@ public class Operation implements Serializable{
 	 * @param opCost the new operation cost
 	 */
 	public void setOpCost(double opCost) {
-	    this.opCost = opCost;
+	    this.cost = opCost;
 	}
 
 
@@ -65,7 +65,7 @@ public class Operation implements Serializable{
 	 * @param returnType the return type
 	 */
 	public Operation(String opName,Class<?>[] paramTypes,String returnType){
-		this.opName=opName;
+		this.name=opName;
 		this.paramTypes=paramTypes;
 		this.returnType=returnType;
 	}
@@ -78,7 +78,7 @@ public class Operation implements Serializable{
 	public boolean equals(Object obj){
 		if(obj instanceof Operation){
 			Operation op=(Operation)obj;
-			if(!opName.equals(op.getOpName()))
+			if(!name.equals(op.getOpName()))
 				return false;
 			if(!returnType.equals(op.getReturnType()))
 				return false;
@@ -97,7 +97,7 @@ public class Operation implements Serializable{
 	@Override
 	public String toString(){
 		StringBuilder build=new StringBuilder();
-		build.append(returnType+" "+opName+" (");
+		build.append(returnType+" "+name+" (");
 		for(Class<?> type:paramTypes)
 			build.append(type.getSimpleName()+",");
 		build.delete(build.length()-1, build.length());

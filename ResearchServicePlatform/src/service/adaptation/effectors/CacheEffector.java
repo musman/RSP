@@ -1,4 +1,4 @@
-package service.adaptation.effector;
+package service.adaptation.effectors;
 
 import java.util.List;
 
@@ -26,27 +26,27 @@ public class CacheEffector {
 
     /**
      * Remove service from cache
-     * @param service the service description
+     * @param description the service description
      */
-    public void removeService(ServiceDescription service) {
-	    compositeService.getCache().remove(service);
+    public void removeService(ServiceDescription description) {
+	    compositeService.getCache().remove(description);
     }
     
     /**
      * Remove service from cache with register id
-     * @param registerId the unique register id
+     * @param registerID the unique register id
      */
-    public void removeService(int registerId) {
-	    compositeService.getCache().remove(registerId);
+    public void removeService(int registerID) {
+	    compositeService.getCache().remove(registerID);
     }
 
     /**
      * Remove service from cache with service description and operation name
-     * @param service the service description
+     * @param description the service description
      * @param opName the operation name
      */
-    public void removeService(ServiceDescription service, String opName) {
-    	compositeService.getCache().remove(service, opName);
+    public void removeService(ServiceDescription description, String opName) {
+    	compositeService.getCache().remove(description, opName);
     }
 
     /**
@@ -69,33 +69,33 @@ public class CacheEffector {
 
     /**
      * Remove all services with same service description and operation
-     * @param service the service description
+     * @param description the service description
      * @param opName the operation name
      * @return a list of service descriptions after refreshing
      */
-    public List<ServiceDescription> refreshCache(ServiceDescription service, String opName) {
-    	removeService(service, opName);
-    	return compositeService.lookupService(service.getServiceType(), opName);
+    public List<ServiceDescription> refreshCache(ServiceDescription description, String opName) {
+    	removeService(description, opName);
+    	return compositeService.lookupService(description.getServiceType(), opName);
     }
 
     /**
      * Update service description
-     * @param oldService the old service description
-     * @param newService the new service description
+     * @param oldDescription the old service description
+     * @param newDescription the new service description
      */
-    public void updateServiceDescription(ServiceDescription oldService, ServiceDescription newService) {
-    	if (oldService.getRegisterID() == newService.getRegisterID()) {
-    		for (Operation operation : oldService.getOperationList())
-    			compositeService.getCache().update(oldService, newService, operation.getOpName());
+    public void updateServiceDescription(ServiceDescription oldDescription, ServiceDescription newDescription) {
+    	if (oldDescription.getRegisterID() == newDescription.getRegisterID()) {
+    		for (Operation operation : oldDescription.getOperationList())
+    			compositeService.getCache().update(oldDescription, newDescription, operation.getOpName());
     	}
     }
 
     /**
      * Returns a service description by its registration id
-     * @param registerId registerId the service register id
+     * @param registerID registerId the service register id
      * @return the service description
      */
-    public ServiceDescription getService(int registerId){
-	return compositeService.getCache().getServiceDescription(registerId);
+    public ServiceDescription getService(int registerID){
+	return compositeService.getCache().getServiceDescription(registerID);
     }
 }

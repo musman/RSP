@@ -1,6 +1,6 @@
 package service.provider;
 
-import service.provider.rsp.RSPServiceProvider;
+import service.messagingservice.MessagingServiceProvider;
 
 /**
  * This class helps to choose a service provider.
@@ -15,6 +15,6 @@ public class ServiceProviderFactory {
      */
     public static ServiceProvider createServiceProvider() {
     	//return new ActiveMQProvider();
-    	return new RSPServiceProvider();
+    	return new MessagingServiceProvider();
     }
 }

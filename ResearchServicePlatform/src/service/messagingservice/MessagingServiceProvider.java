@@ -1,4 +1,4 @@
-package service.provider.rsp;
+package service.messagingservice;
 
 import service.provider.MessageReceiver;
 import service.provider.ServiceProvider;
@@ -8,29 +8,29 @@ import service.provider.ServiceProvider;
  * A service provider with functions of 
  * sending message and handling incoming messages
  */
-public class RSPServiceProvider implements ServiceProvider {
+public class MessagingServiceProvider implements ServiceProvider {
 
-    private RSPMessagingService rspMessagingService;
+    private MessagingService rspMessagingService;
     private String endPoint;
-    private MessageReceiver messageReceiver;
+    //private MessageReceiver messageReceiver;
    
     /**
      * Constructor
      */
-    public RSPServiceProvider() {
-    	rspMessagingService = RSPMessagingService.getInstance();
+    public MessagingServiceProvider() {
+    	rspMessagingService = MessagingService.getInstance();
     }
    
     @Override
     public void startListening(String endPoint, MessageReceiver messageReceiver) {
     	this.endPoint = endPoint;
-    	this.messageReceiver = messageReceiver;
+    	//this.messageReceiver = messageReceiver;
     	rspMessagingService.register(endPoint, messageReceiver);
     }
 
     @Override
     public void stopListening() {
-    	rspMessagingService.deregister(endPoint);
+    	rspMessagingService.unRegister(endPoint);
     }
 
     @Override

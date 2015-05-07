@@ -1,4 +1,4 @@
-package service.adaptation.effector;
+package service.adaptation.effectors;
 
 import service.auxiliary.ServiceDescription;
 import service.composite.CompositeService;
@@ -31,18 +31,18 @@ public class WorkflowEffector extends AbstractEffector {
     
     /**
      * Remove the service from workflow cache
-     * @param sd  the service description
+     * @param description  the service description
      */
-    public void removeService(ServiceDescription sd){
-    	cacheEffector.removeService(sd);
+    public void removeService(ServiceDescription description){
+    	cacheEffector.removeService(description);
     }
     
     /**
      * Remove the service from workflow cache with service id
-     * @param serviceId the service id
+     * @param registerID the service id
      */
-    public void removeService(int serviceId){
-    	cacheEffector.removeService(serviceId);
+    public void removeService(int registerID){
+    	cacheEffector.removeService(registerID);
     }
     
     /**
@@ -64,21 +64,21 @@ public class WorkflowEffector extends AbstractEffector {
 
     /**
      * Update the service description in the workflow cache
-     * @param oldService the old service description
-     * @param newService the new service description
+     * @param oldDescription the old service description
+     * @param newDescription the new service description
      */
-    public void updateServiceDescription(ServiceDescription oldService, ServiceDescription newService) {
-    	cacheEffector.updateServiceDescription(oldService, newService);
+    public void updateServiceDescription(ServiceDescription oldDescription, ServiceDescription newDescription) {
+    	cacheEffector.updateServiceDescription(oldDescription, newDescription);
     }
     
     /**
      * Update a custom property of a service in service description. This method only effects the values in cache.
-     * @param serviceId the service id
-     * @param propertyName the property name
+     * @param registerID the service id
+     * @param property the property name
      * @param value the value
      */
-    public void updateServiceCustomProperty(int serviceId, String propertyName, Object value){
-	cacheEffector.getService(serviceId).getCustomProperties().put(propertyName, value);
+    public void updateServiceCustomProperty(int registerID, String property, Object value){
+	cacheEffector.getService(registerID).getCustomProperties().put(property, value);
     }
     
     /**

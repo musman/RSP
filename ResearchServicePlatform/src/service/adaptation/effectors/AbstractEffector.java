@@ -1,7 +1,7 @@
 /**
  * 
  */
-package service.adaptation.effector;
+package service.adaptation.effectors;
 
 import service.composite.CompositeService;
 

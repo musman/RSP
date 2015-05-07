@@ -42,15 +42,15 @@ public class Configuration {
      * @param maxQueueSize the max queue size
      */
     public Configuration(boolean multipleThreads, int maxNoOfThreads, int maxQueueSize) {
-		this.MultipleThreads = multipleThreads;
+		this.multipleThreads = multipleThreads;
 		this.maxNoOfThreads = maxNoOfThreads;
 		this.maxQueueSize = maxQueueSize;
-		if (maxNoOfThreads == -1 && MultipleThreads == true) {
+		if (maxNoOfThreads == -1 && multipleThreads == true) {
 			maxNoOfThreads = Runtime.getRuntime().availableProcessors();
 		}
     }
     
-    public boolean MultipleThreads;
+    public boolean multipleThreads;
     public int maxNoOfThreads;
     public int maxQueueSize;
     public int timeout;
