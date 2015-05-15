@@ -203,17 +203,18 @@ public class CompositeService extends AbstractService {
 	public List<ServiceDescription> lookupService(String serviceType, String opName) {
 		List<ServiceDescription> serviceDescriptions = cache.get(serviceType,
 				opName);
-		if (serviceDescriptions == null) {
+		if (serviceDescriptions == null || serviceDescriptions.size() == 0) {
 			serviceDescriptions = (List<ServiceDescription>) this.sendRequest(
 					ServiceRegistry.NAME, ServiceRegistry.ADDRESS, true,
 					"lookup", serviceType, opName);
-			if (serviceDescriptions == null || serviceDescriptions.size() == 0) {
-				this.getWorkflowProbe().notifyServiceNotFound(serviceType, opName);
-			    //serviceDescriptions = this.lookupService(serviceType, opName);
-			}
-			else{
-			cache.add(serviceType, opName, serviceDescriptions);}
+			cache.add(serviceType, opName, serviceDescriptions);
 		}
+		
+		if (serviceDescriptions == null || serviceDescriptions.size() == 0) {
+			this.getWorkflowProbe().notifyServiceNotFound(serviceType, opName);
+		    //serviceDescriptions = this.lookupService(serviceType, opName);
+		}
+		
 		return serviceDescriptions;
     }
     
@@ -271,6 +272,14 @@ public class CompositeService extends AbstractService {
 	return qosRequirement.applyQoSRequirement(descriptions, opName, params);
     }
 
+    /**
+     * Invoke a service operation
+     * @param qosRequirement the applied QoS requirements
+     * @param serviceName the service name
+     * @param opName the operation name
+     * @param params the parameters of the operation
+     * @return the result
+     */
     public Object invokeServiceOperation(String qosRequirement, String serviceName, String opName, Object[] params) {
 
 	int timeout = this.getConfiguration().timeout;
@@ -313,6 +322,12 @@ public class CompositeService extends AbstractService {
 	return resultVal;
     }
 
+    /**
+     * Invoke the operation without the annotation "ServiceOperation"
+     * @param opName the operation name
+     * @param params the parameters of the operation
+     * @return the result
+     */
     public Object invokeLocalOperation(String opName, Object[] params) {
 	for (Method operation : this.getClass().getMethods()) {
 	    if (operation.getAnnotation(LocalOperation.class) != null) {

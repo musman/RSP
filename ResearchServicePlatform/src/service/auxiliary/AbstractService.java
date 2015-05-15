@@ -206,6 +206,12 @@ public abstract class AbstractService implements MessageReceiver {
 		}
     }
 
+    /**
+     * Invoke service operation
+     * @param opName the operation name
+     * @param args arguments of the operation
+     * @return the result
+     */
     abstract public Object invokeOperation(String opName, Param[] args);
 
     /**
