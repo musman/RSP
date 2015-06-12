@@ -20,7 +20,7 @@ public @interface CompositeServiceConfiguration{
     
 
     public boolean IgnoreTimeOutError() default false; //Return timeout error if any service invocation failed. 
-    public int Timeout() default 10;
+    public int Timeout() default 50;
     public int MaxRetryAttempts() default 1;
     public boolean SDCacheMode() default false;
     public boolean SDCacheShared() default false;

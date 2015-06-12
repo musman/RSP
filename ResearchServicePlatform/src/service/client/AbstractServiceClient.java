@@ -1,8 +1,9 @@
 package service.client;
 
+import service.auxiliary.AbstractMessage;
+import service.auxiliary.ExecutionThread;
 import service.auxiliary.Response;
 import service.auxiliary.Request;
-import service.auxiliary.XMLBuilder;
 import service.provider.MessageReceiver;
 import service.provider.ServiceProvider;
 import service.provider.ServiceProviderFactory;
@@ -54,9 +55,8 @@ public class AbstractServiceClient implements MessageReceiver {
     public synchronized Object sendRequest(String methodName, Object... params) {
 		try {
 			Request request = new Request(0, clientEndpoint, clientEndpoint,methodName, params);
-			XMLBuilder build = new XMLBuilder();
-			String requestMessage = build.toXML(request);
-			serviceProvider.sendMessage(requestMessage, serviceEndpoint);
+			serviceProvider.sendMessage(request, serviceEndpoint);
+
 			synchronized (this) {
 				this.wait();
 			}
@@ -84,9 +84,9 @@ public class AbstractServiceClient implements MessageReceiver {
     }
 
     @Override
-    public void onMessage(String message) {
+    public void onMessage(AbstractMessage msg) {
 		try {
-			Response response = (Response) (new XMLBuilder().fromXML(message));
+			Response response = (Response) msg;
 			if (response.getReturnType() != null) {
 				Class<?> type = (Class<?>) response.getReturnType();
 				result = type.cast(response.getReturnValue());

@@ -6,10 +6,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import service.provider.MessageReceiver;
 import service.provider.ServiceProvider;
 import service.provider.ServiceProviderFactory;
+import service.utility.SimClock;
 import service.utility.Time;
 
 /**
@@ -84,13 +87,10 @@ public abstract class AbstractService implements MessageReceiver {
 		try {
 			int messageID = messageCount.incrementAndGet();
 			Request request = new Request(messageID, this.endpoint,service, opName, params);
-			XMLBuilder build = new XMLBuilder();
-			String requestMessage = build.toXML(request);
-
-			serviceProvider.sendMessage(requestMessage, destination);
+			serviceProvider.sendMessage(request, destination);
 
 			if (DEBUG)
-				System.out.println("The request message is: \n"+ requestMessage);
+				System.out.println("The request message is: \n"+ request.getId());
 
 			if (reply) {
 				synchronized (this) {
@@ -99,11 +99,14 @@ public abstract class AbstractService implements MessageReceiver {
 							this.wait();
 						}
 					} else {
-						long startTime = System.currentTimeMillis();
+						//long startTime = System.currentTimeMillis();
+						double startTime = SimClock.getCurrentTime();
+
 						while (!results.containsKey(messageID)) {
-							this.wait(responseTime * Time.scale);
-							long endTime = System.currentTimeMillis();
-							if ((endTime - startTime) / Time.scale >= responseTime) {
+							this.wait(responseTime);
+							//long endTime = System.currentTimeMillis();
+							double endTime= SimClock.getCurrentTime();
+							if ((endTime - startTime) >= responseTime) {
 								results.put(messageID, new TimeOutError());
 							}
 						}
@@ -129,9 +132,7 @@ public abstract class AbstractService implements MessageReceiver {
      */
     private void sendResponse(int requestID, Object result, String destination) {
     	Response response = new Response(messageCount.incrementAndGet(), requestID, this.endpoint, result);
-    	XMLBuilder build = new XMLBuilder();
-    	String responseMessage = build.toXML(response);
-    	serviceProvider.sendMessage(responseMessage, destination);
+    	serviceProvider.sendMessage(response, destination);
     }
 
     /**
@@ -150,18 +151,19 @@ public abstract class AbstractService implements MessageReceiver {
     }
 
     @Override
-    public void onMessage(final String message) {
+    public void onMessage(final AbstractMessage msg) {
 		try {
-			AbstractMessage msg = (AbstractMessage) (new XMLBuilder()
-					.fromXML(message));
 			final int requestID = msg.getId();
 			String messageType = msg.getType();
 			final String destination = msg.getEndpoint();
 			switch (messageType) {
 			case "request": {
 				if (DEBUG)
-					System.out.println("Receiving the request: \n" + message);
+					System.out.println("Receiving the request: \n" + msg.getId());
 				final Request request = (Request) msg;
+				
+				
+				/*
 				executors.submit(new Callable<Object>() {
 
 					@Override
@@ -180,12 +182,41 @@ public abstract class AbstractService implements MessageReceiver {
 
 						return null;
 					}
-				});
+				});*/
+				
+				
+				Thread thread=Thread.currentThread();
+				
+				 FutureTask<Object> future=new FutureTask<Object>(new Callable<Object>() {
+
+						@Override
+						public Object call() throws Exception {
+							try {
+
+								Object result = invokeOperation(request.getOpName(), request.getParams());
+
+								if (!(result instanceof OperationAborted))
+									sendResponse(requestID, result, destination);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							return null;
+						}
+					});
+				 
+				 if(thread instanceof ExecutionThread)		
+					 new ExecutionThread("",future,((ExecutionThread)thread).getToken()).start();
+				 else
+					 new ExecutionThread("",future).start();
+
+				
 				break;
 			}
 			case "response": {
 				if (DEBUG)
-					System.out.println("Receiving the response: \n" + message);
+					System.out.println("Receiving the response: \n" + msg.getId());
 				Response response = (Response) msg;
 				if (response.getReturnType() != null) {
 					Class<?> type = (Class<?>) response.getReturnType();

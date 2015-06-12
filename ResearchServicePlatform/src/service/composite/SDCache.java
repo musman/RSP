@@ -4,6 +4,7 @@
 package service.composite;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,8 @@ public class SDCache{
 	
     private Map<Description, List<ServiceDescription>> caches = new ConcurrentHashMap<Description, List<ServiceDescription>>();
     private int maxCacheSize;
-    private int refreshPeriod=10*Time.scale;         
+    //private int refreshPeriod=10*Time.scale;   
+    private int refreshPeriod=10;         
     private Timer timer = null;    
     
     /**
@@ -74,7 +76,40 @@ public class SDCache{
 		}
 		return services;
 	}
+	
+	public Map<String,ServiceDescription> getServiceDescriptions(){
+		Map<String,ServiceDescription> services=new HashMap<>();
+		for (List<ServiceDescription> serviceList : caches.values()) {
+			for(ServiceDescription service:serviceList){
+				services.put(service.getServiceName(), service);
+			}
+		}
+		return services;
+	}
 
+	public ServiceDescription getService(String serviceName){
+		for (List<ServiceDescription> serviceList : caches.values()) {
+			for(ServiceDescription service:serviceList){
+				if(service.getServiceName().equals(serviceName))
+					return service;
+			}
+		}
+		return null;
+	}
+	
+	public void addService(ServiceDescription service){
+		String serviceType=service.getServiceType();
+		service.getOperationList().forEach(operation->{
+			Description description=new Description(serviceType,operation.getOpName());
+			if(!caches.containsKey(description)){
+				caches.put(description, new ArrayList<>());
+			}
+			caches.get(description).add(service);
+		});
+		
+	}
+	
+	
 	/**
 	 * Return max size of the cache
 	 * @return the max cache size

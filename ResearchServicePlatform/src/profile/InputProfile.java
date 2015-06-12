@@ -14,11 +14,14 @@ public class InputProfile {
 	protected int maxSteps;
 	protected String qosRequirement;
 	protected List<InputProfileVariable> variables=new ArrayList<>();
+	protected List<Requirement> requirements=new ArrayList<>();
 		
 	/**
 	 * Constructor without any parameters
 	 */
 	public InputProfile(){
+		variables=new ArrayList<>();
+		requirements=new ArrayList<>();
 	}
 	
 	/**
@@ -31,6 +34,34 @@ public class InputProfile {
 		this.maxSteps=maxSteps;
 		this.qosRequirement=qosRequirement;
 		this.variables=variables;
+	}
+	
+	public void addRequirement(Requirement requirement){
+		this.requirements.add(requirement);
+	}
+	
+	public List<Requirement> getRequirements(){
+		return this.requirements;
+	}
+	
+	public Requirement getRequirement(String reqName){
+		for(Requirement req:requirements){
+			if(req.getName().equals(reqName))
+				return req;
+		}
+		return null;
+	}
+	
+	public List<String> getRequirementNames(){
+		List<String> reqNames=new ArrayList<>();
+		if(requirements==null){
+			requirements=new ArrayList<>();
+			return reqNames;
+		}
+		requirements.forEach(req->{
+			reqNames.add(req.getName());
+		});
+		return reqNames;
 	}
 
 	/**

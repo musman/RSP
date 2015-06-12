@@ -10,7 +10,9 @@ import service.auxiliary.AtomicServiceConfiguration;
 import service.auxiliary.Configuration;
 import service.auxiliary.OperationAborted;
 import service.auxiliary.Param;
+import service.auxiliary.ServiceFailed;
 import service.auxiliary.ServiceOperation;
+import service.auxiliary.TimeOutError;
 
 /**
  *
@@ -92,9 +94,12 @@ public abstract class AtomicService extends AbstractService {
 							// execute "preInvokeOperation" in service profiles one after another
 							// if the current result is false, stop executing the next one
 							boolean flag = true;
+							
 							for (int i = 0; i < serviceProfileNum; i++) {
-								if (!(flag = serviceProfiles.get(i).preInvokeOperation(opName, args)))
-									break;
+								if (!(flag = serviceProfiles.get(i).preInvokeOperation(opName, args))){
+									return new ServiceFailed();
+									//break;
+								}
 							}
 
 							// execute "postInvokeOperation" in service profiles one after another

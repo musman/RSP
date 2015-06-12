@@ -30,6 +30,7 @@ public class ProfileExecutor {
 		xstream.alias("inputProfile", InputProfile.class);
 		xstream.alias("variable", InputProfileVariable.class);
 		xstream.alias("value", InputProfileValue.class);
+		xstream.alias("requirement", Requirement.class);
 	}
 	
 	/**

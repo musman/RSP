@@ -1,5 +1,6 @@
 package service.messagingservice;
 
+import service.auxiliary.AbstractMessage;
 import service.provider.MessageReceiver;
 import service.provider.ServiceProvider;
 
@@ -34,8 +35,8 @@ public class MessagingServiceProvider implements ServiceProvider {
     }
 
     @Override
-    public void sendMessage(String msgText, String destinationEndPoint) {
-    	rspMessagingService.sendMessage(endPoint, destinationEndPoint, msgText);
+    public void sendMessage(AbstractMessage msg, String destinationEndPoint) {
+    	rspMessagingService.sendMessage(endPoint, destinationEndPoint, msg);
     }
 
 }

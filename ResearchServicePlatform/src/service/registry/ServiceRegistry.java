@@ -14,7 +14,7 @@ import service.auxiliary.ServiceRegistryInterface;
 public class ServiceRegistry extends AtomicService implements ServiceRegistryInterface{
     
 	private HashMap<Integer, ServiceDescription> serviceList = new HashMap<>();
-	private Map<String, Set<ServiceDescription>> services = new HashMap<String, Set<ServiceDescription>>(); // serviceName
+	private Map<String, Set<ServiceDescription>> services = new HashMap<String, Set<ServiceDescription>>(); 
 	private int serviceCount = 0;
 
 	/**
@@ -78,6 +78,32 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     		}
     	}
     	return list;
+    }
+    
+    public ServiceDescription getService(String serviceName){
+    	for(ServiceDescription description:serviceList.values()){
+    		if(description.getServiceName().equals(serviceName))
+    			return description;
+    	}
+    	return null;
+    }
+    
+    public void removeService(ServiceDescription description){
+    	String type=description.getServiceType();
+    	int registerID=description.getRegisterID();
+    	
+    	if(serviceList.containsKey(registerID))
+    		serviceList.remove(registerID);
+    	
+    	if(services.containsKey(type))
+    		services.get(type).remove(description);
+    }
+    
+    public void addService(ServiceDescription description){
+    	String type=description.getServiceType();
+    	int registerID=description.getRegisterID();
+    	serviceList.put(registerID, description);
+    	services.get(type).add(description);
     }
     
     /**

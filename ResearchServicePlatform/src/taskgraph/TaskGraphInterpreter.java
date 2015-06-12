@@ -2,9 +2,11 @@ package taskgraph;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,12 +15,14 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import service.auxiliary.ExecutionThread;
 import service.auxiliary.LocalOperation;
 import service.auxiliary.ServiceDescription;
 import service.auxiliary.TimeOutError;
 import service.client.AbstractServiceClient;
 import service.composite.CompositeService;
 import service.composite.SDCache;
+import service.utility.SimClock;
 import service.workflow.AbstractQoSRequirement;
 import taskgraph.TaskGraph.ARRAY_ACCESS;
 import taskgraph.TaskGraph.BinaryOp;
@@ -403,31 +407,48 @@ public class TaskGraphInterpreter {
 	    case PARALLEL:
 		PARALLEL parallel = (PARALLEL) CT;
 		List<TaskGraph> tasks = parallel.getStatements();
-		ExecutorService threadpool = Executors.newCachedThreadPool();
-		Future[] futureList = new FutureTask[tasks.size()];
+		//ExecutorService threadpool = Executors.newCachedThreadPool();
+		FutureTask[] futureList = new FutureTask[tasks.size()];
+		ExecutionThread[] threads=new ExecutionThread[tasks.size()];
 
+		SimClock.beginParallel();
+		
 		for (int i = 0; i < tasks.size(); i++) {
 		    final TaskGraph task = tasks.get(i);
 
-		    futureList[i] = threadpool.submit(new Runnable() {
-			@Override
-			public void run() {
-			    TaskGraphInterpreter interpreter = new TaskGraphInterpreter();
-			    interpreter.heap = heap;
-			    interpreter.compositeService = compositeService;
-			    interpreter.interpret(task, qosRequirement, compositeService, args);
-			}
-		    });
+		    Callable<Double> callable=new Callable<Double>(){
+	            public Double call() throws Exception {  
+				    TaskGraphInterpreter interpreter = new TaskGraphInterpreter();
+				    interpreter.heap = heap;
+				    interpreter.compositeService = compositeService;
+				    interpreter.interpret(task, qosRequirement, compositeService, args);
+				    return ((ExecutionThread)Thread.currentThread()).getCurrentTime();
+				}  	
+		    };
+		    
+	        FutureTask<Double> future = new FutureTask<Double>(callable);
+	        futureList[i]=future;	        
+	        new ExecutionThread("parallel"+i,future).start();		    
 		}
 
+		//Double maxTime=0.0;
 		for (Future future : futureList) {
 		    try {
-			future.get();
+		    	future.get();
+		    	//System.out.println("Parallel time cost:"+future.get());
+		    	//Double time=(Double)future.get();
+		    	//System.out.println("Parallel time cost:"+time);
+		    	//if(maxTime<time)
+		    		//maxTime=time;
 		    } catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		    	e.printStackTrace();
 		    }
 		}
-		threadpool.shutdown();
+		
+		
+		SimClock.endParallel();
+		
+		//threadpool.shutdown();
 
 		CT = CT.getNext();
 		break;

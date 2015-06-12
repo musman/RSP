@@ -1,5 +1,7 @@
 package service.provider;
 
+import service.auxiliary.AbstractMessage;
+
 /**
  * This interface should be implemented by the classes that are interested to provide communication mechanism between different services.
  * 
@@ -24,5 +26,5 @@ public interface ServiceProvider {
      * @param msgText  the message content
      * @param destinationEndPoint  the destination to send the message
      */
-    public void sendMessage(String msgText, String destinationEndPoint);
+    public void sendMessage(AbstractMessage msg, String destinationEndPoint);
 }

@@ -2,10 +2,14 @@ package service.messagingservice;
 
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import service.auxiliary.AbstractMessage;
+import service.auxiliary.ExecutionThread;
+import service.auxiliary.MessageFailed;
+import service.auxiliary.Request;
+import service.auxiliary.Response;
 import service.provider.MessageReceiver;
+import service.utility.SimClock;
 import service.utility.Time;
 
 /**
@@ -30,7 +34,7 @@ public class MessagingService {
 
     private HashMap<String, MessageReceiver> queue = new HashMap<>();
     
-    private ExecutorService threadPool = Executors.newCachedThreadPool();
+   //private ExecutorService threadPool = Executors.newCachedThreadPool();
     
     private int messageLoss, messageCount;
     private int minDelay, maxDelay;
@@ -59,35 +63,54 @@ public class MessagingService {
      * @param destinationEndPoint  the destination
      * @param msgText    the message information
      */
-    public void sendMessage(String endPoint, String destinationEndPoint, String msgText) {
-		threadPool.submit(new Runnable() {
-			@Override
-			public void run() {
+    public void sendMessage(String endPoint, String destinationEndPoint, AbstractMessage msg) {
+		//threadPool.submit(new Runnable() {
+		//	@Override
+		//	public void run() {
+
 				if (!(endPoint.contains(".#CLIENT#.")
 						|| destinationEndPoint.contains(".#CLIENT#.")
 						|| endPoint.endsWith(".registry") || destinationEndPoint
 						.endsWith(".registry"))) {
+					
+					if(msg.getType().equals("response")){
+					
 					if (messageLoss > 0) {
+						
 						if (100 / messageLoss == messageCount) {
 							messageCount = 0;
+							
+							//if(msg.getType().equals("request")){
+								//Request request=(Request)msg;
+								//queue.get(endPoint).onMessage(new Response(-1,request.getId(),destinationEndPoint,new MessageFailed()));
+							//}
+							//else{
+								Response response=(Response)msg;
+								queue.get(destinationEndPoint).onMessage(new Response(-1,response.getRequestID(),endPoint,new MessageFailed()));
+							//}	
+												
 							return;
 						} else {
 							messageCount++;
 						}
+						
 					}
 
 					if (minDelay + maxDelay != 0) {
+							SimClock.increment(random.nextDouble()*(maxDelay - minDelay)+minDelay);
+						/*
 						try {
-							Thread.sleep(random.nextInt((maxDelay - minDelay + 1)+ minDelay)* Time.scale);
+							Thread.sleep(random.nextInt((maxDelay - minDelay + 1)+ minDelay));
 						} catch (InterruptedException e) {
 							e.printStackTrace();
-						}
+						}*/
+					}
 					}
 
 				}
-				queue.get(destinationEndPoint).onMessage(msgText);
-			}
-		});
+				queue.get(destinationEndPoint).onMessage(msg);
+		//	}
+		//});
     }
     
     /**
