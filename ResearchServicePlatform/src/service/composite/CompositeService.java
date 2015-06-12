@@ -290,7 +290,8 @@ public class CompositeService extends AbstractService {
 	    List<ServiceDescription> services = lookupService(serviceName, opName);
 	    if (services == null || services.size() == 0) {
 		System.out.println("ServiceName: " + serviceName + "." + opName + "not found!");
-		return new TimeOutError();
+		getWorkflowProbe().notifyServiceNotFound(serviceName, opName);
+		resultVal = new TimeOutError();
 	    }
 
 	    // Apply strategy
