@@ -88,6 +88,10 @@ public class ServiceRegistry extends AtomicService implements ServiceRegistryInt
     	return null;
     }
     
+    public ServiceDescription getService(int registerId){
+    	return serviceList.get(registerId);
+    }
+    
     public void removeService(ServiceDescription description){
     	String type=description.getServiceType();
     	int registerID=description.getRegisterID();
